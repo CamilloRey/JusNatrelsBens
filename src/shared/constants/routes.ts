@@ -4,6 +4,7 @@ export const ROUTES = {
   products:  '/products',
   product:   (id: string) => `/products/${id}`,
   blog:      '/blog',
+  events:    '/events',
   locations: '/locations',
   contact:   '/contact',
 
@@ -18,6 +19,7 @@ export const ROUTES = {
     locations:   '/admin/locations',
     subscribers: '/admin/subscribers',
     messages:    '/admin/messages',
+    events:      '/admin/events',
     settings:    '/admin/settings',
     data:        '/admin/data',
   },

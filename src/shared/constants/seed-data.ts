@@ -6,6 +6,7 @@ import type { Subscriber } from '@/features/newsletter/types/subscriber.types';
 import type { Message }    from '@/features/contact/types/message.types';
 import type { Activity }   from '@/features/dashboard/types/dashboard.types';
 import type { Settings }   from '@/features/auth/types/auth.types';
+import type { Event }      from '@/features/events/types/event.types';
 
 export const SEED_PRODUCTS: Product[] = [
   { id: 'p1',  name: 'Hibiscus Gingembre',           category: 'Tisanes', price: 8.99,  formats: ['250ml','354ml','1L'], desc: "Alliance exquise de l'hibiscus et du gingembre piquant.", available: true, tag: 'Populaire', img: '🌺', color: '#c44536' },
@@ -72,6 +73,12 @@ export const SEED_ACTIVITY: Activity[] = [
   { id: 'a3', action: 'Avis approuvé',         detail: 'Avis de Jeanne Tremblay approuvé',          date: '2025-03-03T09:15:00', type: 'review'   },
   { id: 'a4', action: 'Article publié',        detail: 'Le gingembre : un allié santé au quotidien',date: '2025-03-04T16:45:00', type: 'blog'     },
   { id: 'a5', action: 'Point de vente ajouté', detail: 'Marché Atwater ajouté',                     date: '2025-03-05T11:20:00', type: 'location' },
+];
+
+export const SEED_EVENTS: Event[] = [
+  { id: 'ev1', title: 'Marché Jean-Talon — Printemps', description: 'Venez nous retrouver au marché Jean-Talon pour déguster nos jus artisanaux et repartir avec vos favoris !', date: '2026-05-10', time: '09h00 - 15h00', location: 'Marché Jean-Talon', address: '7070 Henri Julien, Montréal', type: 'Marché', active: true },
+  { id: 'ev2', title: 'Festival des Saveurs Africaines', description: 'Grande fête culinaire africaine à Montréal. Retrouvez-nous avec toute notre gamme de jus naturels et exotiques.', date: '2026-06-21', time: '11h00 - 20h00', location: 'Parc Lafontaine', address: '3933 Av. du Parc-La Fontaine, Montréal', type: 'Festival', active: true },
+  { id: 'ev3', title: 'Dégustation — Épicerie Afro-Antillaise', description: 'Séance de dégustation gratuite de nos nouveaux jus. Rencontrez la fondatrice et découvrez nos secrets de fabrication.', date: '2026-04-12', time: '13h00 - 16h00', location: 'Épicerie Afro-Antillaise', address: '3456 Boul. Décarie, Montréal', type: 'Dégustation', active: true },
 ];
 
 export const SEED_MESSAGES: Message[] = [
