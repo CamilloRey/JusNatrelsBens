@@ -22,6 +22,7 @@ export const ROUTES = {
     events:      '/admin/events',
     stock:       '/admin/stock',
     finance:     '/admin/finance',
+    reports:     '/admin/reports',
     settings:    '/admin/settings',
     data:        '/admin/data',
   },

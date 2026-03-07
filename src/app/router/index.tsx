@@ -25,6 +25,7 @@ import AdminDataPage          from '@/features/dashboard/pages/AdminDataPage';
 import AdminEventsPage        from '@/features/events/pages/AdminEventsPage';
 import AdminStockPage         from '@/features/stock/pages/AdminStockPage';
 import AdminFinancePage       from '@/features/finance/pages/AdminFinancePage';
+import AdminReportsPage       from '@/features/reports/pages/AdminReportsPage';
 
 import { ROUTES } from '@/shared/constants/routes';
 import { ProtectedRoute } from './ProtectedRoute';
@@ -65,6 +66,7 @@ export const router = createBrowserRouter([
       { path: 'events',     element: <AdminEventsPage /> },
       { path: 'stock',      element: <AdminStockPage /> },
       { path: 'finance',    element: <AdminFinancePage /> },
+      { path: 'reports',    element: <AdminReportsPage /> },
       { path: 'data',       element: <AdminDataPage /> },
     ],
   },
