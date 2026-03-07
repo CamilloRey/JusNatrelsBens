@@ -10,7 +10,7 @@ import { useInView }             from '@/shared/hooks/useInView';
 
 export default function HomePage() {
   const { t }    = useTranslation();
-  const { products, reviews, subscribers, updateSubscribers, events } = useData();
+  const { products, reviews, subscribers, updateSubscribers, events, settings } = useData();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [count, setCount] = useState({ bottles: 0, families: 0, flavors: 0 });
@@ -57,7 +57,7 @@ export default function HomePage() {
   return (
     <div>
       {/* HERO */}
-      <section style={{ backgroundImage: `url('/images-bens/hero-banners/banniere-accueil-hero.png')`, backgroundSize: 'cover', backgroundPosition: 'center', padding: '90px 24px 80px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ backgroundImage: `url('${settings.bannerHero || '/images-bens/hero-banners/banniere-accueil-hero.png'}')`, backgroundSize: 'cover', backgroundPosition: 'center', padding: '90px 24px 80px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${C.hibiscus}cc 0%, ${C.red}aa 40%, ${C.gold}88 100%)` }} />
         <div style={{ position: 'relative', maxWidth: 700, margin: '0 auto' }}>
           <p style={{ fontSize: 14, letterSpacing: 4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: 16, animation: 'fadeIn 0.8s ease' }}>

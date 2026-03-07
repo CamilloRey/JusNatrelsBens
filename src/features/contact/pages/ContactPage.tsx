@@ -6,7 +6,7 @@ import { CSS }      from '@/shared/constants/styles';
 
 export default function ContactPage() {
   const { t } = useTranslation();
-  const { messages, updateMessages, subscribers, updateSubscribers } = useData();
+  const { messages, updateMessages, subscribers, updateSubscribers, settings } = useData();
   const [name, setName]   = useState('');
   const [email, setEmail] = useState('');
   const [msg, setMsg]     = useState('');
@@ -24,7 +24,7 @@ export default function ContactPage() {
   return (
     <div>
       {/* Bannière */}
-      <div style={{ height: 220, backgroundImage: "url('/images-bens/photos/photo-contact.png')", backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+      <div style={{ height: 220, backgroundImage: `url('${settings.bannerContact || '/images-bens/photos/photo-contact.png'}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.55))' }} />
         <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', padding: '0 24px' }}>
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(28px,5vw,40px)', fontWeight: 900, color: '#fff', margin: '0 0 8px' }}>{t('contact.title')}</h1>

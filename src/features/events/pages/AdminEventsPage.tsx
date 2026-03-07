@@ -3,19 +3,31 @@ import { useData }  from '@/app/providers/DataContext';
 import { C }        from '@/shared/constants/colors';
 import { CSS, inputSt, labelSt } from '@/shared/constants/styles';
 import { Icon }     from '@/shared/ui/Icon';
+import { uploadImage } from '@/lib/api/http-client';
 import type { Event, EventFormState } from '../types/event.types';
 
-const EMPTY: EventFormState = { title: '', description: '', date: '', time: '', location: '', address: '', type: 'Marché', active: true };
+const EMPTY: EventFormState = { title: '', description: '', date: '', time: '', location: '', address: '', type: 'Marché', active: true, img: '' };
 const TYPES = ['Marché', 'Festival', 'Dégustation', 'Atelier', 'Autre'];
 
 export default function AdminEventsPage() {
   const { events, updateEvents, logActivity } = useData();
   const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState<EventFormState>(EMPTY);
+  const [uploading, setUploading] = useState(false);
 
   const startEdit = (ev: Event) => {
     setEditing(ev.id);
-    setForm({ title: ev.title, description: ev.description, date: ev.date, time: ev.time, location: ev.location, address: ev.address, type: ev.type, active: ev.active });
+    setForm({ title: ev.title, description: ev.description, date: ev.date, time: ev.time, location: ev.location, address: ev.address, type: ev.type, active: ev.active, img: ev.img ?? '' });
+  };
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const url = await uploadImage(file, 'events');
+    if (url) setForm(prev => ({ ...prev, img: url }));
+    else alert("Erreur upload. Vérifiez que le bucket 'product-images' existe dans Supabase.");
+    setUploading(false);
   };
 
   const save = () => {
@@ -52,6 +64,18 @@ export default function AdminEventsPage() {
         <button onClick={() => setEditing(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><Icon type="x" color={C.muted} /></button>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        {/* Photo */}
+        <div>
+          <label style={labelSt}>Photo de l'événement</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            {form.img && <img src={form.img} alt="" style={{ width: 80, height: 60, objectFit: 'cover', borderRadius: 8, border: `1px solid ${C.border}` }} />}
+            <label style={{ display: 'inline-block', padding: '8px 14px', borderRadius: 8, border: `1px solid ${C.border}`, background: '#fff', fontSize: 13, cursor: uploading ? 'wait' : 'pointer', color: C.text }}>
+              {uploading ? 'Téléversement…' : '📁 Choisir une photo'}
+              <input type="file" accept="image/*" onChange={handleUpload} style={{ display: 'none' }} disabled={uploading} />
+            </label>
+            {form.img && <button onClick={() => setForm(p => ({ ...p, img: '' }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', fontSize: 13 }}>✕ Supprimer</button>}
+          </div>
+        </div>
         <div><label style={labelSt}>Titre *</label><input value={form.title} onChange={e => f('title', e.target.value)} style={inputSt} placeholder="Ex: Marché Jean-Talon — Été 2026" /></div>
         <div><label style={labelSt}>Description</label><textarea value={form.description} onChange={e => f('description', e.target.value)} rows={3} style={{ ...inputSt, resize: 'vertical' }} placeholder="Décrivez l'événement..." /></div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>

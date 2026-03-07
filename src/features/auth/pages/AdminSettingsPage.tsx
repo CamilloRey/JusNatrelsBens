@@ -4,8 +4,9 @@ import { C }       from '@/shared/constants/colors';
 import { Icon }    from '@/shared/ui/Icon';
 import { inputSt, labelSt } from '@/shared/constants/styles';
 import { formatDate } from '@/shared/utils/format';
+import { uploadImage } from '@/lib/api/http-client';
 
-type Tab = 'profile' | 'password' | 'site' | 'activity';
+type Tab = 'profile' | 'password' | 'site' | 'photos' | 'activity';
 
 const ACTIVITY_ICONS: Record<string, string> = { auth: '🔐', product: '🍹', review: '⭐', blog: '📝', location: '📍', settings: '⚙️', newsletter: '📧' };
 const ACTIVITY_COLORS: Record<string, string> = { auth: '#8b5cf6', product: '#c44536', review: '#f59e0b', blog: '#2a6a4f', location: '#2563eb', settings: '#6b7280', newsletter: '#ec4899' };
@@ -18,6 +19,7 @@ export default function AdminSettingsPage() {
   const [passForm, setPassForm] = useState({ current: '', newPass: '', confirm: '' });
   const [passMsg,  setPassMsg]  = useState('');
   const [passError, setPassError] = useState(false);
+  const [uploadingKey, setUploadingKey] = useState<string | null>(null);
 
   const saveProfile = () => {
     updateSettings({ ...settings, ...form });
@@ -37,10 +39,21 @@ export default function AdminSettingsPage() {
     setTimeout(() => setPassMsg(''), 3000);
   };
 
+  const handleBannerUpload = async (key: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingKey(key);
+    const url = await uploadImage(file, 'banners');
+    if (url) updateSettings({ ...settings, [key]: url });
+    else alert("Erreur upload. Vérifiez que le bucket 'product-images' existe dans Supabase.");
+    setUploadingKey(null);
+  };
+
   const tabs: { id: Tab; label: string; icon: string }[] = [
     { id: 'profile',  label: 'Profil entreprise', icon: 'shop'     },
     { id: 'password', label: 'Sécurité',           icon: 'shield'   },
     { id: 'site',     label: 'Paramètres site',    icon: 'settings' },
+    { id: 'photos',   label: 'Photos du site',     icon: 'star'     },
     { id: 'activity', label: "Journal d'activité", icon: 'clock'    },
   ];
 
@@ -157,6 +170,52 @@ export default function AdminSettingsPage() {
             <button onClick={saveProfile} style={{ padding: '14px', borderRadius: 12, border: 'none', background: C.hibiscus, color: '#fff', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
               Sauvegarder les paramètres
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* PHOTOS DU SITE */}
+      {tab === 'photos' && (
+        <div style={{ maxWidth: 700 }}>
+          <div style={{ background: '#fff', borderRadius: 14, padding: 28, border: `1px solid ${C.border}`, marginBottom: 16 }}>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, margin: '0 0 6px', color: C.dark }}>Photos & Arrière-plans du site</h3>
+            <p style={{ fontSize: 13, color: C.muted, marginBottom: 24 }}>Remplacez les photos qui apparaissent sur les différentes pages de votre site.</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              {([
+                { key: 'bannerHero',     label: 'Bannière Accueil (Hero)',     page: 'Page Accueil'  },
+                { key: 'bannerProducts', label: 'Bannière Produits',           page: 'Page Produits' },
+                { key: 'bannerEvents',   label: 'Bannière Événements',         page: 'Page Événements' },
+                { key: 'bannerAbout',    label: 'Bannière À propos',           page: 'Page À propos' },
+                { key: 'bannerContact',  label: 'Bannière Contact',            page: 'Page Contact'  },
+              ] as { key: keyof typeof settings; label: string; page: string }[]).map(({ key, label, page }) => {
+                const current = settings[key] as string | undefined;
+                const isUp = uploadingKey === key;
+                return (
+                  <div key={key} style={{ display: 'flex', gap: 16, alignItems: 'center', padding: '16px', borderRadius: 12, border: `1px solid ${C.border}`, background: C.light }}>
+                    <div style={{ width: 110, height: 70, borderRadius: 8, overflow: 'hidden', background: '#e5e7eb', flexShrink: 0 }}>
+                      {current
+                        ? <img src={current} alt={label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>🖼️</div>
+                      }
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontWeight: 600, color: C.dark, margin: '0 0 2px', fontSize: 14 }}>{label}</p>
+                      <p style={{ fontSize: 12, color: C.muted, margin: '0 0 10px' }}>{page}</p>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                        <label style={{ display: 'inline-block', padding: '6px 12px', borderRadius: 8, border: `1px solid ${C.border}`, background: '#fff', fontSize: 12, cursor: isUp ? 'wait' : 'pointer', color: C.text }}>
+                          {isUp ? 'Téléversement…' : '📁 Changer la photo'}
+                          <input type="file" accept="image/*" onChange={e => handleBannerUpload(key as string, e)} style={{ display: 'none' }} disabled={!!uploadingKey} />
+                        </label>
+                        {current && (
+                          <button onClick={() => updateSettings({ ...settings, [key]: '' })}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', fontSize: 12 }}>✕ Supprimer</button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

@@ -3,21 +3,33 @@ import { useData }  from '@/app/providers/DataContext';
 import { C }        from '@/shared/constants/colors';
 import { CSS, inputSt, labelSt } from '@/shared/constants/styles';
 import { Icon }     from '@/shared/ui/Icon';
+import { uploadImage } from '@/lib/api/http-client';
 import type { BlogPost, BlogFormState } from '../types/blog.types';
 
 export default function AdminBlogPage() {
   const { blogs, updateBlogs, logActivity } = useData();
   const [editing, setEditing] = useState<string | null>(null);
-  const [form, setForm] = useState<BlogFormState>({ title: '', category: 'Santé', content: '', published: false });
+  const [form, setForm] = useState<BlogFormState>({ title: '', category: 'Santé', content: '', published: false, img: '' });
+  const [uploading, setUploading] = useState(false);
 
   const startEdit = (b: BlogPost) => {
     setEditing(b.id);
-    setForm({ title: b.title, category: b.category, content: b.content, published: b.published });
+    setForm({ title: b.title, category: b.category, content: b.content, published: b.published, img: b.img ?? '' });
+  };
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const url = await uploadImage(file, 'blog');
+    if (url) setForm(f => ({ ...f, img: url }));
+    else alert("Erreur upload. Vérifiez que le bucket 'product-images' existe dans Supabase.");
+    setUploading(false);
   };
 
   const save = () => {
     if (editing === 'new') {
-      const nb: BlogPost = { ...form, id: 'b' + Date.now(), date: new Date().toISOString().split('T')[0] };
+      const nb: BlogPost = { ...form, img: form.img || undefined, id: 'b' + Date.now(), date: new Date().toISOString().split('T')[0] };
       updateBlogs([...blogs, nb]);
       logActivity('Article créé', nb.title, 'blog');
     } else {
@@ -40,6 +52,18 @@ export default function AdminBlogPage() {
         <button onClick={() => setEditing(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><Icon type="x" color={C.muted} /></button>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        {/* Photo de couverture */}
+        <div>
+          <label style={labelSt}>Photo de couverture</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            {form.img && <img src={form.img} alt="" style={{ width: 100, height: 64, objectFit: 'cover', borderRadius: 8, border: `1px solid ${C.border}` }} />}
+            <label style={{ display: 'inline-block', padding: '8px 14px', borderRadius: 8, border: `1px solid ${C.border}`, background: '#fff', fontSize: 13, cursor: uploading ? 'wait' : 'pointer', color: C.text }}>
+              {uploading ? 'Téléversement…' : '📁 Choisir une photo'}
+              <input type="file" accept="image/*" onChange={handleUpload} style={{ display: 'none' }} disabled={uploading} />
+            </label>
+            {form.img && <button onClick={() => setForm(f => ({ ...f, img: '' }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', fontSize: 13 }}>✕ Supprimer</button>}
+          </div>
+        </div>
         <div><label style={labelSt}>Titre</label><input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} style={inputSt} /></div>
         <div>
           <label style={labelSt}>Catégorie</label>
@@ -74,6 +98,10 @@ export default function AdminBlogPage() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {blogs.map(b => (
           <div key={b.id} style={{ background: '#fff', borderRadius: 12, padding: '16px 20px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: 14 }}>
+            {b.img
+              ? <img src={b.img} alt={b.title} style={{ width: 56, height: 44, objectFit: 'cover', borderRadius: 8, flexShrink: 0 }} />
+              : <div style={{ width: 56, height: 44, borderRadius: 8, background: C.light, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>📝</div>
+            }
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4 }}>
                 <span style={{ fontSize: 15, fontWeight: 600, color: C.dark }}>{b.title}</span>

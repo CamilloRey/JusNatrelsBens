@@ -6,14 +6,14 @@ import { Icon }      from '@/shared/ui/Icon';
 
 export default function LocationsPage() {
   const { t } = useTranslation();
-  const { locations } = useData();
+  const { locations, settings } = useData();
   const active = locations.filter(l => l.active);
   const [selected, setSelected] = useState<string | null>(null);
 
   return (
     <div>
       {/* Banner */}
-      <div style={{ height: 240, backgroundImage: "url('/images-bens/hero-banners/banniere-points-vente.png')", backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+      <div style={{ height: 240, backgroundImage: `url('${settings.bannerEvents || '/images-bens/hero-banners/banniere-points-vente.png'}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6))' }} />
         <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 24px' }}>
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(28px, 5vw, 42px)', fontWeight: 900, color: '#fff', margin: '0 0 10px', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>{t('locations.title')}</h1>

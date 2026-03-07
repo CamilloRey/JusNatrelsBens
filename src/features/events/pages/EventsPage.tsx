@@ -24,8 +24,15 @@ export default function EventsPage() {
     const color    = TYPE_COLORS[ev.type] ?? C.muted;
     return (
       <div style={{ background: '#fff', borderRadius: 18, overflow: 'hidden', border: `1px solid ${C.border}`, opacity: isPast ? 0.7 : 1, display: 'flex', flexDirection: 'column' }}>
-        {/* Color band */}
-        <div style={{ height: 6, background: color }} />
+        {/* Photo or color band */}
+        {ev.img
+          ? <div style={{ height: 160, overflow: 'hidden', position: 'relative' }}>
+              <img src={ev.img} alt={ev.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 60%)' }} />
+              <span style={{ position: 'absolute', bottom: 10, left: 12, fontSize: 11, padding: '3px 10px', borderRadius: 6, background: color, color: '#fff', fontWeight: 700 }}>{ev.type}</span>
+            </div>
+          : <div style={{ height: 6, background: color }} />
+        }
         <div style={{ padding: '20px 24px', flex: 1, display: 'flex', gap: 20 }}>
           {/* Date block */}
           <div style={{ flexShrink: 0, width: 60, height: 60, borderRadius: 14, background: `${color}18`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
