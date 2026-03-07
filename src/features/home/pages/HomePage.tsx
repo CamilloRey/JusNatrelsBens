@@ -10,7 +10,7 @@ import { useInView }             from '@/shared/hooks/useInView';
 
 export default function HomePage() {
   const { t }    = useTranslation();
-  const { products, reviews, subscribers, updateSubscribers } = useData();
+  const { products, reviews, subscribers, updateSubscribers, events } = useData();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [count, setCount] = useState({ bottles: 0, families: 0, flavors: 0 });
@@ -193,6 +193,46 @@ export default function HomePage() {
                 </div>
               </Reveal>
             ))}
+          </div>
+        </section>
+      )}
+
+      {/* PROCHAINS ÉVÉNEMENTS */}
+      {events.filter(e => e.active && e.date >= new Date().toISOString().split('T')[0]).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 3).length > 0 && (
+        <section style={{ padding: '56px 24px', maxWidth: 1100, margin: '0 auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32, flexWrap: 'wrap', gap: 12 }}>
+            <div>
+              <p style={{ fontSize: 12, letterSpacing: 3, textTransform: 'uppercase', color: C.red, marginBottom: 6 }}>{t('events.upcoming')}</p>
+              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 800, color: C.dark, margin: 0 }}>{t('events.title')}</h2>
+            </div>
+            <button onClick={() => navigate(ROUTES.events)} className="anim-btn"
+              style={{ padding: '10px 24px', borderRadius: 50, border: `2px solid ${C.hibiscus}`, background: 'transparent', color: C.hibiscus, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+              {t('events.seeAll')} →
+            </button>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
+            {events.filter(e => e.active && e.date >= new Date().toISOString().split('T')[0]).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 3).map(ev => {
+              const d = new Date(ev.date);
+              return (
+                <Reveal key={ev.id} anim="fadeUp">
+                  <div style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', border: `1px solid ${C.border}`, cursor: 'pointer' }} onClick={() => navigate(ROUTES.events)}>
+                    <div style={{ height: 5, background: C.hibiscus }} />
+                    <div style={{ padding: '20px 22px', display: 'flex', gap: 16 }}>
+                      <div style={{ flexShrink: 0, width: 52, height: 52, borderRadius: 12, background: `${C.hibiscus}15`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                        <span style={{ fontSize: 20, fontWeight: 900, color: C.hibiscus, lineHeight: 1 }}>{d.getUTCDate()}</span>
+                        <span style={{ fontSize: 10, color: C.hibiscus, textTransform: 'uppercase', fontWeight: 600 }}>{d.toLocaleString('fr-CA', { month: 'short', timeZone: 'UTC' })}</span>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, background: `${C.red}12`, color: C.red, fontWeight: 700, display: 'inline-block', marginBottom: 6 }}>{ev.type}</span>
+                        <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 15, fontWeight: 700, color: C.dark, margin: '0 0 4px' }}>{ev.title}</h3>
+                        <p style={{ fontSize: 12, color: C.muted, margin: 0 }}>📍 {ev.location}</p>
+                        {ev.time && <p style={{ fontSize: 12, color: C.muted, margin: '2px 0 0' }}>🕐 {ev.time}</p>}
+                      </div>
+                    </div>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
         </section>
       )}

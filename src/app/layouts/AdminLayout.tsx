@@ -11,6 +11,7 @@ const MENU = [
   { route: ROUTES.admin.messages,   label: 'Messages',        icon: 'mail'     },
   { route: ROUTES.admin.products,   label: 'Catalogue',       icon: 'grid'     },
   { route: ROUTES.admin.blog,       label: 'Blogue',          icon: 'edit'     },
+  { route: ROUTES.admin.events,     label: 'Événements',      icon: 'map'      },
   { route: ROUTES.admin.reviews,    label: 'Avis clients',    icon: 'star'     },
   { route: ROUTES.admin.locations,  label: 'Points de vente', icon: 'map'      },
   { route: ROUTES.admin.subscribers, label: 'Infolettres',    icon: 'send'     },

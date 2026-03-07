@@ -4,6 +4,7 @@ const en = {
     about:     'Our Story',
     products:  'Our Products',
     blog:      'Blog',
+    events:    'Events',
     locations: 'Where to Buy',
     contact:   'Contact',
   },
@@ -128,6 +129,16 @@ const en = {
   blog: {
     title:    'Blog',
     subtitle: 'Recipes, health tips and news from the Ben\'s universe.',
+  },
+  events: {
+    title:     'Events',
+    subtitle:  'Find us at markets, festivals and tastings around Montreal.',
+    past:      'Past',
+    pastTitle: 'Past events',
+    none:      'No upcoming events at the moment. Check back soon!',
+    directions:'Directions',
+    upcoming:  'Upcoming events',
+    seeAll:    'See all events',
   },
   locations: {
     title:    'Where to Buy',

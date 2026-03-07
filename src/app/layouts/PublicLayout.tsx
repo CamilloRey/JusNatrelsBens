@@ -20,6 +20,7 @@ export default function PublicLayout() {
     { path: ROUTES.about,     label: t('nav.about')     },
     { path: ROUTES.products,  label: t('nav.products')  },
     { path: ROUTES.blog,      label: t('nav.blog')      },
+    { path: ROUTES.events,    label: t('nav.events')    },
     { path: ROUTES.locations, label: t('nav.locations') },
     { path: ROUTES.contact,   label: t('nav.contact')   },
   ];
