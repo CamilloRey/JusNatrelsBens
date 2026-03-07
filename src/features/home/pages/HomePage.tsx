@@ -173,7 +173,9 @@ export default function HomePage() {
 
       {/* REVIEWS */}
       {approvedReviews.length > 0 && (
-        <section style={{ padding: '64px 24px', maxWidth: 1100, margin: '0 auto' }}>
+        <section style={{ position: 'relative', padding: '64px 24px', backgroundImage: "url('/images-bens/hero-banners/banniere-temoignages.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.92)' }} />
+          <div style={{ position: 'relative', maxWidth: 1100, margin: '0 auto' }}>
           <Reveal anim="fadeUp">
             <div style={{ textAlign: 'center', marginBottom: 40 }}>
               <p style={{ fontSize: 12, letterSpacing: 3, textTransform: 'uppercase', color: C.red, marginBottom: 8 }}>{t('home.reviews.eyebrow')}</p>
@@ -190,6 +192,7 @@ export default function HomePage() {
                 </div>
               </Reveal>
             ))}
+          </div>
           </div>
         </section>
       )}

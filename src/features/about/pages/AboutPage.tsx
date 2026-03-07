@@ -64,10 +64,19 @@ export default function AboutPage() {
         <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 800, color: C.dark, margin: '0 0 24px' }}>{t('about.award.title')}</h2>
           <Reveal anim="scaleIn">
-            <div style={{ background: '#fff', borderRadius: 16, padding: 28, border: `1px solid ${C.border}`, display: 'inline-block' }}>
-              <span style={{ fontSize: 48, display: 'block', marginBottom: 12 }}>🏅</span>
-              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 700, color: C.dark, margin: '0 0 8px' }}>{t('about.award.name')}</h3>
-              <p style={{ fontSize: 14, color: C.muted, margin: 0 }}>{t('about.award.org')}</p>
+            <div style={{ display: 'flex', gap: 20, justifyContent: 'center', flexWrap: 'wrap' }}>
+              {['/images-bens/recompenses/recompense_1.avif', '/images-bens/recompenses/recompense_2.avif'].map((src, i) => (
+                <div key={i} style={{ background: '#fff', borderRadius: 16, padding: 20, border: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, maxWidth: 240 }}>
+                  <div style={{ width: 160, height: 160, borderRadius: 12, overflow: 'hidden', background: C.light }}>
+                    <img src={src} alt={`Récompense ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                      onError={e => { (e.target as HTMLImageElement).parentElement!.innerHTML = '<span style="font-size:64px;display:flex;align-items:center;justify-content:center;height:100%">🏅</span>'; }} />
+                  </div>
+                  <div>
+                    <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 16, fontWeight: 700, color: C.dark, margin: '0 0 6px' }}>{t('about.award.name')}</h3>
+                    <p style={{ fontSize: 13, color: C.muted, margin: 0 }}>{t('about.award.org')}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </Reveal>
         </div>
@@ -96,10 +105,24 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* PHOTO FESTIVE */}
+      <div style={{ height: 300, overflow: 'hidden', position: 'relative' }}>
+        <img src="/images-bens/photos/soiree-festive-jus-bens.jpg" alt="Ben's en fête"
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', display: 'block' }}
+          onError={e => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.55), rgba(0,0,0,0.1))' }} />
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', paddingLeft: 48 }}>
+          <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(20px, 3vw, 30px)', fontWeight: 800, color: '#fff', maxWidth: 400, lineHeight: 1.4, textShadow: '0 2px 12px rgba(0,0,0,0.4)', margin: 0 }}>
+            "Chaque gorgée raconte une histoire de passion et de culture."
+          </p>
+        </div>
+      </div>
+
       {/* PROCESSUS */}
       <section style={{ background: C.dark, padding: '64px 24px' }}>
-        <div style={{ maxWidth: 800, margin: '0 auto' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 800, color: '#f0e6d3', margin: '0 0 32px', textAlign: 'center' }}>{t('about.process.title')}</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: 48, alignItems: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             {(['s1', 's2', 's3', 's4'] as const).map((s, i) => (
               <Reveal key={i} delay={i * 0.15} anim="slideLeft">
@@ -112,6 +135,13 @@ export default function AboutPage() {
                 </div>
               </Reveal>
             ))}
+          </div>
+          <Reveal anim="slideRight">
+            <div style={{ borderRadius: 20, overflow: 'hidden', boxShadow: '0 20px 60px rgba(0,0,0,0.4)' }}>
+              <img src="/images-bens/photos/mission-engagement.png" alt="Notre mission" style={{ width: '100%', height: 400, objectFit: 'cover', display: 'block' }}
+                onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+            </div>
+          </Reveal>
           </div>
         </div>
       </section>
