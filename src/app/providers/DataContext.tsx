@@ -9,6 +9,8 @@ import { subscriberService } from '@/features/newsletter/services/subscriber.ser
 import { dashboardService }  from '@/features/dashboard/services/dashboard.service';
 import { authService }       from '@/features/auth/services/auth.service';
 import { eventService }      from '@/features/events/services/event.service';
+import { stockService }      from '@/features/stock/services/stock.service';
+import { financeService }    from '@/features/finance/services/finance.service';
 
 import type { Product }    from '@/features/products/types/product.types';
 import type { Review }     from '@/features/reviews/types/review.types';
@@ -18,7 +20,9 @@ import type { Message }    from '@/features/contact/types/message.types';
 import type { Subscriber } from '@/features/newsletter/types/subscriber.types';
 import type { Activity, ActivityType } from '@/features/dashboard/types/dashboard.types';
 import type { Settings }   from '@/features/auth/types/auth.types';
-import type { Event }      from '@/features/events/types/event.types';
+import type { Event }         from '@/features/events/types/event.types';
+import type { StockMovement } from '@/features/stock/types/stock.types';
+import type { Transaction }   from '@/features/finance/types/finance.types';
 
 /* ─── Shape du contexte ─── */
 interface DataContextValue {
@@ -40,6 +44,10 @@ interface DataContextValue {
   updateMessages:    (m: Message[])    => void;
   events:         Event[];
   updateEvents:   (e: Event[]) => void;
+  stock:          StockMovement[];
+  updateStock:    (s: StockMovement[]) => void;
+  finance:        Transaction[];
+  updateFinance:  (t: Transaction[]) => void;
   updateSettings:    (s: Settings)     => void;
   logActivity:       (action: string, detail: string, type: ActivityType) => void;
   exportData:        () => void;
@@ -57,13 +65,15 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [messages,    setMessages]    = useState<Message[]>([]);
   const [events,      setEvents]      = useState<Event[]>([]);
+  const [stock,       setStock]       = useState<StockMovement[]>([]);
+  const [finance,     setFinance]     = useState<Transaction[]>([]);
   const [activity,    setActivity]    = useState<Activity[]>([]);
   const [settings,    setSettings]    = useState<Settings>({} as Settings);
 
   /* ─── Chargement initial ─── */
   useEffect(() => {
     (async () => {
-      const [p, r, b, l, s, m, ev, ac, st] = await Promise.all([
+      const [p, r, b, l, s, m, ev, stk, fin, ac, st] = await Promise.all([
         productService.getAll(),
         reviewService.getAll(),
         blogService.getAll(),
@@ -71,11 +81,14 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         subscriberService.getAll(),
         messageService.getAll(),
         eventService.getAll(),
+        stockService.getAll(),
+        financeService.getAll(),
         dashboardService.getActivity(),
         authService.getSettings(),
       ]);
       setProducts(p); setReviews(r); setBlogs(b); setLocations(l);
-      setSubscribers(s); setMessages(m); setEvents(ev); setActivity(ac); setSettings(st);
+      setSubscribers(s); setMessages(m); setEvents(ev); setStock(stk); setFinance(fin);
+      setActivity(ac); setSettings(st);
       setLoaded(true);
     })();
   }, []);
@@ -87,8 +100,10 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const updateLocations   = (l: Location[])   => { setLocations(l);   locationService.save(l); };
   const updateSubscribers = (s: Subscriber[]) => { setSubscribers(s); subscriberService.save(s); };
   const updateMessages    = (m: Message[])    => { setMessages(m);    messageService.save(m); };
-  const updateEvents      = (e: Event[])      => { setEvents(e);      eventService.save(e); };
-  const updateSettings    = (s: Settings)     => { setSettings(s);    authService.saveSettings(s); };
+  const updateEvents      = (e: Event[])          => { setEvents(e);   eventService.save(e); };
+  const updateStock       = (s: StockMovement[])  => { setStock(s);   stockService.save(s); };
+  const updateFinance     = (t: Transaction[])    => { setFinance(t); financeService.save(t); };
+  const updateSettings    = (s: Settings)         => { setSettings(s); authService.saveSettings(s); };
 
   const logActivity = useCallback((action: string, detail: string, type: ActivityType) => {
     setActivity(prev => {
@@ -123,9 +138,9 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <DataContext.Provider value={{
-      loaded, products, reviews, blogs, locations, subscribers, messages, events, activity, settings,
+      loaded, products, reviews, blogs, locations, subscribers, messages, events, stock, finance, activity, settings,
       updateProducts, updateReviews, updateBlogs, updateLocations,
-      updateSubscribers, updateMessages, updateEvents, updateSettings, logActivity, exportData, resetAll,
+      updateSubscribers, updateMessages, updateEvents, updateStock, updateFinance, updateSettings, logActivity, exportData, resetAll,
     }}>
       {children}
     </DataContext.Provider>

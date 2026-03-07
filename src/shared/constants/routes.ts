@@ -20,6 +20,8 @@ export const ROUTES = {
     subscribers: '/admin/subscribers',
     messages:    '/admin/messages',
     events:      '/admin/events',
+    stock:       '/admin/stock',
+    finance:     '/admin/finance',
     settings:    '/admin/settings',
     data:        '/admin/data',
   },

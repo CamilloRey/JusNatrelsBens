@@ -6,7 +6,9 @@ import type { Subscriber } from '@/features/newsletter/types/subscriber.types';
 import type { Message }    from '@/features/contact/types/message.types';
 import type { Activity }   from '@/features/dashboard/types/dashboard.types';
 import type { Settings }   from '@/features/auth/types/auth.types';
-import type { Event }      from '@/features/events/types/event.types';
+import type { Event }         from '@/features/events/types/event.types';
+import type { StockMovement } from '@/features/stock/types/stock.types';
+import type { Transaction }   from '@/features/finance/types/finance.types';
 
 export const SEED_PRODUCTS: Product[] = [
   { id: 'p1',  name: 'Hibiscus Gingembre',           category: 'Tisanes', price: 8.99,  formats: ['250ml','354ml','1L'], desc: "Alliance exquise de l'hibiscus et du gingembre piquant.", available: true, tag: 'Populaire', img: '🌺', color: '#c44536' },
@@ -79,6 +81,25 @@ export const SEED_EVENTS: Event[] = [
   { id: 'ev1', title: 'Marché Jean-Talon — Printemps', description: 'Venez nous retrouver au marché Jean-Talon pour déguster nos jus artisanaux et repartir avec vos favoris !', date: '2026-05-10', time: '09h00 - 15h00', location: 'Marché Jean-Talon', address: '7070 Henri Julien, Montréal', type: 'Marché', active: true },
   { id: 'ev2', title: 'Festival des Saveurs Africaines', description: 'Grande fête culinaire africaine à Montréal. Retrouvez-nous avec toute notre gamme de jus naturels et exotiques.', date: '2026-06-21', time: '11h00 - 20h00', location: 'Parc Lafontaine', address: '3933 Av. du Parc-La Fontaine, Montréal', type: 'Festival', active: true },
   { id: 'ev3', title: 'Dégustation — Épicerie Afro-Antillaise', description: 'Séance de dégustation gratuite de nos nouveaux jus. Rencontrez la fondatrice et découvrez nos secrets de fabrication.', date: '2026-04-12', time: '13h00 - 16h00', location: 'Épicerie Afro-Antillaise', address: '3456 Boul. Décarie, Montréal', type: 'Dégustation', active: true },
+];
+
+export const SEED_STOCK: StockMovement[] = [
+  { id: 'st1', productId: 'p1', productName: 'Hibiscus Gingembre',          type: 'entree', quantity: 48, unit: 'bouteilles', location: 'Entrepôt',          note: 'Production du 2025-03-01', date: '2025-03-01T10:00:00' },
+  { id: 'st2', productId: 'p2', productName: 'Hibiscus Fraises',            type: 'entree', quantity: 36, unit: 'bouteilles', location: 'Entrepôt',          note: 'Production du 2025-03-01', date: '2025-03-01T10:30:00' },
+  { id: 'st3', productId: 'p1', productName: 'Hibiscus Gingembre',          type: 'sortie', quantity: 18, unit: 'bouteilles', location: 'Marché Jean-Talon', note: 'Marché samedi 08/03',      date: '2025-03-08T09:00:00' },
+  { id: 'st4', productId: 'p2', productName: 'Hibiscus Fraises',            type: 'sortie', quantity: 12, unit: 'bouteilles', location: 'Marché Jean-Talon', note: 'Marché samedi 08/03',      date: '2025-03-08T09:00:00' },
+  { id: 'st5', productId: 'p5', productName: 'Gingembre Citron Sans Sucre', type: 'entree', quantity: 24, unit: 'bouteilles', location: 'Entrepôt',          note: 'Production du 2025-03-05', date: '2025-03-05T14:00:00' },
+  { id: 'st6', productId: 'p5', productName: 'Gingembre Citron Sans Sucre', type: 'sortie', quantity: 8,  unit: 'bouteilles', location: 'Épicerie Afro-Antillaise', note: 'Livraison épicerie', date: '2025-03-10T11:00:00' },
+];
+
+export const SEED_FINANCE: Transaction[] = [
+  { id: 'fi1', type: 'revenu',  amount: 342.50, category: 'Vente marché',   description: 'Marché Jean-Talon — samedi 08/03',     date: '2025-03-08', location: 'Marché Jean-Talon' },
+  { id: 'fi2', type: 'revenu',  amount: 156.00, category: 'Vente épicerie', description: 'Livraison Épicerie Afro-Antillaise',    date: '2025-03-10', location: 'Épicerie Afro-Antillaise' },
+  { id: 'fi3', type: 'depense', amount: 89.40,  category: 'Ingrédients',    description: 'Fleurs d\'hibiscus séchées (2 kg)',     date: '2025-03-02', location: 'Fournisseur Tropicana' },
+  { id: 'fi4', type: 'depense', amount: 45.00,  category: 'Emballage',      description: 'Bouteilles 250ml (lot de 100)',         date: '2025-03-03', location: 'Verreault & Cie' },
+  { id: 'fi5', type: 'depense', amount: 15.00,  category: 'Transport',      description: 'Déplacement Marché Jean-Talon',         date: '2025-03-08', location: '' },
+  { id: 'fi6', type: 'revenu',  amount: 278.00, category: 'Vente marché',   description: 'Marché Atwater — dimanche 09/03',       date: '2025-03-09', location: 'Marché Atwater' },
+  { id: 'fi7', type: 'depense', amount: 32.00,  category: 'Marketing',      description: 'Impression de flyers A5 (200 ex.)',     date: '2025-03-05', location: 'Copie Express' },
 ];
 
 export const SEED_MESSAGES: Message[] = [

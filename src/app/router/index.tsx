@@ -23,6 +23,8 @@ import AdminMessagesPage      from '@/features/contact/pages/AdminMessagesPage';
 import AdminSettingsPage      from '@/features/auth/pages/AdminSettingsPage';
 import AdminDataPage          from '@/features/dashboard/pages/AdminDataPage';
 import AdminEventsPage        from '@/features/events/pages/AdminEventsPage';
+import AdminStockPage         from '@/features/stock/pages/AdminStockPage';
+import AdminFinancePage       from '@/features/finance/pages/AdminFinancePage';
 
 import { ROUTES } from '@/shared/constants/routes';
 import { ProtectedRoute } from './ProtectedRoute';
@@ -61,6 +63,8 @@ export const router = createBrowserRouter([
       { path: 'messages',   element: <AdminMessagesPage /> },
       { path: 'settings',   element: <AdminSettingsPage /> },
       { path: 'events',     element: <AdminEventsPage /> },
+      { path: 'stock',      element: <AdminStockPage /> },
+      { path: 'finance',    element: <AdminFinancePage /> },
       { path: 'data',       element: <AdminDataPage /> },
     ],
   },

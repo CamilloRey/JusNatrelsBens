@@ -14,7 +14,9 @@ const MENU = [
   { route: ROUTES.admin.events,     label: 'Événements',      icon: 'map'      },
   { route: ROUTES.admin.reviews,    label: 'Avis clients',    icon: 'star'     },
   { route: ROUTES.admin.locations,  label: 'Points de vente', icon: 'map'      },
-  { route: ROUTES.admin.subscribers, label: 'Infolettres',    icon: 'send'     },
+  { route: ROUTES.admin.stock,      label: 'Stock',           icon: 'grid'     },
+  { route: ROUTES.admin.finance,    label: 'Finances',        icon: 'chart'    },
+  { route: ROUTES.admin.subscribers, label: 'Infolettres',   icon: 'send'     },
   { route: ROUTES.admin.settings,   label: 'Gestion Admin',   icon: 'settings' },
   { route: ROUTES.admin.data,       label: 'Données',         icon: 'download' },
 ];
