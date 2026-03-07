@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { loadData, saveData, uploadImage } from "./src/lib/supabase.js";
 
 /* ───────────────────────── ANIMATION CSS ───────────────────────── */
 const animCSS = `
@@ -162,15 +163,7 @@ const C = {
 };
 
 /* ───────────────────────── STORAGE HELPERS ───────────────────────── */
-const loadData = async (key, fallback) => {
-  try {
-    const r = await window.storage.get(key);
-    return r ? JSON.parse(r.value) : fallback;
-  } catch { return fallback; }
-};
-const saveData = async (key, val) => {
-  try { await window.storage.set(key, JSON.stringify(val)); } catch (e) { console.error(e); }
-};
+// loadData et saveData sont importés depuis src/lib/supabase.js
 
 /* ───────────────────────── ICONS ───────────────────────── */
 const Icon = ({ type, size = 20, color = "currentColor" }) => {
@@ -202,6 +195,24 @@ const Icon = ({ type, size = 20, color = "currentColor" }) => {
   };
   return <svg viewBox="0 0 24 24" style={s}>{paths[type]}</svg>;
 };
+
+/* ───────────────────────── PRODUCT IMAGE HELPER ───────────────────────── */
+/**
+ * Affiche une vraie photo si `src` est une URL, sinon l'emoji.
+ */
+function ProductImg({ src, size = 60, borderRadius = 10, style = {} }) {
+  const isUrl = src && (src.startsWith("http") || src.startsWith("/") || src.startsWith("data:"));
+  if (isUrl) {
+    return (
+      <img
+        src={src}
+        alt=""
+        style={{ width: size, height: size, objectFit: "cover", borderRadius, flexShrink: 0, ...style }}
+      />
+    );
+  }
+  return <span style={{ fontSize: size * 0.55, lineHeight: 1, ...style }}>{src || "🍹"}</span>;
+}
 
 /* ───────────────────────── MAIN APP ───────────────────────── */
 export default function App() {
@@ -576,7 +587,7 @@ function HomePage({ setPage, products, reviews, subscribers, updateSubscribers }
               <div onClick={() => setPage("product:" + p.id)} className="anim-card"
                 style={{ background: "#fff", borderRadius: 16, overflow: "hidden", border: `1px solid ${C.border}`, cursor: "pointer", transition: "transform 0.3s, box-shadow 0.3s" }}>
                 <div style={{ height: 160, background: `linear-gradient(135deg, ${p.color}22, ${p.color}44)`, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
-                  <span style={{ fontSize: 64, transition: "transform 0.4s" }}>{p.img}</span>
+                  <ProductImg src={p.img} size={100} borderRadius={0} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "cover", transition: "transform 0.4s" }} />
                 </div>
                 <div style={{ padding: "16px 18px" }}>
                   {p.tag && <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: C.red, background: `${C.red}15`, padding: "2px 8px", borderRadius: 4 }}>{p.tag}</span>}
@@ -681,8 +692,8 @@ function ProductsPage({ products, setPage }) {
         {filtered.map(p => (
           <div key={p.id} onClick={() => setPage("product:" + p.id)}
             style={{ background: "#fff", borderRadius: 16, overflow: "hidden", border: `1px solid ${C.border}`, cursor: "pointer", transition: "transform 0.2s, box-shadow 0.2s" }}>
-            <div style={{ height: 180, background: `linear-gradient(135deg, ${p.color}22, ${p.color}44)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ fontSize: 72 }}>{p.img}</span>
+            <div style={{ height: 180, background: `linear-gradient(135deg, ${p.color}22, ${p.color}44)`, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+              <ProductImg src={p.img} size={110} borderRadius={0} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "cover" }} />
             </div>
             <div style={{ padding: "18px 20px" }}>
               {p.tag && <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: C.red, background: `${C.red}15`, padding: "2px 8px", borderRadius: 4 }}>{p.tag}</span>}
@@ -745,7 +756,7 @@ function ProductDetailPage({ productId, products, reviews, setPage }) {
         {/* IMAGE */}
         <div style={{ borderRadius: 20, overflow: "hidden", background: `linear-gradient(135deg, ${p.color}15, ${p.color}35)`, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 360, position: "relative" }}>
           {p.tag && <span style={{ position: "absolute", top: 16, left: 16, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: "#fff", background: C.red, padding: "5px 14px", borderRadius: 20 }}>{p.tag}</span>}
-          <span style={{ fontSize: 120 }}>{p.img}</span>
+          <ProductImg src={p.img} size={200} borderRadius={0} style={{ maxWidth: "100%", maxHeight: 340, objectFit: "cover" }} />
         </div>
 
         {/* INFO */}
@@ -828,8 +839,8 @@ function ProductDetailPage({ productId, products, reviews, setPage }) {
             {otherProducts.map(op => (
               <div key={op.id} onClick={() => { setPage("product:" + op.id); window.scrollTo(0, 0); }}
                 style={{ background: "#fff", borderRadius: 14, overflow: "hidden", border: `1px solid ${C.border}`, cursor: "pointer" }}>
-                <div style={{ height: 120, background: `linear-gradient(135deg, ${op.color}22, ${op.color}44)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontSize: 48 }}>{op.img}</span>
+                <div style={{ height: 120, background: `linear-gradient(135deg, ${op.color}22, ${op.color}44)`, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                  <ProductImg src={op.img} size={72} borderRadius={0} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "cover" }} />
                 </div>
                 <div style={{ padding: "14px 16px" }}>
                   <h3 style={{ fontSize: 14, fontWeight: 700, margin: "0 0 4px", color: C.dark }}>{op.name}</h3>
@@ -1406,6 +1417,7 @@ function AdminDashboard({ products, reviews, blogs, locations, subscribers, mess
 function AdminProducts({ products, updateProducts }) {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ name: "", category: "Jus", price: "", formats: "250ml, 1L", desc: "", tag: "", img: "🍹", available: true });
+  const [uploading, setUploading] = useState(false);
 
   const startEdit = (p) => {
     setEditing(p.id);
@@ -1423,7 +1435,18 @@ function AdminProducts({ products, updateProducts }) {
   };
   const deleteProduct = (id) => updateProducts(products.filter(p => p.id !== id));
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const url = await uploadImage(file, "products");
+    if (url) setForm(f => ({ ...f, img: url }));
+    else alert("Erreur lors du téléversement. Vérifiez que le bucket 'product-images' est créé dans Supabase.");
+    setUploading(false);
+  };
+
   const emojis = ["🍹", "🍓", "🍋", "🍍", "🫐", "🥭", "🫚", "🌺", "🥕", "🍊"];
+  const imgIsUrl = form.img && (form.img.startsWith("http") || form.img.startsWith("/"));
 
   if (editing) return (
     <div style={{ background: "#fff", borderRadius: 14, padding: 28, border: `1px solid ${C.border}`, maxWidth: 600 }}>
@@ -1433,9 +1456,31 @@ function AdminProducts({ products, updateProducts }) {
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div>
-          <label style={labelSt}>Icône</label>
+          <label style={labelSt}>Photo ou icône</label>
+          {/* Aperçu de l'image actuelle */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+            <div style={{ width: 64, height: 64, borderRadius: 10, background: C.light, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", border: `1px solid ${C.border}` }}>
+              <ProductImg src={form.img} size={64} borderRadius={0} />
+            </div>
+            <div style={{ flex: 1 }}>
+              {/* Upload fichier → Supabase Storage */}
+              <label style={{ display: "inline-block", padding: "8px 14px", borderRadius: 8, border: `1px solid ${C.border}`, background: "#fff", fontSize: 13, cursor: uploading ? "wait" : "pointer", color: C.text }}>
+                {uploading ? "Téléversement…" : "📁 Choisir une photo"}
+                <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: "none" }} disabled={uploading} />
+              </label>
+              <p style={{ fontSize: 11, color: C.muted, margin: "4px 0 0" }}>JPG, PNG, WebP — max 5 MB</p>
+            </div>
+          </div>
+          {/* Ou coller une URL */}
+          <input
+            value={imgIsUrl ? form.img : ""}
+            onChange={e => setForm({ ...form, img: e.target.value })}
+            placeholder="Ou coller une URL d'image (https://…)"
+            style={{ ...inputSt, marginBottom: 8 }}
+          />
+          {/* Ou choisir un emoji */}
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {emojis.map(e => <button key={e} onClick={() => setForm({ ...form, img: e })} style={{ fontSize: 24, padding: "6px 10px", borderRadius: 8, border: form.img === e ? `2px solid ${C.red}` : `1px solid ${C.border}`, background: form.img === e ? `${C.red}12` : "#fff", cursor: "pointer" }}>{e}</button>)}
+            {emojis.map(e => <button key={e} onClick={() => setForm({ ...form, img: e })} style={{ fontSize: 22, padding: "5px 9px", borderRadius: 8, border: form.img === e ? `2px solid ${C.red}` : `1px solid ${C.border}`, background: form.img === e ? `${C.red}12` : "#fff", cursor: "pointer" }}>{e}</button>)}
           </div>
         </div>
         <div><label style={labelSt}>Nom du produit</label><input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={inputSt} /></div>
@@ -1481,7 +1526,7 @@ function AdminProducts({ products, updateProducts }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {products.map(p => (
           <div key={p.id} style={{ background: "#fff", borderRadius: 12, padding: "14px 18px", border: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: 14 }}>
-            <span style={{ fontSize: 28 }}>{p.img}</span>
+            <ProductImg src={p.img} size={44} borderRadius={8} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                 <span style={{ fontSize: 15, fontWeight: 600, color: C.dark }}>{p.name}</span>
