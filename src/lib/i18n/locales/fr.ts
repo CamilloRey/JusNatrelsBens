@@ -4,6 +4,7 @@ const fr = {
     about:     'Notre Histoire',
     products:  'Nos Produits',
     blog:      'Blogue',
+    events:    'Événements',
     locations: 'Où Acheter',
     contact:   'Contact',
   },
@@ -128,6 +129,16 @@ const fr = {
   blog: {
     title:    'Blogue',
     subtitle: 'Recettes, conseils santé et nouvelles de l\'univers Ben\'s.',
+  },
+  events: {
+    title:     'Événements',
+    subtitle:  'Retrouvez-nous dans les marchés, festivals et dégustations à Montréal.',
+    past:      'Passé',
+    pastTitle: 'Événements passés',
+    none:      'Aucun événement à venir pour l\'instant. Revenez bientôt !',
+    directions:'Itinéraire',
+    upcoming:  'Prochains événements',
+    seeAll:    'Voir tous les événements',
   },
   locations: {
     title:    'Où Acheter',

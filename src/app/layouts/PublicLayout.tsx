@@ -20,6 +20,7 @@ export default function PublicLayout() {
     { path: ROUTES.about,     label: t('nav.about')     },
     { path: ROUTES.products,  label: t('nav.products')  },
     { path: ROUTES.blog,      label: t('nav.blog')      },
+    { path: ROUTES.events,    label: t('nav.events')    },
     { path: ROUTES.locations, label: t('nav.locations') },
     { path: ROUTES.contact,   label: t('nav.contact')   },
   ];
@@ -38,8 +39,7 @@ export default function PublicLayout() {
       <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(250,246,240,0.92)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.border}`, padding: '0 24px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64 }}>
           <Link to={ROUTES.home} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-            <span style={{ fontSize: 28 }}>🍹</span>
-            <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 800, color: C.hibiscus }}>Les Jus Naturels Ben's</span>
+            <img src="/images-bens/logos/logo-principal.png" alt="Ben's" style={{ height: 44, width: 'auto', objectFit: 'contain' }} />
           </Link>
           <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
             {NAV.map(n => (
@@ -75,8 +75,7 @@ export default function PublicLayout() {
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: 40, justifyContent: 'space-between' }}>
           <div style={{ minWidth: 200 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-              <span style={{ fontSize: 28 }}>🍹</span>
-              <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 700, color: '#f0e6d3' }}>Les Jus Naturels Ben's</span>
+              <img src="/images-bens/logos/logo-noir-transparent.png" alt="Ben's" style={{ height: 48, width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             </div>
             <p style={{ fontSize: 13, lineHeight: 1.7, maxWidth: 280 }}>{t('footer.desc')}</p>
           </div>

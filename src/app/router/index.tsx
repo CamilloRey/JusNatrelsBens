@@ -8,6 +8,7 @@ import AboutPage         from '@/features/about/pages/AboutPage';
 import ProductsPage      from '@/features/products/pages/ProductsPage';
 import ProductDetailPage from '@/features/products/pages/ProductDetailPage';
 import BlogPage          from '@/features/blog/pages/BlogPage';
+import EventsPage        from '@/features/events/pages/EventsPage';
 import LocationsPage     from '@/features/locations/pages/LocationsPage';
 import ContactPage       from '@/features/contact/pages/ContactPage';
 import LoginPage         from '@/features/auth/pages/LoginPage';
@@ -21,6 +22,10 @@ import AdminSubscribersPage   from '@/features/newsletter/pages/AdminSubscribers
 import AdminMessagesPage      from '@/features/contact/pages/AdminMessagesPage';
 import AdminSettingsPage      from '@/features/auth/pages/AdminSettingsPage';
 import AdminDataPage          from '@/features/dashboard/pages/AdminDataPage';
+import AdminEventsPage        from '@/features/events/pages/AdminEventsPage';
+import AdminStockPage         from '@/features/stock/pages/AdminStockPage';
+import AdminFinancePage       from '@/features/finance/pages/AdminFinancePage';
+import AdminReportsPage       from '@/features/reports/pages/AdminReportsPage';
 
 import { ROUTES } from '@/shared/constants/routes';
 import { ProtectedRoute } from './ProtectedRoute';
@@ -35,6 +40,7 @@ export const router = createBrowserRouter([
       { path: ROUTES.products,  element: <ProductsPage /> },
       { path: '/products/:id',  element: <ProductDetailPage /> },
       { path: ROUTES.blog,      element: <BlogPage /> },
+      { path: ROUTES.events,    element: <EventsPage /> },
       { path: ROUTES.locations, element: <LocationsPage /> },
       { path: ROUTES.contact,   element: <ContactPage /> },
     ],
@@ -57,6 +63,10 @@ export const router = createBrowserRouter([
       { path: 'subscribers',element: <AdminSubscribersPage /> },
       { path: 'messages',   element: <AdminMessagesPage /> },
       { path: 'settings',   element: <AdminSettingsPage /> },
+      { path: 'events',     element: <AdminEventsPage /> },
+      { path: 'stock',      element: <AdminStockPage /> },
+      { path: 'finance',    element: <AdminFinancePage /> },
+      { path: 'reports',    element: <AdminReportsPage /> },
       { path: 'data',       element: <AdminDataPage /> },
     ],
   },

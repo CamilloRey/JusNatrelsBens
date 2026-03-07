@@ -2,7 +2,6 @@ import { useState }  from 'react';
 import { useTranslation } from 'react-i18next';
 import { useData }   from '@/app/providers/DataContext';
 import { C }         from '@/shared/constants/colors';
-import { CSS }       from '@/shared/constants/styles';
 import { Icon }      from '@/shared/ui/Icon';
 
 export default function LocationsPage() {
@@ -12,9 +11,17 @@ export default function LocationsPage() {
   const [selected, setSelected] = useState<string | null>(null);
 
   return (
+    <div>
+      {/* Banner */}
+      <div style={{ height: 240, backgroundImage: "url('/images-bens/hero-banners/banniere-points-vente.png')", backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6))' }} />
+        <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 24px' }}>
+          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(28px, 5vw, 42px)', fontWeight: 900, color: '#fff', margin: '0 0 10px', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>{t('locations.title')}</h1>
+          <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 16 }}>{t('locations.subtitle')}</p>
+        </div>
+      </div>
+
     <div style={{ padding: '48px 24px', maxWidth: 1000, margin: '0 auto' }}>
-      <h1 style={{ ...CSS.heading, fontSize: 36, fontWeight: 900, color: C.dark, margin: '0 0 8px' }}>{t('locations.title')}</h1>
-      <p style={{ color: C.muted, fontSize: 15, marginBottom: 32 }}>{t('locations.subtitle')}</p>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
         <div style={{ borderRadius: 16, overflow: 'hidden', border: `1px solid ${C.border}`, minHeight: 400 }}>
@@ -53,6 +60,7 @@ export default function LocationsPage() {
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 }

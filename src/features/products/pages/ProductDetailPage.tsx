@@ -8,14 +8,14 @@ import { Icon }                   from '@/shared/ui/Icon';
 import { ProductCard }            from '../components/ProductCard';
 import { ROUTES }                 from '@/shared/constants/routes';
 
-const INGREDIENTS: Record<string, { emoji: string; benefits: string[] }> = {
-  Hibiscus: { emoji: '🌺', benefits: ['Riche en antioxydants', 'Aide à réguler la pression artérielle', 'Renforce le système immunitaire', 'Source de vitamine C'] },
-  Gingembre:{ emoji: '🫚', benefits: ['Propriétés anti-inflammatoires', 'Aide à la digestion', "Renforce l'immunité", 'Favorise la perte de poids'] },
-  Citron:   { emoji: '🍋', benefits: ['Riche en vitamine C', 'Détoxifiant naturel', 'Aide à la digestion', 'Effet alcalinisant'] },
-  Ananas:   { emoji: '🍍', benefits: ['Riche en bromélaïne', 'Anti-inflammatoire naturel', 'Source de manganèse', 'Aide à la digestion'] },
-  Fraises:  { emoji: '🍓', benefits: ['Riches en antioxydants', 'Source de vitamine C', 'Faible en calories', 'Bonnes pour le cœur'] },
-  Bleuets:  { emoji: '🫐', benefits: ['Super-aliment antioxydant', 'Améliore la mémoire', 'Riche en fibres', 'Protège la vision'] },
-  Passion:  { emoji: '🥭', benefits: ['Riche en vitamines A et C', 'Source de fibres', 'Propriétés relaxantes', 'Bon pour la peau'] },
+const INGREDIENTS: Record<string, { emoji: string; photo: string; benefits: string[] }> = {
+  Hibiscus: { emoji: '🌺', photo: 'https://source.unsplash.com/400x300/?hibiscus,flower', benefits: ['Riche en antioxydants', 'Aide à réguler la pression artérielle', 'Renforce le système immunitaire', 'Source de vitamine C'] },
+  Gingembre:{ emoji: '🫚', photo: 'https://source.unsplash.com/400x300/?ginger,root,spice', benefits: ['Propriétés anti-inflammatoires', 'Aide à la digestion', "Renforce l'immunité", 'Favorise la perte de poids'] },
+  Citron:   { emoji: '🍋', photo: 'https://source.unsplash.com/400x300/?lemon,citrus,fruit', benefits: ['Riche en vitamine C', 'Détoxifiant naturel', 'Aide à la digestion', 'Effet alcalinisant'] },
+  Ananas:   { emoji: '🍍', photo: 'https://source.unsplash.com/400x300/?pineapple,tropical,fruit', benefits: ['Riche en bromélaïne', 'Anti-inflammatoire naturel', 'Source de manganèse', 'Aide à la digestion'] },
+  Fraises:  { emoji: '🍓', photo: 'https://source.unsplash.com/400x300/?strawberry,fresh,fruit', benefits: ['Riches en antioxydants', 'Source de vitamine C', 'Faible en calories', 'Bonnes pour le cœur'] },
+  Bleuets:  { emoji: '🫐', photo: 'https://source.unsplash.com/400x300/?blueberry,berries,fresh', benefits: ['Super-aliment antioxydant', 'Améliore la mémoire', 'Riche en fibres', 'Protège la vision'] },
+  Passion:  { emoji: '🥭', photo: 'https://source.unsplash.com/400x300/?passion,fruit,tropical', benefits: ['Riche en vitamines A et C', 'Source de fibres', 'Propriétés relaxantes', 'Bon pour la peau'] },
 };
 
 export default function ProductDetailPage() {
@@ -37,7 +37,7 @@ export default function ProductDetailPage() {
     .map(([name, data]) => ({ name, ...data }));
   const prodIngredients = foundIngredients.length > 0
     ? foundIngredients
-    : [{ name: 'Fruits frais', emoji: '🍹', benefits: ['100% naturel', 'Sans conservateurs', 'Sans sucre ajouté'] }];
+    : [{ name: 'Fruits frais', emoji: '🍹', photo: 'https://source.unsplash.com/400x300/?tropical,juice,fruit', benefits: ['100% naturel', 'Sans conservateurs', 'Sans sucre ajouté'] }];
 
   const approvedReviews = reviews.filter(r => r.approved);
   const otherProducts = products.filter(pr => pr.id !== p.id && pr.available).slice(0, 3);
@@ -78,16 +78,23 @@ export default function ProductDetailPage() {
         <h2 style={{ ...CSS.heading, fontSize: 24, fontWeight: 800, color: C.dark, marginBottom: 20 }}>{t('productDetail.ingredients')}</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
           {prodIngredients.map(ing => (
-            <div key={ing.name} style={{ background: '#fff', borderRadius: 14, padding: 20, border: `1px solid ${C.border}` }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-                <span style={{ fontSize: 28 }}>{ing.emoji}</span>
-                <h3 style={{ ...CSS.heading, fontSize: 16, fontWeight: 700, color: C.dark, margin: 0 }}>{ing.name}</h3>
+            <div key={ing.name} style={{ background: '#fff', borderRadius: 14, overflow: 'hidden', border: `1px solid ${C.border}` }}>
+              <div style={{ height: 140, overflow: 'hidden', position: 'relative' }}>
+                <img src={ing.photo} alt={ing.name}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
+                  onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 60%)' }} />
+                <span style={{ position: 'absolute', bottom: 10, left: 12, fontSize: 28 }}>{ing.emoji}</span>
               </div>
-              {ing.benefits.map((b, i) => (
-                <p key={i} style={{ fontSize: 13, color: C.text, margin: '0 0 6px', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                  <span style={{ color: C.green, flexShrink: 0 }}>✓</span> {b}
-                </p>
-              ))}
+              <div style={{ padding: '14px 18px' }}>
+                <h3 style={{ ...CSS.heading, fontSize: 16, fontWeight: 700, color: C.dark, margin: '0 0 12px' }}>{ing.name}</h3>
+                {ing.benefits.map((b, i) => (
+                  <p key={i} style={{ fontSize: 13, color: C.text, margin: '0 0 6px', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                    <span style={{ color: C.green, flexShrink: 0 }}>✓</span> {b}
+                  </p>
+                ))}
+              </div>
             </div>
           ))}
         </div>

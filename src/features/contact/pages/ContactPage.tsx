@@ -22,9 +22,16 @@ export default function ContactPage() {
   };
 
   return (
+    <div>
+      {/* Bannière */}
+      <div style={{ height: 220, backgroundImage: "url('/images-bens/photos/photo-contact.png')", backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.55))' }} />
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', padding: '0 24px' }}>
+          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(28px,5vw,40px)', fontWeight: 900, color: '#fff', margin: '0 0 8px' }}>{t('contact.title')}</h1>
+          <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 16, margin: 0 }}>{t('contact.subtitle')}</p>
+        </div>
+      </div>
     <div style={{ padding: '48px 24px', maxWidth: 600, margin: '0 auto' }}>
-      <h1 style={{ ...CSS.heading, fontSize: 36, fontWeight: 900, color: C.dark, margin: '0 0 8px' }}>{t('contact.title')}</h1>
-      <p style={{ color: C.muted, fontSize: 15, marginBottom: 32 }}>{t('contact.subtitle')}</p>
 
       {sent ? (
         <div style={{ background: `${C.green}12`, border: `1px solid ${C.green}44`, borderRadius: 16, padding: 32, textAlign: 'center' }}>
@@ -68,6 +75,7 @@ export default function ContactPage() {
           <p style={{ fontSize: 13, color: '#2a6a4f', margin: 0 }}>{t('contact.cards.whatsappSub')}</p>
         </a>
       </div>
+    </div>
     </div>
   );
 }
