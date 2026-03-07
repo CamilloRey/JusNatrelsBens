@@ -29,8 +29,8 @@ export default function AboutPage() {
         <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 40, alignItems: 'start' }}>
           <Reveal anim="slideLeft">
             <div>
-              <div style={{ width: 250, height: 300, borderRadius: 20, background: `linear-gradient(135deg, ${C.gold}22, ${C.red}22)`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-                <span style={{ fontSize: 100 }}>👩🏾‍🍳</span>
+              <div style={{ width: 250, height: 300, borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
+                <img src="/images-bens/photos/univers-jus-bens.png" alt="Fondatrice Ben's" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 800, color: C.dark, margin: '0 0 4px' }}>{t('about.founder.title')}</h3>
               <p style={{ fontSize: 14, color: C.red, fontWeight: 600, margin: '0 0 8px' }}>{t('about.founder.subtitle')}</p>

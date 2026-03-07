@@ -57,11 +57,8 @@ export default function HomePage() {
   return (
     <div>
       {/* HERO */}
-      <section style={{ background: `linear-gradient(135deg, ${C.hibiscus} 0%, ${C.red} 40%, ${C.gold} 100%)`, backgroundSize: '200% 200%', animation: 'gradient 8s ease infinite', padding: '90px 24px 80px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(45deg, transparent, transparent 30px, rgba(255,255,255,0.015) 30px, rgba(255,255,255,0.015) 60px)' }} />
-        {['🍹','🌺','🍋','🍍','🫚','🍓'].map((e, i) => (
-          <span key={i} style={{ position: 'absolute', fontSize: 28, opacity: 0.12, animation: `float ${3 + i * 0.5}s ease-in-out infinite`, animationDelay: `${i * 0.4}s`, top: `${10 + (i * 14) % 70}%`, left: `${5 + (i * 17) % 85}%` }}>{e}</span>
-        ))}
+      <section style={{ backgroundImage: `url('/images-bens/hero-banners/banniere-accueil-hero.png')`, backgroundSize: 'cover', backgroundPosition: 'center', padding: '90px 24px 80px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${C.hibiscus}cc 0%, ${C.red}aa 40%, ${C.gold}88 100%)` }} />
         <div style={{ position: 'relative', maxWidth: 700, margin: '0 auto' }}>
           <p style={{ fontSize: 14, letterSpacing: 4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: 16, animation: 'fadeIn 0.8s ease' }}>
             {t('home.hero.eyebrow')}
