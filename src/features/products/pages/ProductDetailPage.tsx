@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation }          from 'react-i18next';
 import { useData }                from '@/app/providers/DataContext';
 import { C }                      from '@/shared/constants/colors';
 import { CSS }                    from '@/shared/constants/styles';
@@ -21,12 +22,13 @@ export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { products, reviews } = useData();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const p = products.find(pr => pr.id === id);
   if (!p) return (
     <div style={{ padding: 48, textAlign: 'center' }}>
-      <p>Produit introuvable.</p>
-      <button onClick={() => navigate(ROUTES.products)} style={{ color: C.red, background: 'none', border: 'none', cursor: 'pointer', fontSize: 15 }}>← Retour</button>
+      <p>{t('productDetail.notFound')}</p>
+      <button onClick={() => navigate(ROUTES.products)} style={{ color: C.red, background: 'none', border: 'none', cursor: 'pointer', fontSize: 15 }}>{t('productDetail.backLink')}</button>
     </div>
   );
 
@@ -44,7 +46,7 @@ export default function ProductDetailPage() {
     <div style={{ padding: '32px 24px 64px', maxWidth: 1000, margin: '0 auto' }}>
       <button onClick={() => navigate(ROUTES.products)}
         style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', color: C.red, cursor: 'pointer', fontSize: 14, fontWeight: 600, padding: 0, marginBottom: 24 }}>
-        <Icon type="back" size={18} color={C.red} /> Retour aux produits
+        <Icon type="back" size={18} color={C.red} /> {t('productDetail.back')}
       </button>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, marginBottom: 48 }}>
@@ -57,11 +59,15 @@ export default function ProductDetailPage() {
           <p style={{ fontSize: 13, color: C.muted, marginBottom: 6 }}>{p.category}</p>
           <h1 style={{ ...CSS.heading, fontSize: 32, fontWeight: 900, color: C.dark, margin: '0 0 16px', lineHeight: 1.2 }}>{p.name}</h1>
           <p style={{ fontSize: 36, fontWeight: 900, color: C.hibiscus, margin: '0 0 8px' }}>{p.price.toFixed(2)}$</p>
-          <p style={{ fontSize: 13, color: C.muted, margin: '0 0 20px' }}>Formats : {p.formats.join(' · ')}</p>
+          <p style={{ fontSize: 13, color: C.muted, margin: '0 0 20px' }}>{t('productDetail.availableFormats')} {p.formats.join(' · ')}</p>
           <p style={{ fontSize: 16, color: C.text, lineHeight: 1.8, margin: '0 0 24px' }}>{p.desc}</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            {[{ icon: '🌿', text: 'Sans conservateurs' }, { icon: '🚫', text: 'Sans sucre ajouté' }, { icon: '🍁', text: 'Fait à Montréal' }].map((b, i) => (
-              <span key={i} style={{ padding: '6px 14px', background: C.light, borderRadius: 20, fontSize: 13, color: C.dark, display: 'flex', alignItems: 'center', gap: 6 }}>{b.icon} {b.text}</span>
+            {([
+              t('productDetail.badges.noPreservatives'),
+              t('productDetail.badges.noSugar'),
+              t('productDetail.badges.quebec'),
+            ] as string[]).map((b, i) => (
+              <span key={i} style={{ padding: '6px 14px', background: C.light, borderRadius: 20, fontSize: 13, color: C.dark }}>{b}</span>
             ))}
           </div>
         </div>
@@ -69,7 +75,7 @@ export default function ProductDetailPage() {
 
       {/* Ingrédients */}
       <section style={{ marginBottom: 48 }}>
-        <h2 style={{ ...CSS.heading, fontSize: 24, fontWeight: 800, color: C.dark, marginBottom: 20 }}>Ingrédients & bienfaits</h2>
+        <h2 style={{ ...CSS.heading, fontSize: 24, fontWeight: 800, color: C.dark, marginBottom: 20 }}>{t('productDetail.ingredients')}</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
           {prodIngredients.map(ing => (
             <div key={ing.name} style={{ background: '#fff', borderRadius: 14, padding: 20, border: `1px solid ${C.border}` }}>
@@ -90,7 +96,7 @@ export default function ProductDetailPage() {
       {/* Avis */}
       {approvedReviews.length > 0 && (
         <section style={{ marginBottom: 48 }}>
-          <h2 style={{ ...CSS.heading, fontSize: 24, fontWeight: 800, color: C.dark, marginBottom: 20 }}>Avis clients</h2>
+          <h2 style={{ ...CSS.heading, fontSize: 24, fontWeight: 800, color: C.dark, marginBottom: 20 }}>{t('home.reviews.title')}</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
             {approvedReviews.slice(0, 3).map(r => (
               <div key={r.id} style={{ background: '#fff', borderRadius: 14, padding: 20, border: `1px solid ${C.border}` }}>
@@ -106,7 +112,7 @@ export default function ProductDetailPage() {
       {/* Autres produits */}
       {otherProducts.length > 0 && (
         <section>
-          <h2 style={{ ...CSS.heading, fontSize: 24, fontWeight: 800, color: C.dark, marginBottom: 20 }}>Vous aimerez aussi</h2>
+          <h2 style={{ ...CSS.heading, fontSize: 24, fontWeight: 800, color: C.dark, marginBottom: 20 }}>{t('productDetail.youMightLike')}</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
             {otherProducts.map(op => <ProductCard key={op.id} product={op} size="sm" />)}
           </div>

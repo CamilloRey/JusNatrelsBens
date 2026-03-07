@@ -1,32 +1,35 @@
 import { useState }         from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation }   from 'react-i18next';
 import { C }               from '@/shared/constants/colors';
 import { Icon }            from '@/shared/ui/Icon';
 import { ChatBot }         from '@/shared/components/ChatBot';
+import { LanguageSwitcher } from '@/shared/components/LanguageSwitcher';
 import { ROUTES }          from '@/shared/constants/routes';
 
-const NAV = [
-  { path: ROUTES.home,      label: 'Accueil'       },
-  { path: ROUTES.about,     label: 'Notre Histoire' },
-  { path: ROUTES.products,  label: 'Nos Produits'  },
-  { path: ROUTES.blog,      label: 'Blogue'        },
-  { path: ROUTES.locations, label: 'Où Acheter'    },
-  { path: ROUTES.contact,   label: 'Contact'       },
-];
-
 export default function PublicLayout() {
+  const { t }  = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [secretClicks, setSecretClicks] = useState(0);
   const [secretTimer, setSecretTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
 
+  const NAV = [
+    { path: ROUTES.home,      label: t('nav.home')      },
+    { path: ROUTES.about,     label: t('nav.about')     },
+    { path: ROUTES.products,  label: t('nav.products')  },
+    { path: ROUTES.blog,      label: t('nav.blog')      },
+    { path: ROUTES.locations, label: t('nav.locations') },
+    { path: ROUTES.contact,   label: t('nav.contact')   },
+  ];
+
   const handleSecretClick = () => {
     const n = secretClicks + 1;
     setSecretClicks(n);
     if (secretTimer) clearTimeout(secretTimer);
     if (n >= 5) { setSecretClicks(0); navigate(ROUTES.login); }
-    else { const t = setTimeout(() => setSecretClicks(0), 2000); setSecretTimer(t); }
+    else { const t2 = setTimeout(() => setSecretClicks(0), 2000); setSecretTimer(t2); }
   };
 
   return (
@@ -45,6 +48,7 @@ export default function PublicLayout() {
                 {n.label}
               </Link>
             ))}
+            <LanguageSwitcher />
             <button onClick={() => setMobileOpen(!mobileOpen)}
               style={{ display: window.innerWidth >= 768 ? 'none' : 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', padding: 8 }}>
               <Icon type={mobileOpen ? 'x' : 'menu'} color={C.dark} />
@@ -74,23 +78,23 @@ export default function PublicLayout() {
               <span style={{ fontSize: 28 }}>🍹</span>
               <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 700, color: '#f0e6d3' }}>Les Jus Naturels Ben's</span>
             </div>
-            <p style={{ fontSize: 13, lineHeight: 1.7, maxWidth: 280 }}>Des jus naturels et exotiques faits maison pour la santé, la saveur et l'authenticité.</p>
+            <p style={{ fontSize: 13, lineHeight: 1.7, maxWidth: 280 }}>{t('footer.desc')}</p>
           </div>
           <div>
-            <p style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: 2, color: '#6b5e52', marginBottom: 12 }}>Navigation</p>
+            <p style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: 2, color: '#6b5e52', marginBottom: 12 }}>{t('footer.nav')}</p>
             {NAV.map(n => (
               <Link key={n.path} to={n.path}
                 style={{ display: 'block', color: '#a89e91', padding: '4px 0', fontSize: 14, textDecoration: 'none' }}>{n.label}</Link>
             ))}
           </div>
           <div>
-            <p style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: 2, color: '#6b5e52', marginBottom: 12 }}>Contact</p>
+            <p style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: 2, color: '#6b5e52', marginBottom: 12 }}>{t('footer.contact')}</p>
             <p style={{ fontSize: 14 }}>info@lesjusnaturelsbens.com</p>
           </div>
         </div>
         <div style={{ maxWidth: 1100, margin: '32px auto 0', paddingTop: 20, borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
           <p onClick={handleSecretClick} style={{ fontSize: 12, cursor: 'default', userSelect: 'none', margin: 0 }}>
-            © 2025 Les Jus Naturels Ben's. Tous droits réservés.
+            {t('footer.copyright')}
           </p>
           {secretClicks > 0 && secretClicks < 5 && (
             <div style={{ display: 'flex', gap: 3 }}>

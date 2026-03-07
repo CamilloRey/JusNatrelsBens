@@ -1,23 +1,25 @@
 import { useState }  from 'react';
+import { useTranslation } from 'react-i18next';
 import { useData }   from '@/app/providers/DataContext';
 import { C }         from '@/shared/constants/colors';
 import { CSS }       from '@/shared/constants/styles';
 import { Icon }      from '@/shared/ui/Icon';
 
 export default function LocationsPage() {
+  const { t } = useTranslation();
   const { locations } = useData();
   const active = locations.filter(l => l.active);
   const [selected, setSelected] = useState<string | null>(null);
 
   return (
     <div style={{ padding: '48px 24px', maxWidth: 1000, margin: '0 auto' }}>
-      <h1 style={{ ...CSS.heading, fontSize: 36, fontWeight: 900, color: C.dark, margin: '0 0 8px' }}>Où Acheter</h1>
-      <p style={{ color: C.muted, fontSize: 15, marginBottom: 32 }}>Trouvez nos jus près de chez vous à Montréal et ses environs.</p>
+      <h1 style={{ ...CSS.heading, fontSize: 36, fontWeight: 900, color: C.dark, margin: '0 0 8px' }}>{t('locations.title')}</h1>
+      <p style={{ color: C.muted, fontSize: 15, marginBottom: 32 }}>{t('locations.subtitle')}</p>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
         <div style={{ borderRadius: 16, overflow: 'hidden', border: `1px solid ${C.border}`, minHeight: 400 }}>
           <iframe
-            title="Carte des points de vente"
+            title={t('locations.mapTitle')}
             src="https://www.google.com/maps/embed/v1/search?q=Marché+Jean-Talon+Montréal&center=45.5017,-73.5673&zoom=12&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
             style={{ width: '100%', height: '100%', minHeight: 400, border: 'none' }}
             loading="lazy" allowFullScreen
@@ -43,7 +45,7 @@ export default function LocationsPage() {
                   <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.name + ' ' + l.address)}`}
                     target="_blank" rel="noopener noreferrer"
                     style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 8, background: C.green, color: '#fff', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
-                    <Icon type="map" size={14} color="#fff" /> Itinéraire
+                    <Icon type="map" size={14} color="#fff" /> {t('locations.directions')}
                   </a>
                 </div>
               )}

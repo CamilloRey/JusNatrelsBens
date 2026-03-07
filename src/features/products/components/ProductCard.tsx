@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { C }           from '@/shared/constants/colors';
 import { CSS }         from '@/shared/constants/styles';
 import { ProductImg }  from '@/shared/ui/ProductImg';
@@ -12,6 +13,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product: p, size = 'md' }: ProductCardProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const height = size === 'sm' ? 160 : 180;
 
   return (
@@ -35,7 +37,7 @@ export function ProductCard({ product: p, size = 'md' }: ProductCardProps) {
         </p>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: size === 'sm' ? 18 : 20, fontWeight: 700, color: C.hibiscus }}>{p.price.toFixed(2)}$</span>
-          <span style={{ fontSize: 12, color: C.red, fontWeight: 600 }}>Voir détails →</span>
+          <span style={{ fontSize: 12, color: C.red, fontWeight: 600 }}>{t('products.viewDetails')}</span>
         </div>
       </div>
     </div>

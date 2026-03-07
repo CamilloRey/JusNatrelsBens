@@ -4,6 +4,7 @@ import { RouterProvider } from 'react-router-dom';
 import { AppProviders }   from '@/app/providers/AppProviders';
 import { router }         from '@/app/router';
 import '@/styles/globals.css';
+import '@/lib/i18n'; // initialise i18next avant le rendu
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

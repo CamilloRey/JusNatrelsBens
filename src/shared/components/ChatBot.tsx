@@ -1,52 +1,35 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { C }    from '@/shared/constants/colors';
 import { Icon } from '@/shared/ui/Icon';
 
-const CHAT_RESPONSES = [
-  { keywords: ['bonjour', 'salut', 'hello', 'hi', 'allô', 'allo'], response: "Bonjour ! 👋 Bienvenue chez Les Jus Naturels Ben's ! Comment puis-je vous aider ?" },
-  { keywords: ['prix', 'coût', 'combien', 'tarif', 'cher'], response: 'Nos jus sont entre 7,99$ et 10,99$ selon le format. Nous offrons des bouteilles de 250ml, 354ml et 1L. Un excellent rapport qualité-prix pour du jus artisanal 100% naturel ! 🍹' },
-  { keywords: ['acheter', 'où', 'trouver', 'magasin', 'point de vente', 'vente'], response: "Vous pouvez trouver nos jus au Marché Jean-Talon, au Marché Atwater et dans plusieurs épiceries à Montréal. Consultez notre page 'Où Acheter' pour la liste complète ! 📍" },
-  { keywords: ['livraison', 'livrer', 'expédier', 'envoyer', 'commander'], response: 'Pour le moment, nos jus sont disponibles uniquement dans nos points de vente physiques à Montréal. Nous travaillons sur la livraison à domicile ! 🚚' },
-  { keywords: ['sucre', 'sans sucre', 'diabète', 'santé', 'naturel', 'bio'], response: "Plusieurs de nos jus sont disponibles SANS sucre ajouté ! Ils sont 100% naturels, sans conservateurs et sans additifs. Parfaits pour une alimentation saine. 🌿" },
-  { keywords: ['hibiscus', 'bissap', 'fleur'], response: "Notre jus d'hibiscus est une recette traditionnelle africaine ! Riche en antioxydants et en vitamine C, il aide à réguler la pression artérielle. Disponible nature, avec gingembre ou avec fraises. 🌺" },
-  { keywords: ['gingembre', 'ginger'], response: "Le gingembre est un super-aliment ! Notre jus de gingembre aide à la digestion, renforce l'immunité et possède des propriétés anti-inflammatoires. Disponible avec citron (sucré ou sans sucre). 🫚" },
-  { keywords: ['ananas', 'tropical'], response: "Notre jus d'ananas est une explosion tropicale ! Riche en bromélaïne, il aide à la digestion. Disponible nature, sucré ou en mélange passion. 🍍" },
-  { keywords: ['contact', 'joindre', 'email', 'courriel', 'téléphone'], response: 'Vous pouvez nous contacter par courriel à info@lesjusnaturelsbens.com ou via WhatsApp. Nous répondons rapidement ! 📧' },
-  { keywords: ['histoire', 'fondatrice', 'qui', 'entreprise'], response: "Les Jus Naturels Ben's, c'est l'histoire d'une femme qui a apporté les recettes de sa famille du Cameroun au Québec. Visitez notre page 'Notre Histoire' pour en savoir plus ! ❤️" },
-  { keywords: ['merci', 'super', 'génial', 'excellent', 'parfait'], response: "Merci beaucoup ! N'hésitez pas si vous avez d'autres questions. Bonne dégustation ! 🙏🍹" },
-];
-
 interface ChatMsg { from: 'bot' | 'user'; text: string; }
-
-function getResponse(text: string): string {
-  const lower = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  for (const r of CHAT_RESPONSES) {
-    if (r.keywords.some(k => lower.includes(k))) return r.response;
-  }
-  return "Merci pour votre message ! Pour une réponse personnalisée, contactez-nous à info@lesjusnaturelsbens.com ou via WhatsApp. Nous vous répondrons rapidement ! 📧";
-}
+interface ChatResponse { keywords: readonly string[]; response: string; }
 
 export function ChatBot() {
+  const { t } = useTranslation();
   const [open,   setOpen]   = useState(false);
-  const [msgs,   setMsgs]   = useState<ChatMsg[]>([{ from: 'bot', text: "Bonjour ! 👋 Je suis l'assistant Ben's. Comment puis-je vous aider ?" }]);
+  const [msgs,   setMsgs]   = useState<ChatMsg[]>([]);
   const [input,  setInput]  = useState('');
   const [typing, setTyping] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    setMsgs([{ from: 'bot', text: t('chatbot.responses.0.response') }]);
+  }, [t]);
+
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [msgs]);
 
-  const sendMsg = (text: string) => {
-    if (!text.trim()) return;
-    setMsgs(prev => [...prev, { from: 'user', text: text.trim() }]);
-    setInput('');
-    setTyping(true);
-    setTimeout(() => {
-      setMsgs(prev => [...prev, { from: 'bot', text: getResponse(text) }]);
-      setTyping(false);
-    }, 800 + Math.random() * 700);
+  const getResponse = (text: string): string => {
+    const lower = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const responses = t('chatbot.responses', { returnObjects: true }) as ChatResponse[];
+    for (const r of responses) {
+      if (r.keywords.some(k => lower.includes(k))) return r.response;
+    }
+    return t('chatbot.fallback');
   };
 
-  const quickQs = ["Où acheter ?", "C'est quoi le prix ?", "C'est sans sucre ?", "Votre histoire"];
+  const quickQs = [t('chatbot.quick1'), t('chatbot.quick2'), t('chatbot.quick3'), t('chatbot.quick4')];
 
   return (
     <>
@@ -62,7 +45,7 @@ export function ChatBot() {
       {msgs.length <= 1 && !open && (
         <div style={{ position: 'fixed', bottom: 154, right: 24, zIndex: 999, background: '#fff', borderRadius: 12, padding: '10px 16px', boxShadow: '0 4px 16px rgba(0,0,0,0.12)', maxWidth: 200, fontSize: 13, color: C.dark, animation: 'bounceIn 0.5s ease', border: `1px solid ${C.border}` }}>
           <div style={{ position: 'absolute', bottom: -6, right: 18, width: 12, height: 12, background: '#fff', transform: 'rotate(45deg)', borderRight: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}` }} />
-          🍹 <strong>Une question ?</strong><br />Clavardez avec nous !
+          🍹 <strong>{t('chatbot.tooltip')}</strong><br />{t('chatbot.tooltipSub')}
         </div>
       )}
 
@@ -71,8 +54,8 @@ export function ChatBot() {
           <div style={{ background: `linear-gradient(135deg, ${C.hibiscus}, ${C.red})`, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>🍹</div>
             <div>
-              <p style={{ fontSize: 15, fontWeight: 700, color: '#fff', margin: 0 }}>Les Jus Naturels Ben's</p>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', margin: 0 }}>En ligne · Répond instantanément</p>
+              <p style={{ fontSize: 15, fontWeight: 700, color: '#fff', margin: 0 }}>{t('chatbot.title')}</p>
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', margin: 0 }}>{t('chatbot.subtitle')}</p>
             </div>
           </div>
 
@@ -105,7 +88,7 @@ export function ChatBot() {
 
           <div style={{ padding: '10px 12px', borderTop: `1px solid ${C.border}`, display: 'flex', gap: 8, background: '#fff' }}>
             <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendMsg(input)}
-              placeholder="Tapez votre message..."
+              placeholder={t('chatbot.placeholder')}
               style={{ flex: 1, padding: '10px 14px', borderRadius: 24, border: `1px solid ${C.border}`, fontSize: 14, outline: 'none', background: C.cream }} />
             <button onClick={() => sendMsg(input)} disabled={!input.trim()}
               style={{ width: 40, height: 40, borderRadius: '50%', border: 'none', background: input.trim() ? C.hibiscus : '#e5e7eb', cursor: input.trim() ? 'pointer' : 'default', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}>

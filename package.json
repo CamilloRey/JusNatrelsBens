@@ -14,7 +14,10 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
     "@supabase/supabase-js": "^2.47.0",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "i18next": "^23.16.2",
+    "react-i18next": "^15.1.0",
+    "i18next-browser-languagedetector": "^8.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",
