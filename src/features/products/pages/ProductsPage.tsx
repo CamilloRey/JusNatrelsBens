@@ -1,37 +1,64 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useData }  from '@/app/providers/DataContext';
-import { C }        from '@/shared/constants/colors';
-import { CSS }      from '@/shared/constants/styles';
+import { useData } from '@/app/providers/DataContext';
+import { SEO } from '@/shared/components/SEO';
 import { ProductCard } from '../components/ProductCard';
 
 export default function ProductsPage() {
   const { t } = useTranslation();
   const { products } = useData();
+
   const filterAll = t('products.filterAll');
   const [filter, setFilter] = useState(filterAll);
-  const available = products.filter(p => p.available);
-  const cats = [filterAll, ...Array.from(new Set(available.map(p => p.category)))];
-  const filtered = filter === filterAll ? available : available.filter(p => p.category === filter);
+
+  const available = useMemo(() => products.filter((p) => p.available), [products]);
+  const categories = useMemo(
+    () => [filterAll, ...Array.from(new Set(available.map((p) => p.category)))],
+    [available, filterAll]
+  );
+
+  const filtered =
+    filter === filterAll ? available : available.filter((p) => p.category === filter);
 
   return (
-    <div style={{ padding: '48px 24px', maxWidth: 1100, margin: '0 auto' }}>
-      <h1 style={{ ...CSS.heading, fontSize: 36, fontWeight: 900, color: C.dark, margin: '0 0 8px' }}>{t('products.title')}</h1>
-      <p style={{ color: C.muted, fontSize: 15, marginBottom: 32 }}>{t('products.subtitle')}</p>
+    <div>
+      <SEO 
+        title="Nos Produits"
+        description="Découvrez notre gamme complète de jus naturels artisanaux sans sucre ajouté. Inspirés des traditions africaines et fabriqués à Montréal."
+        url="https://lesjusnatuelsbens.com/nos-produits"
+      />
+      
+      <section className="page-hero">
+        <div className="page-hero-inner">
+          <p className="page-hero-eyebrow">Catalogue</p>
+          <h1 className="page-hero-title">{t('products.title')}</h1>
+          <p className="page-hero-subtitle">{t('products.subtitle')}</p>
+        </div>
+      </section>
 
-      {/* Filtres */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-        {cats.map(c => (
-          <button key={c} onClick={() => setFilter(c)}
-            style={{ padding: '8px 20px', borderRadius: 50, border: filter === c ? `2px solid ${C.red}` : `1px solid ${C.border}`, background: filter === c ? `${C.red}12` : '#fff', color: filter === c ? C.red : C.muted, cursor: 'pointer', fontSize: 13, fontWeight: filter === c ? 600 : 400 }}>
-            {c}
-          </button>
-        ))}
-      </div>
+      <section className="page-shell">
+        <div className="chip-row" style={{ marginTop: 0 }}>
+          {categories.map((cat) => {
+            const active = filter === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setFilter(cat)}
+                className={`chip-btn ${active ? 'chip-btn-active' : ''}`.trim()}
+              >
+                {cat}
+              </button>
+            );
+          })}
+        </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 20 }}>
-        {filtered.map(p => <ProductCard key={p.id} product={p} />)}
-      </div>
+        <div className="home-products-grid" style={{ marginTop: 22 }}>
+          {filtered.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

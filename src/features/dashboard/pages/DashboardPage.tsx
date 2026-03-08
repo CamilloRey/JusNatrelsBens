@@ -18,7 +18,7 @@ export default function DashboardPage() {
     { label: 'Voir les messages',    icon: '📩', route: ROUTES.admin.messages, color: '#2563eb', badge: unreadMessages > 0 ? unreadMessages : null },
     { label: 'Publier un article',   icon: '📝', route: ROUTES.admin.blog,     color: C.green },
     { label: 'Points de vente',      icon: '📍', route: ROUTES.admin.locations, color: '#2563eb' },
-    { label: 'Envoyer infolettre',   icon: '✉️', route: ROUTES.admin.newsletter, color: '#8b5cf6' },
+    { label: 'Envoyer infolettre',   icon: '✉️', route: ROUTES.admin.subscribers, color: '#8b5cf6' },
     { label: 'Voir les avis',        icon: '⭐', route: ROUTES.admin.reviews,   color: '#f59e0b', badge: pendingReviews > 0 ? pendingReviews : null },
   ];
 

@@ -1,28 +1,71 @@
 import { useTranslation } from 'react-i18next';
 import { useData } from '@/app/providers/DataContext';
-import { C }       from '@/shared/constants/colors';
-import { CSS }     from '@/shared/constants/styles';
+import { SEO } from '@/shared/components/SEO';
 
 export default function BlogPage() {
   const { t } = useTranslation();
   const { blogs } = useData();
-  const published = blogs.filter(b => b.published);
+  const published = blogs.filter((blog) => blog.published);
 
   return (
-    <div style={{ padding: '48px 24px', maxWidth: 800, margin: '0 auto' }}>
-      <h1 style={{ ...CSS.heading, fontSize: 36, fontWeight: 900, color: C.dark, margin: '0 0 8px' }}>{t('blog.title')}</h1>
-      <p style={{ color: C.muted, fontSize: 15, marginBottom: 40 }}>{t('blog.subtitle')}</p>
-      {published.map(b => (
-        <article key={b.id} style={{ background: '#fff', borderRadius: 16, padding: 28, border: `1px solid ${C.border}`, marginBottom: 20 }}>
-          <div style={{ display: 'flex', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
-            <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 6, background: `${C.red}12`, color: C.red, fontWeight: 600 }}>{b.category}</span>
-            <span style={{ fontSize: 12, color: C.muted }}>{b.date}</span>
+    <div>
+      <SEO 
+        title="Blogue"
+        description="Lisez nos articles sur les jus naturels, la santé, les traditions africaines et les nouvelles de Ben's."
+        url="https://lesjusnatuelsbens.com/blogue"
+      />
+      
+      <section className="page-hero">
+        <div className="page-hero-inner">
+          <p className="page-hero-eyebrow">Journal</p>
+          <h1 className="page-hero-title">{t('blog.title')}</h1>
+          <p className="page-hero-subtitle">{t('blog.subtitle')}</p>
+        </div>
+      </section>
+
+      <section className="page-shell" style={{ paddingBottom: 10 }}>
+        {published.length === 0 ? (
+          <article className="surface-card" style={{ padding: 28, textAlign: 'center' }}>
+            <p className="page-subtitle" style={{ marginTop: 0 }}>{t('blog.subtitle')}</p>
+          </article>
+        ) : (
+          <div style={{ display: 'grid', gap: 14 }}>
+            {published.map((blog, index) => (
+              <article key={blog.id} className="surface-card anim-card" style={{ padding: 20 }}>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                  <span className="pill-label">{blog.category}</span>
+                  <span className="mini-muted">{blog.date}</span>
+                </div>
+
+                <h2
+                  style={{
+                    marginTop: 10,
+                    fontFamily: "'Playfair Display', serif",
+                    fontSize: 'clamp(22px,3vw,30px)',
+                    color: 'var(--ink-strong)',
+                    lineHeight: 1.18,
+                  }}
+                >
+                  {blog.title}
+                </h2>
+
+                <p
+                  className="page-subtitle"
+                  style={{
+                    marginTop: 10,
+                    display: '-webkit-box',
+                    WebkitLineClamp: index === 0 ? 10 : 6,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {blog.content}
+                </p>
+              </article>
+            ))}
           </div>
-          <h2 style={{ ...CSS.heading, fontSize: 22, fontWeight: 700, margin: '0 0 12px', color: C.dark }}>{b.title}</h2>
-          <p style={{ fontSize: 15, color: C.text, lineHeight: 1.8, margin: 0 }}>{b.content}</p>
-        </article>
-      ))}
-      {published.length === 0 && <p style={{ color: C.muted, textAlign: 'center', padding: 40 }}>{t('blog.subtitle')}</p>}
+        )}
+      </section>
     </div>
   );
 }

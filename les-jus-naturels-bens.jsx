@@ -935,20 +935,20 @@ function AboutPage({ setPage }) {
 
       {/* PROCESSUS */}
       <section style={{ background: C.dark, padding: "64px 24px" }}>
-        <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <h2 style={{ ...CSS.heading, fontSize: 28, fontWeight: 800, color: "#f0e6d3", margin: "0 0 32px", textAlign: "center" }}>Comment nous préparons nos jus</h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <h2 style={{ ...CSS.heading, fontSize: 32, fontWeight: 800, color: "#f0e6d3", margin: "0 0 48px", textAlign: "center", animation: "fadeUp 0.6s ease both" }}>Comment nous préparons nos jus</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
             {[
               { step: "01", title: "Sélection des ingrédients", desc: "Chaque fruit et épice est soigneusement choisi à maturité auprès de producteurs locaux." },
               { step: "02", title: "Préparation artisanale", desc: "Nos recettes traditionnelles sont suivies à la lettre, avec des méthodes qui préservent les nutriments." },
               { step: "03", title: "Embouteillage", desc: "Les jus sont embouteillés frais, sans pasteurisation excessive, pour garder toute leur saveur." },
               { step: "04", title: "Zéro gaspillage", desc: "Les résidus sont séchés naturellement et transformés en épices ou produits de beauté." },
             ].map((s, i) => (
-              <div key={i} style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
-                <span style={{ fontSize: 32, fontWeight: 900, color: C.red, fontFamily: "'Playfair Display', serif", flexShrink: 0, width: 50 }}>{s.step}</span>
-                <div>
-                  <h3 style={{ fontSize: 17, fontWeight: 700, color: "#f0e6d3", margin: "0 0 6px" }}>{s.title}</h3>
-                  <p style={{ fontSize: 14, color: "#a89e91", lineHeight: 1.7, margin: 0 }}>{s.desc}</p>
+              <div key={i} style={{ display: "flex", gap: 24, alignItems: "flex-start", padding: "24px", borderRadius: 16, background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(212, 118, 59, 0.15)", transition: "all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)", animation: `slideUp 0.6s ease both`, animationDelay: `${0.1 * (i + 1)}s` }}>
+                <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 48, fontWeight: 900, color: "#c44536", flexShrink: 0, width: 70, height: 70, display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, rgba(196, 69, 54, 0.15), rgba(196, 69, 54, 0.08))", borderRadius: "50%", border: "2px solid rgba(212, 118, 59, 0.3)", transition: "all 0.3s ease" }}>{s.step}</span>
+                <div style={{ flex: 1 }}>
+                  <h3 style={{ fontSize: 18, fontWeight: 700, color: "#f0e6d3", margin: "0 0 8px", transition: "color 0.3s ease" }}>{s.title}</h3>
+                  <p style={{ fontSize: 14.5, color: "#a89e91", lineHeight: 1.6, margin: 0 }}>{s.desc}</p>
                 </div>
               </div>
             ))}

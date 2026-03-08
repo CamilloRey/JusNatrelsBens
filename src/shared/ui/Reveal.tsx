@@ -23,7 +23,7 @@ export function Reveal({ children, delay = 0, anim = 'fadeUp', style = {} }: Rev
     <div
       ref={ref}
       style={{
-        opacity: 0,
+        opacity: visible ? 1 : 0,
         animation: visible ? ANIMS[anim] : 'none',
         animationDelay: `${delay}s`,
         animationFillMode: 'forwards',

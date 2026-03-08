@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from 'react';
  * Retourne [ref, isVisible].
  * `isVisible` passe à true une seule fois quand l'élément entre dans le viewport.
  */
-export function useInView(threshold = 0.12): [React.RefObject<HTMLDivElement | null>, boolean] {
+export function useInView(threshold = 0.12): [React.RefObject<HTMLDivElement>, boolean] {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -19,5 +19,5 @@ export function useInView(threshold = 0.12): [React.RefObject<HTMLDivElement | n
     return () => obs.disconnect();
   }, [threshold]);
 
-  return [ref, visible];
+  return [ref as React.RefObject<HTMLDivElement>, visible];
 }

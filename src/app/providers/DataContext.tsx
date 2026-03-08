@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+﻿import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 
 import { productService }    from '@/features/products/services/product.service';
 import { reviewService }     from '@/features/reviews/services/review.service';
@@ -11,6 +11,7 @@ import { authService }       from '@/features/auth/services/auth.service';
 import { eventService }      from '@/features/events/services/event.service';
 import { stockService }      from '@/features/stock/services/stock.service';
 import { financeService }    from '@/features/finance/services/finance.service';
+import { ingredientService } from '@/features/ingredients/services/ingredient.service';
 
 import type { Product }    from '@/features/products/types/product.types';
 import type { Review }     from '@/features/reviews/types/review.types';
@@ -23,14 +24,28 @@ import type { Settings }   from '@/features/auth/types/auth.types';
 import type { Event }         from '@/features/events/types/event.types';
 import type { StockMovement } from '@/features/stock/types/stock.types';
 import type { Transaction }   from '@/features/finance/types/finance.types';
+import type { Ingredient } from '@/features/ingredients/types/ingredient.types';
+import { normalizeTextDeep } from '@/shared/utils/text-normalize';
+import {
+  SEED_ACTIVITY,
+  SEED_BLOGS,
+  SEED_INGREDIENTS,
+  SEED_LOCATIONS,
+  SEED_MESSAGES,
+  SEED_PRODUCTS,
+  SEED_REVIEWS,
+  SEED_SETTINGS,
+  SEED_SUBSCRIBERS,
+} from '@/shared/constants/seed-data';
 
-/* ─── Shape du contexte ─── */
+/* â”€â”€â”€ Shape du contexte â”€â”€â”€ */
 interface DataContextValue {
   loaded:      boolean;
   products:    Product[];
   reviews:     Review[];
   blogs:       BlogPost[];
   locations:   Location[];
+  ingredients: Ingredient[];
   subscribers: Subscriber[];
   messages:    Message[];
   activity:    Activity[];
@@ -40,6 +55,7 @@ interface DataContextValue {
   updateReviews:     (r: Review[])     => void;
   updateBlogs:       (b: BlogPost[])   => void;
   updateLocations:   (l: Location[])   => void;
+  updateIngredients: (i: Ingredient[]) => void;
   updateSubscribers: (s: Subscriber[]) => void;
   updateMessages:    (m: Message[])    => void;
   events:         Event[];
@@ -62,6 +78,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [reviews,     setReviews]     = useState<Review[]>([]);
   const [blogs,       setBlogs]       = useState<BlogPost[]>([]);
   const [locations,   setLocations]   = useState<Location[]>([]);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [messages,    setMessages]    = useState<Message[]>([]);
   const [events,      setEvents]      = useState<Event[]>([]);
@@ -70,14 +87,15 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [activity,    setActivity]    = useState<Activity[]>([]);
   const [settings,    setSettings]    = useState<Settings>({} as Settings);
 
-  /* ─── Chargement initial ─── */
+  /* â”€â”€â”€ Chargement initial â”€â”€â”€ */
   useEffect(() => {
     (async () => {
-      const [p, r, b, l, s, m, ev, stk, fin, ac, st] = await Promise.all([
+      const [p, r, b, l, i, s, m, ev, stk, fin, ac, st] = await Promise.all([
         productService.getAll(),
         reviewService.getAll(),
         blogService.getAll(),
         locationService.getAll(),
+        ingredientService.getAll(),
         subscriberService.getAll(),
         messageService.getAll(),
         eventService.getAll(),
@@ -86,18 +104,28 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         dashboardService.getActivity(),
         authService.getSettings(),
       ]);
-      setProducts(p); setReviews(r); setBlogs(b); setLocations(l);
-      setSubscribers(s); setMessages(m); setEvents(ev); setStock(stk); setFinance(fin);
-      setActivity(ac); setSettings(st);
+      setProducts(normalizeTextDeep(p));
+      setReviews(normalizeTextDeep(r));
+      setBlogs(normalizeTextDeep(b));
+      setLocations(normalizeTextDeep(l));
+      setIngredients(normalizeTextDeep(i));
+      setSubscribers(normalizeTextDeep(s));
+      setMessages(normalizeTextDeep(m));
+      setEvents(normalizeTextDeep(ev));
+      setStock(normalizeTextDeep(stk));
+      setFinance(normalizeTextDeep(fin));
+      setActivity(normalizeTextDeep(ac));
+      setSettings(normalizeTextDeep(st));
       setLoaded(true);
     })();
   }, []);
 
-  /* ─── Updaters (setState + sync Supabase) ─── */
+  /* â”€â”€â”€ Updaters (setState + sync Supabase) â”€â”€â”€ */
   const updateProducts    = (p: Product[])    => { setProducts(p);    productService.save(p); };
   const updateReviews     = (r: Review[])     => { setReviews(r);     reviewService.save(r); };
   const updateBlogs       = (b: BlogPost[])   => { setBlogs(b);       blogService.save(b); };
   const updateLocations   = (l: Location[])   => { setLocations(l);   locationService.save(l); };
+  const updateIngredients = (i: Ingredient[]) => { setIngredients(i); ingredientService.save(i); };
   const updateSubscribers = (s: Subscriber[]) => { setSubscribers(s); subscriberService.save(s); };
   const updateMessages    = (m: Message[])    => { setMessages(m);    messageService.save(m); };
   const updateEvents      = (e: Event[])          => { setEvents(e);   eventService.save(e); };
@@ -118,7 +146,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   const exportData = () => {
     const blob = new Blob(
-      [JSON.stringify({ products, reviews, blogs, locations, subscribers, messages }, null, 2)],
+      [JSON.stringify({ products, reviews, blogs, locations, ingredients, subscribers, messages }, null, 2)],
       { type: 'application/json' }
     );
     const a = document.createElement('a');
@@ -128,19 +156,24 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   };
 
   const resetAll = () => {
-    if (!confirm('Réinitialiser toutes les données ? Cette action est irréversible.')) return;
-    import('@/shared/constants/seed-data').then(({ SEED_PRODUCTS: P, SEED_REVIEWS: R, SEED_BLOGS: B, SEED_LOCATIONS: L, SEED_SUBSCRIBERS: S, SEED_MESSAGES: M, SEED_ACTIVITY: A, SEED_SETTINGS: ST }) => {
-      updateProducts(P); updateReviews(R); updateBlogs(B); updateLocations(L);
-      updateSubscribers(S); updateMessages(M); updateSettings(ST);
-      setActivity(A); dashboardService.saveActivity(A);
-    });
+    if (!confirm('RÃ©initialiser toutes les donnÃ©es ? Cette action est irrÃ©versible.')) return;
+    updateProducts(SEED_PRODUCTS);
+    updateReviews(SEED_REVIEWS);
+    updateBlogs(SEED_BLOGS);
+    updateLocations(SEED_LOCATIONS);
+    updateIngredients(SEED_INGREDIENTS);
+    updateSubscribers(SEED_SUBSCRIBERS);
+    updateMessages(SEED_MESSAGES);
+    updateSettings(SEED_SETTINGS);
+    setActivity(SEED_ACTIVITY);
+    dashboardService.saveActivity(SEED_ACTIVITY);
   };
 
   return (
     <DataContext.Provider value={{
-      loaded, products, reviews, blogs, locations, subscribers, messages, events, stock, finance, activity, settings,
+      loaded, products, reviews, blogs, locations, ingredients, subscribers, messages, events, stock, finance, activity, settings,
       updateProducts, updateReviews, updateBlogs, updateLocations,
-      updateSubscribers, updateMessages, updateEvents, updateStock, updateFinance, updateSettings, logActivity, exportData, resetAll,
+      updateIngredients, updateSubscribers, updateMessages, updateEvents, updateStock, updateFinance, updateSettings, logActivity, exportData, resetAll,
     }}>
       {children}
     </DataContext.Provider>
@@ -149,6 +182,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
 export function useData(): DataContextValue {
   const ctx = useContext(DataContext);
-  if (!ctx) throw new Error('useData doit être utilisé dans <DataProvider>');
+  if (!ctx) throw new Error('useData doit Ãªtre utilisÃ© dans <DataProvider>');
   return ctx;
 }
+

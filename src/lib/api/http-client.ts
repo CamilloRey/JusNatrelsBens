@@ -11,6 +11,7 @@ type TableName =
   | 'reviews'
   | 'blogs'
   | 'locations'
+  | 'ingredients'
   | 'subscribers'
   | 'activity'
   | 'messages'

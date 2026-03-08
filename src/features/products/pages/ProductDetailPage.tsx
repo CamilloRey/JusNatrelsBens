@@ -1,130 +1,182 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useTranslation }          from 'react-i18next';
-import { useData }                from '@/app/providers/DataContext';
-import { C }                      from '@/shared/constants/colors';
-import { CSS }                    from '@/shared/constants/styles';
-import { ProductImg }             from '@/shared/ui/ProductImg';
-import { Icon }                   from '@/shared/ui/Icon';
-import { ProductCard }            from '../components/ProductCard';
-import { ROUTES }                 from '@/shared/constants/routes';
-
-const INGREDIENTS: Record<string, { emoji: string; photo: string; benefits: string[] }> = {
-  Hibiscus: { emoji: '🌺', photo: 'https://source.unsplash.com/400x300/?hibiscus,flower', benefits: ['Riche en antioxydants', 'Aide à réguler la pression artérielle', 'Renforce le système immunitaire', 'Source de vitamine C'] },
-  Gingembre:{ emoji: '🫚', photo: 'https://source.unsplash.com/400x300/?ginger,root,spice', benefits: ['Propriétés anti-inflammatoires', 'Aide à la digestion', "Renforce l'immunité", 'Favorise la perte de poids'] },
-  Citron:   { emoji: '🍋', photo: 'https://source.unsplash.com/400x300/?lemon,citrus,fruit', benefits: ['Riche en vitamine C', 'Détoxifiant naturel', 'Aide à la digestion', 'Effet alcalinisant'] },
-  Ananas:   { emoji: '🍍', photo: 'https://source.unsplash.com/400x300/?pineapple,tropical,fruit', benefits: ['Riche en bromélaïne', 'Anti-inflammatoire naturel', 'Source de manganèse', 'Aide à la digestion'] },
-  Fraises:  { emoji: '🍓', photo: 'https://source.unsplash.com/400x300/?strawberry,fresh,fruit', benefits: ['Riches en antioxydants', 'Source de vitamine C', 'Faible en calories', 'Bonnes pour le cœur'] },
-  Bleuets:  { emoji: '🫐', photo: 'https://source.unsplash.com/400x300/?blueberry,berries,fresh', benefits: ['Super-aliment antioxydant', 'Améliore la mémoire', 'Riche en fibres', 'Protège la vision'] },
-  Passion:  { emoji: '🥭', photo: 'https://source.unsplash.com/400x300/?passion,fruit,tropical', benefits: ['Riche en vitamines A et C', 'Source de fibres', 'Propriétés relaxantes', 'Bon pour la peau'] },
-};
+import { useTranslation } from 'react-i18next';
+import { useData } from '@/app/providers/DataContext';
+import { C } from '@/shared/constants/colors';
+import { ProductImg } from '@/shared/ui/ProductImg';
+import { Icon } from '@/shared/ui/Icon';
+import { ProductCard } from '../components/ProductCard';
+import { ROUTES } from '@/shared/constants/routes';
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { products, reviews } = useData();
-  const navigate = useNavigate();
   const { t } = useTranslation();
+  const { products, reviews, ingredients } = useData();
+  const navigate = useNavigate();
 
-  const p = products.find(pr => pr.id === id);
-  if (!p) return (
-    <div style={{ padding: 48, textAlign: 'center' }}>
-      <p>{t('productDetail.notFound')}</p>
-      <button onClick={() => navigate(ROUTES.products)} style={{ color: C.red, background: 'none', border: 'none', cursor: 'pointer', fontSize: 15 }}>{t('productDetail.backLink')}</button>
-    </div>
+  const product = products.find((pr) => pr.id === id);
+
+  if (!product) {
+    return (
+      <section className="page-shell" style={{ textAlign: 'center', paddingBottom: 20 }}>
+        <p className="page-subtitle" style={{ marginTop: 0 }}>{t('productDetail.notFound')}</p>
+        <button type="button" className="btn-light anim-btn" onClick={() => navigate(ROUTES.products)}>
+          {t('productDetail.backLink')}
+        </button>
+      </section>
+    );
+  }
+
+  const activeIngredients = ingredients.filter((ingredient) => ingredient.active);
+  const matchedIngredients = activeIngredients.filter((ingredient) =>
+    product.name.toLowerCase().includes(ingredient.name.toLowerCase())
   );
 
-  const foundIngredients = Object.entries(INGREDIENTS)
-    .filter(([name]) => p.name.toLowerCase().includes(name.toLowerCase()))
-    .map(([name, data]) => ({ name, ...data }));
-  const prodIngredients = foundIngredients.length > 0
-    ? foundIngredients
-    : [{ name: 'Fruits frais', emoji: '🍹', photo: 'https://source.unsplash.com/400x300/?tropical,juice,fruit', benefits: ['100% naturel', 'Sans conservateurs', 'Sans sucre ajouté'] }];
+  const productIngredients =
+    matchedIngredients.length > 0
+      ? matchedIngredients
+      : activeIngredients.slice(0, 3).map((ingredient) => ({ ...ingredient })) ;
 
-  const approvedReviews = reviews.filter(r => r.approved);
-  const otherProducts = products.filter(pr => pr.id !== p.id && pr.available).slice(0, 3);
+  const fallbackIngredients =
+    productIngredients.length > 0
+      ? productIngredients
+      : [
+          {
+            id: 'fallback',
+            name: 'Fruits frais',
+            image: '/images-bens/hero-banners/banniere-fruits-exotiques.png',
+            benefits: ['100% naturel', 'Sans conservateurs', 'Sans sucre ajoute'],
+            note: 'Selection artisanale',
+            active: true,
+          },
+        ];
+
+  const approvedReviews = reviews.filter((r) => r.approved).slice(0, 3);
+  const otherProducts = products.filter((pr) => pr.id !== product.id && pr.available).slice(0, 3);
 
   return (
-    <div style={{ padding: '32px 24px 64px', maxWidth: 1000, margin: '0 auto' }}>
-      <button onClick={() => navigate(ROUTES.products)}
-        style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', color: C.red, cursor: 'pointer', fontSize: 14, fontWeight: 600, padding: 0, marginBottom: 24 }}>
-        <Icon type="back" size={18} color={C.red} /> {t('productDetail.back')}
-      </button>
+    <div>
+      <section className="page-shell" style={{ paddingTop: 30 }}>
+        <button
+          type="button"
+          onClick={() => navigate(ROUTES.products)}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            border: 'none',
+            background: 'transparent',
+            color: C.hibiscus,
+            fontSize: 13,
+            fontWeight: 700,
+            cursor: 'pointer',
+          }}
+        >
+          <Icon type="back" size={16} color={C.hibiscus} /> {t('productDetail.back')}
+        </button>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, marginBottom: 48 }}>
-        <div style={{ borderRadius: 20, overflow: 'hidden', background: `linear-gradient(135deg, ${p.color}15, ${p.color}35)`, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 360, position: 'relative' }}>
-          {p.tag && <span style={{ position: 'absolute', top: 16, left: 16, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, color: '#fff', background: C.red, padding: '5px 14px', borderRadius: 20 }}>{p.tag}</span>}
-          <ProductImg src={p.img} size={200} borderRadius={0} style={{ maxWidth: '100%', maxHeight: 340, objectFit: 'cover' }} />
-        </div>
-
-        <div>
-          <p style={{ fontSize: 13, color: C.muted, marginBottom: 6 }}>{p.category}</p>
-          <h1 style={{ ...CSS.heading, fontSize: 32, fontWeight: 900, color: C.dark, margin: '0 0 16px', lineHeight: 1.2 }}>{p.name}</h1>
-          <p style={{ fontSize: 36, fontWeight: 900, color: C.hibiscus, margin: '0 0 8px' }}>{p.price.toFixed(2)}$</p>
-          <p style={{ fontSize: 13, color: C.muted, margin: '0 0 20px' }}>{t('productDetail.availableFormats')} {p.formats.join(' · ')}</p>
-          <p style={{ fontSize: 16, color: C.text, lineHeight: 1.8, margin: '0 0 24px' }}>{p.desc}</p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            {([
-              t('productDetail.badges.noPreservatives'),
-              t('productDetail.badges.noSugar'),
-              t('productDetail.badges.quebec'),
-            ] as string[]).map((b, i) => (
-              <span key={i} style={{ padding: '6px 14px', background: C.light, borderRadius: 20, fontSize: 13, color: C.dark }}>{b}</span>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Ingrédients */}
-      <section style={{ marginBottom: 48 }}>
-        <h2 style={{ ...CSS.heading, fontSize: 24, fontWeight: 800, color: C.dark, marginBottom: 20 }}>{t('productDetail.ingredients')}</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
-          {prodIngredients.map(ing => (
-            <div key={ing.name} style={{ background: '#fff', borderRadius: 14, overflow: 'hidden', border: `1px solid ${C.border}` }}>
-              <div style={{ height: 140, overflow: 'hidden', position: 'relative' }}>
-                <img src={ing.photo} alt={ing.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
-                  onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 60%)' }} />
-                <span style={{ position: 'absolute', bottom: 10, left: 12, fontSize: 28 }}>{ing.emoji}</span>
-              </div>
-              <div style={{ padding: '14px 18px' }}>
-                <h3 style={{ ...CSS.heading, fontSize: 16, fontWeight: 700, color: C.dark, margin: '0 0 12px' }}>{ing.name}</h3>
-                {ing.benefits.map((b, i) => (
-                  <p key={i} style={{ fontSize: 13, color: C.text, margin: '0 0 6px', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                    <span style={{ color: C.green, flexShrink: 0 }}>✓</span> {b}
-                  </p>
-                ))}
-              </div>
+        <div className="two-col" style={{ marginTop: 18, alignItems: 'start' }}>
+          <div
+            className="surface-card"
+            style={{
+              padding: 16,
+              background: `linear-gradient(135deg, ${product.color}22, ${product.color}08)`,
+            }}
+          >
+            <div
+              style={{
+                minHeight: 380,
+                borderRadius: 16,
+                background: 'rgba(255,255,255,0.85)',
+                display: 'grid',
+                placeItems: 'center',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              {product.tag && <span className="pill-label" style={{ position: 'absolute', top: 14, left: 14 }}>{product.tag}</span>}
+              <ProductImg
+                src={product.img}
+                alt={product.name}
+                size={290}
+                borderRadius={22}
+                style={{ width: 'min(85%, 310px)', height: 'auto' }}
+              />
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
 
-      {/* Avis */}
-      {approvedReviews.length > 0 && (
-        <section style={{ marginBottom: 48 }}>
-          <h2 style={{ ...CSS.heading, fontSize: 24, fontWeight: 800, color: C.dark, marginBottom: 20 }}>{t('home.reviews.title')}</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
-            {approvedReviews.slice(0, 3).map(r => (
-              <div key={r.id} style={{ background: '#fff', borderRadius: 14, padding: 20, border: `1px solid ${C.border}` }}>
-                <div style={{ color: '#f59e0b', fontSize: 14, marginBottom: 10 }}>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</div>
-                <p style={{ fontSize: 14, color: C.text, lineHeight: 1.7, margin: '0 0 12px', fontStyle: 'italic' }}>"{r.text}"</p>
-                <p style={{ fontSize: 13, fontWeight: 600, color: C.dark, margin: 0 }}>{r.name}</p>
-              </div>
+          <div className="surface-card" style={{ padding: 24 }}>
+            <p className="mini-muted" style={{ marginTop: 0 }}>{product.category}</p>
+            <h1 className="page-title" style={{ fontSize: 'clamp(28px,4vw,40px)', marginTop: 6 }}>{product.name}</h1>
+            <p style={{ marginTop: 10, fontSize: 34, fontWeight: 900, color: C.hibiscus }}>{product.price.toFixed(2)}$</p>
+            <p className="page-subtitle" style={{ marginTop: 4 }}>
+              {t('productDetail.availableFormats')} {product.formats.join(' � ')}
+            </p>
+            <p style={{ marginTop: 14, color: 'var(--ink)', lineHeight: 1.8, fontSize: 15 }}>{product.desc}</p>
+
+            <div className="chip-row">
+              {[t('productDetail.badges.noPreservatives'), t('productDetail.badges.noSugar'), t('productDetail.badges.quebec')].map((badge) => (
+                <span key={badge} className="chip-btn" style={{ cursor: 'default' }}>
+                  {badge}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <section className="section-stack">
+          <h2 className="section-title">{t('productDetail.ingredients')}</h2>
+          <div className="three-col" style={{ marginTop: 16 }}>
+            {fallbackIngredients.map((ingredient) => (
+              <article key={ingredient.id} className="surface-card anim-card" style={{ overflow: 'hidden' }}>
+                <img
+                  src={ingredient.image}
+                  alt={ingredient.name}
+                  style={{ width: '100%', height: 150, objectFit: 'cover' }}
+                />
+                <div style={{ padding: 16 }}>
+                  <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, color: 'var(--ink-strong)' }}>
+                    {ingredient.name}
+                  </h3>
+                  {ingredient.note && <p className="mini-muted" style={{ marginTop: 6 }}>{ingredient.note}</p>}
+                  <div style={{ marginTop: 10, display: 'grid', gap: 7 }}>
+                    {ingredient.benefits.map((benefit) => (
+                      <p key={benefit} style={{ fontSize: 13, color: 'var(--ink)', margin: 0 }}>
+                        - {benefit}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </article>
             ))}
           </div>
         </section>
-      )}
 
-      {/* Autres produits */}
-      {otherProducts.length > 0 && (
-        <section>
-          <h2 style={{ ...CSS.heading, fontSize: 24, fontWeight: 800, color: C.dark, marginBottom: 20 }}>{t('productDetail.youMightLike')}</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
-            {otherProducts.map(op => <ProductCard key={op.id} product={op} size="sm" />)}
-          </div>
-        </section>
-      )}
+        {approvedReviews.length > 0 && (
+          <section className="section-stack">
+            <h2 className="section-title">{t('home.reviews.title')}</h2>
+            <div className="home-reviews-grid" style={{ marginTop: 16 }}>
+              {approvedReviews.map((review) => (
+                <article key={review.id} className="home-review-card anim-card">
+                  <p className="stars">{'*'.repeat(review.rating)}{'-'.repeat(5 - review.rating)}</p>
+                  <blockquote>"{review.text}"</blockquote>
+                  <p className="author">{review.name}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {otherProducts.length > 0 && (
+          <section className="section-stack" style={{ paddingBottom: 20 }}>
+            <h2 className="section-title">{t('productDetail.youMightLike')}</h2>
+            <div className="home-products-grid" style={{ marginTop: 16 }}>
+              {otherProducts.map((other) => (
+                <ProductCard key={other.id} product={other} size="sm" />
+              ))}
+            </div>
+          </section>
+        )}
+      </section>
     </div>
   );
 }

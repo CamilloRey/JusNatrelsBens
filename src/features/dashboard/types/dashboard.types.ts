@@ -1,4 +1,12 @@
-export type ActivityType = 'auth' | 'product' | 'review' | 'blog' | 'location' | 'info';
+export type ActivityType =
+  | 'auth'
+  | 'product'
+  | 'review'
+  | 'blog'
+  | 'location'
+  | 'settings'
+  | 'newsletter'
+  | 'info';
 
 export interface Activity {
   id:     string;

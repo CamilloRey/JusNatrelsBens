@@ -1,162 +1,179 @@
-import { useNavigate }   from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { C }              from '@/shared/constants/colors';
-import { ROUTES }         from '@/shared/constants/routes';
-import { Reveal }      from '@/shared/ui/Reveal';
+import { C } from '@/shared/constants/colors';
+import { ROUTES } from '@/shared/constants/routes';
+import { SEO } from '@/shared/components/SEO';
+import { Reveal } from '@/shared/ui/Reveal';
+import { Icon } from '@/shared/ui/Icon';
 
 export default function AboutPage() {
   const navigate = useNavigate();
-  const { t }    = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <div>
-      {/* HERO */}
-      <section style={{ background: `linear-gradient(135deg, ${C.hibiscus} 0%, ${C.red} 50%, ${C.gold} 100%)`, padding: '72px 24px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(45deg, transparent, transparent 25px, rgba(255,255,255,0.02) 25px, rgba(255,255,255,0.02) 50px)' }} />
-        <div style={{ position: 'relative', maxWidth: 700, margin: '0 auto' }}>
-          <p style={{ fontSize: 13, letterSpacing: 4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: 12 }}>{t('about.hero.eyebrow')}</p>
-          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 900, color: '#fff', lineHeight: 1.2, margin: '0 0 16px', whiteSpace: 'pre-line' }}>
-            {t('about.hero.title')}
-          </h1>
-          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.85)', lineHeight: 1.7 }}>
-            {t('about.hero.subtitle')}
-          </p>
+      <SEO 
+        title="Notre Histoire"
+        description="Découvrez l'histoire de Ben's : une femme, un héritage africain et une passion pour les jus naturels fabriqués à Montréal."
+        url="https://lesjusnatuelsbens.com/notre-histoire"
+      />
+      
+      <section className="page-hero">
+        <div className="page-hero-inner">
+          <p className="page-hero-eyebrow">{t('about.hero.eyebrow')}</p>
+          <h1 className="page-hero-title">{t('about.hero.title')}</h1>
+          <p className="page-hero-subtitle">{t('about.hero.subtitle')}</p>
         </div>
       </section>
 
-      {/* FOUNDER STORY */}
-      <section style={{ padding: '64px 24px', maxWidth: 900, margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 40, alignItems: 'start' }}>
+      <section className="page-shell" style={{ paddingTop: 36 }}>
+        <div className="two-col" style={{ alignItems: 'start' }}>
           <Reveal anim="slideLeft">
-            <div>
-              <div style={{ width: 250, height: 300, borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
-                <img src="/images-bens/photos/univers-jus-bens.png" alt="Fondatrice Ben's" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
-              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 800, color: C.dark, margin: '0 0 4px' }}>{t('about.founder.title')}</h3>
-              <p style={{ fontSize: 14, color: C.red, fontWeight: 600, margin: '0 0 8px' }}>{t('about.founder.subtitle')}</p>
-              <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.6 }}>{t('about.founder.desc')}</p>
-            </div>
+            <article className="surface-card" style={{ padding: 18 }}>
+              <img
+                src="/images-bens/photos/univers-jus-bens.png"
+                alt="Fondatrice Ben's"
+                style={{ width: '100%', height: 340, objectFit: 'cover', borderRadius: 16 }}
+              />
+              <h3 style={{ marginTop: 14, fontFamily: "'Playfair Display', serif", fontSize: 26, color: 'var(--ink-strong)' }}>
+                {t('about.founder.title')}
+              </h3>
+              <p style={{ marginTop: 5, fontSize: 13, fontWeight: 700, color: C.hibiscus }}>
+                {t('about.founder.subtitle')}
+              </p>
+              <p className="page-subtitle" style={{ marginTop: 8 }}>{t('about.founder.desc')}</p>
+            </article>
           </Reveal>
+
           <Reveal anim="slideRight">
-            <div>
-              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 800, color: C.dark, margin: '0 0 20px' }}>{t('about.story.title')}</h2>
-              <p style={{ fontSize: 16, color: C.text, lineHeight: 1.9, marginBottom: 16 }}>
-                {t('about.story.p1')}
-              </p>
-              <p style={{ fontSize: 16, color: C.text, lineHeight: 1.9, marginBottom: 16 }}>
-                {t('about.story.p2')}
-              </p>
-              <p style={{ fontSize: 16, color: C.text, lineHeight: 1.9, marginBottom: 16 }}>
-                {t('about.story.p3')}
-              </p>
-              <div style={{ background: `${C.red}08`, borderLeft: `4px solid ${C.red}`, borderRadius: '0 12px 12px 0', padding: '16px 20px', marginTop: 24 }}>
-                <p style={{ fontSize: 15, color: C.text, lineHeight: 1.7, margin: 0, fontStyle: 'italic' }}>
+            <article className="surface-card" style={{ padding: 24 }}>
+              <h2 className="section-title" style={{ marginTop: 0 }}>{t('about.story.title')}</h2>
+              <p className="page-subtitle">{t('about.story.p1')}</p>
+              <p className="page-subtitle">{t('about.story.p2')}</p>
+              <p className="page-subtitle">{t('about.story.p3')}</p>
+
+              <div
+                style={{
+                  marginTop: 14,
+                  borderLeft: `3px solid ${C.hibiscus}`,
+                  background: 'rgba(196,69,54,0.08)',
+                  borderRadius: 12,
+                  padding: '14px 16px',
+                }}
+              >
+                <p style={{ margin: 0, fontStyle: 'italic', lineHeight: 1.7, color: 'var(--ink)' }}>
                   {t('about.story.quote')}
                 </p>
               </div>
-            </div>
+            </article>
           </Reveal>
         </div>
       </section>
 
-      {/* PRIX */}
-      <section style={{ background: C.light, padding: '48px 24px' }}>
-        <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 800, color: C.dark, margin: '0 0 24px' }}>{t('about.award.title')}</h2>
-          <Reveal anim="scaleIn">
-            <div style={{ display: 'flex', gap: 20, justifyContent: 'center', flexWrap: 'wrap' }}>
-              {['/images-bens/recompenses/recompense_1.avif', '/images-bens/recompenses/recompense_2.avif'].map((src, i) => (
-                <div key={i} style={{ background: '#fff', borderRadius: 16, padding: 20, border: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, maxWidth: 240 }}>
-                  <div style={{ width: 160, height: 160, borderRadius: 12, overflow: 'hidden', background: C.light }}>
-                    <img src={src} alt={`Récompense ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                      onError={e => { (e.target as HTMLImageElement).parentElement!.innerHTML = '<span style="font-size:64px;display:flex;align-items:center;justify-content:center;height:100%">🏅</span>'; }} />
-                  </div>
-                  <div>
-                    <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 16, fontWeight: 700, color: C.dark, margin: '0 0 6px' }}>{t('about.award.name')}</h3>
-                    <p style={{ fontSize: 13, color: C.muted, margin: 0 }}>{t('about.award.org')}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </div>
+      <section className="page-shell section-stack" style={{ paddingTop: 0 }}>
+        <h2 className="section-title" style={{ textAlign: 'center' }}>{t('about.award.title')}</h2>
+
+        <Reveal anim="fadeUp">
+          <div className="two-col" style={{ marginTop: 16 }}>
+            {['/images-bens/recompenses/recompense_1.avif', '/images-bens/recompenses/recompense_2.avif'].map((src, i) => (
+              <article key={src} className="surface-card anim-card" style={{ padding: 20, textAlign: 'center' }}>
+                <img
+                  src={src}
+                  alt={`Award ${i + 1}`}
+                  style={{ width: '100%', maxHeight: 220, objectFit: 'contain', borderRadius: 14, background: 'rgba(255,255,255,0.7)' }}
+                />
+                <h3 style={{ marginTop: 12, fontFamily: "'Playfair Display', serif", fontSize: 22, color: 'var(--ink-strong)' }}>
+                  {t('about.award.name')}
+                </h3>
+                <p className="page-subtitle" style={{ marginTop: 6 }}>{t('about.award.org')}</p>
+              </article>
+            ))}
+          </div>
+        </Reveal>
       </section>
 
-      {/* VALEURS */}
-      <section style={{ padding: '64px 24px', maxWidth: 900, margin: '0 auto' }}>
-        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 800, color: C.dark, margin: '0 0 32px', textAlign: 'center' }}>{t('about.values.title')}</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20 }}>
-          {[
-            { icon: '🌱', key: 'natural' },
-            { icon: '♻️', key: 'zero' },
-            { icon: '🍁', key: 'local' },
-            { icon: '🌍', key: 'heritage' },
-            { icon: '❤️', key: 'artisanal' },
-            { icon: '🤝', key: 'community' },
-          ].map((v, i) => (
-            <Reveal key={i} delay={i * 0.1} anim="fadeUp">
-              <div style={{ background: '#fff', borderRadius: 16, padding: 24, border: `1px solid ${C.border}`, textAlign: 'center' }}>
-                <span style={{ fontSize: 36, display: 'block', marginBottom: 12 }}>{v.icon}</span>
-                <h3 style={{ fontSize: 16, fontWeight: 700, margin: '0 0 8px', color: C.dark }}>{t(`about.values.${v.key}.title`)}</h3>
-                <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.6, margin: 0 }}>{t(`about.values.${v.key}.desc`)}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
+      <section className="home-values-wrap" style={{ marginTop: 64 }}>
+        <div style={{ maxWidth: 'var(--max-w)', margin: '0 auto', padding: '0 24px' }}>
+          <h2 className="section-title" style={{ textAlign: 'center' }}>{t('about.values.title')}</h2>
 
-      {/* PHOTO FESTIVE */}
-      <div style={{ height: 300, overflow: 'hidden', position: 'relative' }}>
-        <img src="/images-bens/photos/soiree-festive-jus-bens.jpg" alt="Ben's en fête"
-          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', display: 'block' }}
-          onError={e => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.55), rgba(0,0,0,0.1))' }} />
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', paddingLeft: 48 }}>
-          <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(20px, 3vw, 30px)', fontWeight: 800, color: '#fff', maxWidth: 400, lineHeight: 1.4, textShadow: '0 2px 12px rgba(0,0,0,0.4)', margin: 0 }}>
-            "Chaque gorgée raconte une histoire de passion et de culture."
-          </p>
-        </div>
-      </div>
-
-      {/* PROCESSUS */}
-      <section style={{ background: C.dark, padding: '64px 24px' }}>
-        <div style={{ maxWidth: 900, margin: '0 auto' }}>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 800, color: '#f0e6d3', margin: '0 0 32px', textAlign: 'center' }}>{t('about.process.title')}</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: 48, alignItems: 'center' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            {(['s1', 's2', 's3', 's4'] as const).map((s, i) => (
-              <Reveal key={i} delay={i * 0.15} anim="slideLeft">
-                <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
-                  <span style={{ fontSize: 32, fontWeight: 900, color: C.red, fontFamily: "'Playfair Display', serif", flexShrink: 0, width: 50 }}>0{i + 1}</span>
-                  <div>
-                    <h3 style={{ fontSize: 17, fontWeight: 700, color: '#f0e6d3', margin: '0 0 6px' }}>{t(`about.process.${s}.title`)}</h3>
-                    <p style={{ fontSize: 14, color: '#a89e91', lineHeight: 1.7, margin: 0 }}>{t(`about.process.${s}.desc`)}</p>
-                  </div>
-                </div>
+          <div className="home-values-grid" style={{ marginTop: 18 }}>
+            {(([
+              { icon: 'shield', key: 'natural' },
+              { icon: 'check', key: 'zero' },
+              { icon: 'map', key: 'local' },
+              { icon: 'star', key: 'heritage' },
+              { icon: 'edit', key: 'artisanal' },
+              { icon: 'users', key: 'community' },
+            ] as const)).map((item, i) => (
+              <Reveal key={item.key} delay={i * 0.08} anim="fadeUp">
+                <article className="home-value-card anim-card">
+                  <span className="icon">
+                    <Icon type={item.icon} size={22} color="currentColor" />
+                  </span>
+                  <h3>{t(`about.values.${item.key}.title`)}</h3>
+                  <p>{t(`about.values.${item.key}.desc`)}</p>
+                </article>
               </Reveal>
             ))}
           </div>
-          <Reveal anim="slideRight">
-            <div style={{ borderRadius: 20, overflow: 'hidden', boxShadow: '0 20px 60px rgba(0,0,0,0.4)' }}>
-              <img src="/images-bens/photos/mission-engagement.png" alt="Notre mission" style={{ width: '100%', height: 400, objectFit: 'cover', display: 'block' }}
-                onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-            </div>
-          </Reveal>
-          </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section style={{ padding: '48px 24px', textAlign: 'center' }}>
-        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 800, color: C.dark, margin: '0 0 16px' }}>{t('about.cta.title')}</h2>
-        <p style={{ fontSize: 15, color: C.muted, marginBottom: 24 }}>{t('about.cta.subtitle')}</p>
-        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button onClick={() => navigate(ROUTES.products)} className="anim-btn"
-            style={{ padding: '14px 32px', borderRadius: 50, border: 'none', background: C.hibiscus, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+      <section className="page-shell section-stack" style={{ paddingTop: 0 }}>
+        <div className="surface-card" style={{ overflow: 'hidden', padding: 0 }}>
+          <img
+            src="/images-bens/photos/soiree-festive-jus-bens.jpg"
+            alt="Ben's moment"
+            style={{ width: '100%', height: 290, objectFit: 'cover' }}
+          />
+        </div>
+      </section>
+
+      <section className="page-shell section-stack" style={{ paddingTop: 0 }}>
+        <div className="two-col" style={{ alignItems: 'center' }}>
+          <article className="surface-card" style={{ padding: 24 }}>
+            <h2 className="section-title" style={{ marginTop: 0 }}>{t('about.process.title')}</h2>
+            <div style={{ marginTop: 14, display: 'grid', gap: 16 }}>
+              {(['s1', 's2', 's3', 's4'] as const).map((step, idx) => (
+                <Reveal key={step} delay={idx * 0.08} anim="fadeUp">
+                  <div style={{ display: 'flex', gap: 12 }}>
+                    <span style={{ fontSize: 20, fontWeight: 900, color: C.hibiscus, minWidth: 30 }}>
+                      0{idx + 1}
+                    </span>
+                    <div>
+                      <h3 style={{ fontSize: 17, color: 'var(--ink-strong)', margin: 0 }}>
+                        {t(`about.process.${step}.title`)}
+                      </h3>
+                      <p className="page-subtitle" style={{ marginTop: 6 }}>
+                        {t(`about.process.${step}.desc`)}
+                      </p>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </article>
+
+          <Reveal anim="scaleIn">
+            <div className="surface-card" style={{ overflow: 'hidden', padding: 12 }}>
+              <img
+                src="/images-bens/photos/mission-engagement.png"
+                alt="Mission"
+                style={{ width: '100%', height: 420, objectFit: 'cover', borderRadius: 14 }}
+              />
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="page-shell section-stack" style={{ textAlign: 'center', paddingBottom: 12 }}>
+        <h2 className="section-title">{t('about.cta.title')}</h2>
+        <p className="page-subtitle" style={{ marginTop: 8 }}>{t('about.cta.subtitle')}</p>
+        <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center', gap: 10, flexWrap: 'wrap' }}>
+          <button type="button" className="btn-solid anim-btn" onClick={() => navigate(ROUTES.products)}>
             {t('about.cta.products')}
           </button>
-          <button onClick={() => navigate(ROUTES.locations)} className="anim-btn"
-            style={{ padding: '14px 32px', borderRadius: 50, border: `2px solid ${C.hibiscus}`, background: 'transparent', color: C.hibiscus, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+          <button type="button" className="btn-light anim-btn" onClick={() => navigate(ROUTES.locations)}>
             {t('about.cta.locations')}
           </button>
         </div>
