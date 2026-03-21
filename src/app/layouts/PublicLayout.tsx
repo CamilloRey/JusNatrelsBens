@@ -28,23 +28,13 @@ export default function PublicLayout() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const ingredientLabel = useMemo(
-    () =>
-      t('nav.ingredients', {
-        defaultValue: i18n.language?.startsWith('en') ? 'Ingredients' : 'Ingredients',
-      }),
-    [i18n.language, t]
-  );
-
   const NAV = [
     { path: ROUTES.home, label: t('nav.home') },
     { path: ROUTES.about, label: t('nav.about') },
     { path: ROUTES.products, label: t('nav.products') },
-    { path: ROUTES.ingredients, label: ingredientLabel },
     { path: ROUTES.recipes, label: t('nav.recipes', 'Recettes') },
     { path: ROUTES.blog, label: t('nav.blog') },
     { path: ROUTES.events, label: t('nav.events') },
-    { path: ROUTES.locations, label: t('nav.locations') },
     { path: ROUTES.contact, label: t('nav.contact') },
   ];
 

@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { useData } from '@/app/providers/DataContext';
 import { C } from '@/shared/constants/colors';
 import { Icon } from '@/shared/ui/Icon';
+import { C } from '@/shared/constants/colors';
 
 const TYPE_COLORS: Record<string, string> = {
   Marche: C.green,
@@ -23,9 +25,18 @@ const TYPE_EMOJIS: Record<string, string> = {
   'Événement': '📅',
 };
 
+const TYPE_COLORS: Record<string, string> = {
+  'Marché': '#5ab937',
+  'Festival': '#ff8a1a',
+  'Dégustation': '#5ab937',
+  'Atelier': '#ff8a1a',
+  'Autre': '#9ca3af',
+};
+
 export default function EventsPage() {
   const { t } = useTranslation();
   const { events, settings } = useData();
+  const navigate = useNavigate();
 
   const active = events.filter((event) => event.active).sort((a, b) => a.date.localeCompare(b.date));
   const today = new Date().toISOString().split('T')[0];
@@ -66,7 +77,19 @@ export default function EventsPage() {
               const date = new Date(event.date);
               const color = TYPE_COLORS[event.type] ?? C.hibiscus;
               return (
-                <article key={event.id} className="surface-card anim-card" style={{ overflow: 'hidden', padding: 0 }}>
+                <article
+                  key={event.id}
+                  className="surface-card anim-card"
+                  onClick={() => {
+                    navigate(`/events/${event.id}`);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  style={{
+                    overflow: 'hidden',
+                    padding: 0,
+                    cursor: 'pointer',
+                  }}
+                >
                   {event.img && (
                     <div style={{ height: 210, overflow: 'hidden' }}>
                       <img
@@ -136,7 +159,15 @@ export default function EventsPage() {
                 const date = new Date(event.date);
                 const emoji = TYPE_EMOJIS[event.type] ?? '📅';
                 return (
-                  <article key={event.id} className="event-timeline-item">
+                  <article
+                    key={event.id}
+                    className="event-timeline-item"
+                    onClick={() => {
+                      navigate(`/events/${event.id}`);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <div className="event-timeline-date">
                       <span className="month">
                         {date.toLocaleString('fr-CA', { month: 'short', timeZone: 'UTC' })}
