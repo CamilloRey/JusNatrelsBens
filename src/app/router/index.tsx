@@ -18,6 +18,8 @@ import EventDetailPage   from '@/features/events/pages/EventDetailPage';
 import LocationsPage     from '@/features/locations/pages/LocationsPage';
 import ContactPage       from '@/features/contact/pages/ContactPage';
 import LoginPage         from '@/features/auth/pages/LoginPage';
+import SupabaseLoginPage from '@/features/auth/pages/SupabaseLoginPage';
+import SupabaseSignupPage from '@/features/auth/pages/SupabaseSignupPage';
 
 import DashboardPage          from '@/features/dashboard/pages/DashboardPage';
 import AdminProductsPage      from '@/features/products/pages/AdminProductsPage';
@@ -41,6 +43,7 @@ import AdminOrdersPage        from '@/features/shop/pages/AdminOrdersPage';
 
 import { ROUTES } from '@/shared/constants/routes';
 import { ProtectedRoute } from './ProtectedRoute';
+import { ProtectedAdminRoute } from '@/features/auth/components/ProtectedAdminRoute';
 
 export const router = createBrowserRouter([
   /* ── PUBLIC ── */
@@ -64,13 +67,15 @@ export const router = createBrowserRouter([
     ],
   },
 
-  /* ── LOGIN ── */
+  /* ── AUTH ── */
   { path: ROUTES.login, element: <LoginPage /> },
+  { path: '/auth/login', element: <SupabaseLoginPage /> },
+  { path: '/auth/signup', element: <SupabaseSignupPage /> },
 
-  /* ── ADMIN (protected) ── */
+  /* ── ADMIN (protected by Supabase) ── */
   {
     path: ROUTES.admin.root,
-    element: <ProtectedRoute><AdminLayout /></ProtectedRoute>,
+    element: <ProtectedAdminRoute><AdminLayout /></ProtectedAdminRoute>,
     children: [
       { index: true, element: <Navigate to={ROUTES.admin.dashboard} replace /> },
       { path: 'dashboard',  element: <DashboardPage /> },
