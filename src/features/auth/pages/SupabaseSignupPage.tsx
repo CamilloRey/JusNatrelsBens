@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useSupabaseAuth } from '../context/SupabaseAuthContext';
+import { Honeypot, useHoneypot } from '@/components/Honeypot';
 import { C } from '@/shared/constants/colors';
 import { CSS, inputSt, labelSt } from '@/shared/constants/styles';
 
 export default function SupabaseSignupPage() {
   const navigate = useNavigate();
   const { signup, loading } = useSupabaseAuth();
+  const { validateHoneypot } = useHoneypot();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -15,9 +17,19 @@ export default function SupabaseSignupPage() {
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
+
+    // Check honeypot (bot detection)
+    const formData = new FormData(e.currentTarget);
+    const { isSpam } = validateHoneypot(formData);
+    if (isSpam) {
+      // Silently fail for bots - don't tell them they were caught
+      setSuccess(true);
+      setTimeout(() => navigate('/auth/login'), 2000);
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError('Les mots de passe ne correspondent pas');
@@ -94,6 +106,9 @@ export default function SupabaseSignupPage() {
           )}
 
           <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {/* Honeypot fields (hidden from humans, visible to bots) */}
+            <Honeypot />
+
             <div>
               <label style={labelSt}>Nom complet</label>
               <input

@@ -1,20 +1,32 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useSupabaseAuth } from '../context/SupabaseAuthContext';
+import { Honeypot, useHoneypot } from '@/components/Honeypot';
 import { C } from '@/shared/constants/colors';
 import { CSS, inputSt, labelSt } from '@/shared/constants/styles';
 
 export default function SupabaseLoginPage() {
   const navigate = useNavigate();
   const { login, loading } = useSupabaseAuth();
+  const { validateHoneypot } = useHoneypot();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
+
+    // Check honeypot (bot detection)
+    const formData = new FormData(e.currentTarget);
+    const { isSpam } = validateHoneypot(formData);
+    if (isSpam) {
+      // Silently fail for bots
+      setError('Invalid credentials');
+      return;
+    }
+
     setIsLoading(true);
 
     const { error: authError } = await login(email, password);
@@ -60,6 +72,9 @@ export default function SupabaseLoginPage() {
           )}
 
           <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {/* Honeypot fields (hidden from humans, visible to bots) */}
+            <Honeypot />
+
             <div>
               <label style={labelSt}>Email</label>
               <input
