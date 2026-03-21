@@ -30,6 +30,8 @@ import AdminSettingsPage      from '@/features/auth/pages/AdminSettingsPage';
 import AdminDataPage          from '@/features/dashboard/pages/AdminDataPage';
 import AdminBusinessPage      from '@/features/dashboard/pages/AdminBusinessPage';
 import AdminEventsPage        from '@/features/events/pages/AdminEventsPage';
+import AdminSquareSettingsPage from '@/features/payments/pages/AdminSquareSettingsPage';
+import AdminSquarePaymentsPage from '@/features/payments/pages/AdminSquarePaymentsPage';
 import AdminStockPage         from '@/features/stock/pages/AdminStockPage';
 import AdminFinancePage       from '@/features/finance/pages/AdminFinancePage';
 import AdminReportsPage       from '@/features/reports/pages/AdminReportsPage';
@@ -80,6 +82,8 @@ export const router = createBrowserRouter([
       { path: 'stock',      element: <AdminStockPage /> },
       { path: 'finance',    element: <AdminFinancePage /> },
       { path: 'business',   element: <AdminBusinessPage /> },
+      { path: 'payments',   element: <AdminSquarePaymentsPage /> },
+      { path: 'square',     element: <AdminSquareSettingsPage /> },
       { path: 'reports',    element: <AdminReportsPage /> },
       { path: 'data',       element: <AdminDataPage /> },
     ],
