@@ -4,11 +4,24 @@ export interface Event {
   description: string;
   date:        string;   // "2025-06-14"
   time:        string;   // "10h00 - 17h00"
-  location:    string;   // "Marché Jean-Talon"
+  location:    string;   // "Marche Jean-Talon"
   address:     string;
-  type:        string;   // "Marché", "Dégustation", "Festival", etc.
+  type:        string;   // "Marche", "Degustation", "Festival", etc.
   active:      boolean;
   img?:        string;
+  attendanceEnabled?: boolean;
+  maxAttendees?: number;
+  attendanceRequests?: AttendanceRequest[];
+}
+
+export interface AttendanceRequest {
+  id:        string;
+  name:      string;
+  email:     string;
+  phone?:    string;
+  message?:  string;
+  status:    'pending' | 'approved' | 'declined';
+  createdAt: string;
 }
 
 export interface EventFormState {
@@ -21,4 +34,6 @@ export interface EventFormState {
   type:        string;
   active:      boolean;
   img:         string;
+  attendanceEnabled: boolean;
+  maxAttendees: number;
 }

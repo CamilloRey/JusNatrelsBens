@@ -6,6 +6,8 @@ export interface BlogPost {
   published: boolean;
   date:      string;
   img?:      string;
+  tags?:     string[];
+  contentType?: 'article' | 'recette';
 }
 
 export interface BlogFormState {
@@ -14,4 +16,6 @@ export interface BlogFormState {
   content:   string;
   published: boolean;
   img:       string;
+  tags:      string;
+  contentType: 'article' | 'recette';
 }
