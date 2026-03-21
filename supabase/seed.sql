@@ -85,3 +85,17 @@ insert into settings (id, data) values (1, '{
   "deliveryNote": "Livraison disponible dans la grande région de Montréal."
 }'::jsonb)
 on conflict (id) do update set data = excluded.data;
+
+-- Ingredients seed
+insert into ingredients (id, name, image, benefits, note, active) values
+  ('ing-1', 'Hibiscus',  'https://images.unsplash.com/photo-1471943311424-646960669fbc?auto=format&fit=crop&w=1200&q=80', ARRAY['Riche en antioxydants','Peut aider a la circulation','Source naturelle de vitamine C'], 'Base florale traditionnelle de plusieurs jus.', true),
+  ('ing-2', 'Gingembre', 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=1200&q=80', ARRAY['Aide la digestion','Soutien immunitaire','Effet tonique naturel'], 'Donne une note epicee et vive.', true),
+  ('ing-3', 'Citron',    'https://images.unsplash.com/photo-1590502593747-42a996133562?auto=format&fit=crop&w=1200&q=80', ARRAY['Fraicheur naturelle','Vitamine C','Saveur acidulee equilibree'], 'Utilise pour equilibrer les melanges.', true),
+  ('ing-4', 'Ananas',    'https://images.unsplash.com/photo-1589820296156-2454bb8a6ad1?auto=format&fit=crop&w=1200&q=80', ARRAY['Saveur tropicale','Contient de la bromelaine','Apporte une douceur naturelle'], 'Parfait dans les recettes exotiques.', true),
+  ('ing-5', 'Fraises',   'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=1200&q=80', ARRAY['Riches en antioxydants','Saveur fruitee','Faible en calories'], 'Ajoute une touche douce et coloree.', true)
+on conflict (id) do update set
+  name = excluded.name,
+  image = excluded.image,
+  benefits = excluded.benefits,
+  note = excluded.note,
+  active = excluded.active;

@@ -11,6 +11,7 @@ type TableName =
   | 'reviews'
   | 'blogs'
   | 'locations'
+  | 'ingredients'
   | 'subscribers'
   | 'activity'
   | 'messages'
@@ -26,9 +27,10 @@ export async function fetchAll<T>(table: TableName, fallback: T[]): Promise<T[]>
       .from(table)
       .select('*')
       .order('created_at', { ascending: true });
-    if (error || !data || data.length === 0) return fallback;
+    if (error || !data) return fallback;
     return data as T[];
-  } catch {
+  } catch (e) {
+    console.error(`[Supabase] fetchAll ${table}:`, e);
     return fallback;
   }
 }
@@ -42,17 +44,21 @@ export async function fetchSettings<T>(fallback: T): Promise<T> {
       .select('data')
       .eq('id', 1)
       .single();
-    if (error || !data) return fallback;
+    if (error || !data) {
+      console.warn('[Supabase] settings indisponibles, fallback local utilisé.');
+      return fallback;
+    }
     return data.data as T;
-  } catch {
+  } catch (e) {
+    console.error('[Supabase] fetchSettings:', e);
     return fallback;
   }
 }
 
 /**
  * Synchroniser une table complète.
- * Stratégie : DELETE tout + INSERT tout.
- * Adapté aux petites tables (< 1 000 lignes).
+ * Stratégie : upsert par id + suppression ciblée des lignes retirées.
+ * Plus sûr qu'un DELETE global en cas de concurrence / interruption.
  */
 export async function syncAll<T extends { id: string }>(
   table: TableName,
@@ -60,10 +66,44 @@ export async function syncAll<T extends { id: string }>(
 ): Promise<void> {
   if (!supabase) return;
   try {
-    await supabase.from(table).delete().not('id', 'is', null);
-    if (items.length > 0) {
-      const { error } = await supabase.from(table).insert(items as never[]);
-      if (error) console.error(`[Supabase] syncAll ${table}:`, error);
+    if (items.length === 0) {
+      const { error } = await supabase.from(table).delete().not('id', 'is', null);
+      if (error) console.error(`[Supabase] syncAll ${table} delete-all:`, error);
+      return;
+    }
+
+    const { error: upsertError } = await supabase
+      .from(table)
+      .upsert(items as never[], { onConflict: 'id' });
+
+    if (upsertError) {
+      console.error(`[Supabase] syncAll ${table} upsert:`, upsertError);
+      return;
+    }
+
+    const { data: existingRows, error: readError } = await supabase
+      .from(table)
+      .select('id');
+
+    if (readError || !existingRows) {
+      console.error(`[Supabase] syncAll ${table} read ids:`, readError);
+      return;
+    }
+
+    const incomingIds = new Set(items.map((item) => item.id));
+    const staleIds = existingRows
+      .map((row) => row.id as string)
+      .filter((id) => !incomingIds.has(id));
+
+    if (staleIds.length > 0) {
+      const { error: deleteError } = await supabase
+        .from(table)
+        .delete()
+        .in('id', staleIds);
+
+      if (deleteError) {
+        console.error(`[Supabase] syncAll ${table} delete stale:`, deleteError);
+      }
     }
   } catch (e) {
     console.error(`[Supabase] syncAll ${table}:`, e);
@@ -74,7 +114,12 @@ export async function syncAll<T extends { id: string }>(
 export async function syncSettings<T>(settings: T): Promise<void> {
   if (!supabase) return;
   try {
-    await supabase.from('settings').upsert({ id: 1, data: settings as never });
+    const { error } = await supabase
+      .from('settings')
+      .upsert({ id: 1, data: settings as never });
+    if (error) {
+      console.error('[Supabase] syncSettings upsert:', error);
+    }
   } catch (e) {
     console.error('[Supabase] syncSettings:', e);
   }

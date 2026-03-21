@@ -1,81 +1,173 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useData }  from '@/app/providers/DataContext';
-import { C }        from '@/shared/constants/colors';
-import { CSS }      from '@/shared/constants/styles';
+import { useData } from '@/app/providers/DataContext';
+import { SEO } from '@/shared/components/SEO';
+import { Icon } from '@/shared/ui/Icon';
 
 export default function ContactPage() {
   const { t } = useTranslation();
   const { messages, updateMessages, subscribers, updateSubscribers, settings } = useData();
-  const [name, setName]   = useState('');
+
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [msg, setMsg]     = useState('');
-  const [sent, setSent]   = useState(false);
+  const [message, setMessage] = useState('');
+  const [sent, setSent] = useState(false);
+
+  const resetForm = () => {
+    setName('');
+    setEmail('');
+    setMessage('');
+    setSent(false);
+  };
 
   const handleSend = () => {
-    if (!email || !msg) return;
-    updateMessages([...messages, { id: 'm' + Date.now(), name: name || 'Anonyme', email, message: msg, read: false, responded: false, date: new Date().toISOString() }]);
-    if (email.includes('@') && !subscribers.find(s => s.email === email)) {
-      updateSubscribers([...subscribers, { id: 's' + Date.now(), email, date: new Date().toISOString().split('T')[0], active: true }]);
+    if (!email || !message) return;
+
+    updateMessages([
+      ...messages,
+      {
+        id: 'm' + Date.now(),
+        name: name || 'Anonyme',
+        email,
+        message,
+        read: false,
+        responded: false,
+        date: new Date().toISOString(),
+      },
+    ]);
+
+    if (email.includes('@') && !subscribers.find((subscriber) => subscriber.email === email)) {
+      updateSubscribers([
+        ...subscribers,
+        { id: 's' + Date.now(), email, date: new Date().toISOString().split('T')[0], active: true },
+      ]);
     }
+
     setSent(true);
   };
 
   return (
     <div>
-      {/* Bannière */}
-      <div style={{ height: 220, backgroundImage: `url('${settings.bannerContact || '/images-bens/photos/photo-contact.png'}')`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.55))' }} />
-        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', padding: '0 24px' }}>
-          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(28px,5vw,40px)', fontWeight: 900, color: '#fff', margin: '0 0 8px' }}>{t('contact.title')}</h1>
-          <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 16, margin: 0 }}>{t('contact.subtitle')}</p>
-        </div>
-      </div>
-    <div style={{ padding: '48px 24px', maxWidth: 600, margin: '0 auto' }}>
+      <SEO
+        title="Contact"
+        description="Contactez Les Jus Naturels Ben's pour toute question. Nous sommes a Montreal et ravis de vous servir."
+        url="https://lesjusnatuelsbens.com/contact"
+      />
 
-      {sent ? (
-        <div style={{ background: `${C.green}12`, border: `1px solid ${C.green}44`, borderRadius: 16, padding: 32, textAlign: 'center' }}>
-          <span style={{ fontSize: 40, display: 'block', marginBottom: 12 }}>✅</span>
-          <p style={{ fontSize: 16, fontWeight: 600, color: C.green, margin: '0 0 8px' }}>{t('contact.success.title')}</p>
-          <p style={{ fontSize: 14, color: C.muted, margin: 0 }}>{t('contact.success.subtitle')}</p>
-          <button onClick={() => { setSent(false); setName(''); setEmail(''); setMsg(''); }}
-            style={{ marginTop: 16, padding: '10px 24px', borderRadius: 10, border: `1px solid ${C.border}`, background: '#fff', color: C.dark, fontSize: 14, cursor: 'pointer' }}>
-            {t('contact.success.sendAnother')}
-          </button>
+      <section
+        className="page-hero"
+        style={{
+          backgroundImage: `url('${settings.bannerContact || '/images-bens/photos/photo-contact.png'}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="page-hero-inner">
+          <p className="page-hero-eyebrow">Contact</p>
+          <h1 className="page-hero-title">{t('contact.title')}</h1>
+          <p className="page-hero-subtitle">{t('contact.subtitle')}</p>
         </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {[
-            { placeholder: t('contact.name'),  value: name,  set: setName,  type: 'text' },
-            { placeholder: t('contact.email'), value: email, set: setEmail, type: 'email' },
-          ].map(({ placeholder, value, set, type }) => (
-            <input key={placeholder} type={type} placeholder={placeholder} value={value}
-              onChange={e => set(e.target.value)}
-              style={{ padding: '14px 18px', borderRadius: 12, border: `1px solid ${C.border}`, fontSize: 15, outline: 'none', fontFamily: 'inherit' }} />
-          ))}
-          <textarea placeholder={t('contact.message')} value={msg} onChange={e => setMsg(e.target.value)} rows={5}
-            style={{ padding: '14px 18px', borderRadius: 12, border: `1px solid ${C.border}`, fontSize: 15, outline: 'none', resize: 'vertical', fontFamily: 'inherit' }} />
-          <button onClick={handleSend} disabled={!email || !msg}
-            style={{ padding: 14, borderRadius: 12, border: 'none', background: C.hibiscus, color: '#fff', fontSize: 15, fontWeight: 600, cursor: 'pointer', opacity: !email || !msg ? 0.5 : 1 }}>
-            {t('contact.send')}
-          </button>
-        </div>
-      )}
+      </section>
 
-      <div style={{ marginTop: 32, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-        <div style={{ padding: 20, background: C.light, borderRadius: 14, textAlign: 'center' }}>
-          <span style={{ fontSize: 24, display: 'block', marginBottom: 6 }}>📧</span>
-          <p style={{ fontSize: 13, fontWeight: 600, color: C.dark, margin: '0 0 2px' }}>{t('contact.cards.email')}</p>
-          <p style={{ fontSize: 13, color: C.muted, margin: 0 }}>info@lesjusnaturelsbens.com</p>
+      <section className="page-shell" style={{ paddingBottom: 10 }}>
+        <div className="two-col" style={{ alignItems: 'start' }}>
+          <article className="surface-card" style={{ padding: 22 }}>
+            {sent ? (
+              <div style={{ textAlign: 'center', padding: '22px 8px' }}>
+                <p style={{ fontSize: 40, margin: 0, display: 'inline-flex' }}>
+                  <Icon type="check" size={40} color="var(--accent)" />
+                </p>
+                <h2 style={{ marginTop: 8, fontFamily: "'Playfair Display', serif", color: 'var(--ink-strong)' }}>
+                  {t('contact.success.title')}
+                </h2>
+                <p className="page-subtitle" style={{ marginTop: 8 }}>{t('contact.success.subtitle')}</p>
+                <button type="button" className="btn-light anim-btn" onClick={resetForm} style={{ marginTop: 14 }}>
+                  {t('contact.success.sendAnother')}
+                </button>
+              </div>
+            ) : (
+              <>
+                <h2 className="section-title" style={{ marginTop: 0, fontSize: 28 }}>{t('contact.title')}</h2>
+                <p className="page-subtitle" style={{ marginTop: 6 }}>{t('contact.subtitle')}</p>
+
+                <div style={{ marginTop: 14, display: 'grid', gap: 10 }}>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder={t('contact.name')}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+
+                  <input
+                    type="email"
+                    className="form-input"
+                    placeholder={t('contact.email')}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+
+                  <textarea
+                    className="form-area"
+                    placeholder={t('contact.message')}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                  />
+
+                  <button
+                    type="button"
+                    className="btn-solid anim-btn"
+                    onClick={handleSend}
+                    disabled={!email || !message}
+                    style={{ opacity: !email || !message ? 0.55 : 1 }}
+                  >
+                    {t('contact.send')}
+                  </button>
+                </div>
+              </>
+            )}
+          </article>
+
+          <div style={{ display: 'grid', gap: 12 }}>
+            <article className="surface-card" style={{ padding: 18 }}>
+              <p className="pill-label">{t('contact.cards.email')}</p>
+              <h3 style={{ marginTop: 10, fontSize: 19, color: 'var(--ink-strong)' }}>info@lesjusnaturelsbens.com</h3>
+              <p className="page-subtitle" style={{ marginTop: 6, fontSize: 13 }}>
+                Nous repondons generalement dans la meme journee.
+              </p>
+            </article>
+
+            <a
+              href="https://api.whatsapp.com/send?phone=15145550123&text=Bonjour%20Ben%27s%2C%20je%20veux%20des%20infos%20sur%20vos%20jus."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="surface-card anim-card"
+              style={{
+                display: 'block',
+                textDecoration: 'none',
+                padding: 18,
+                background: 'linear-gradient(140deg, rgba(31,188,88,0.12), rgba(255,255,255,0.9))',
+              }}
+            >
+              <p className="pill-label" style={{ background: 'rgba(31,188,88,0.18)', color: '#1f8d4f' }}>
+                {t('contact.cards.whatsapp')}
+              </p>
+              <h3 style={{ marginTop: 10, fontSize: 19, color: '#135d35' }}>+1 (514) 555-0123</h3>
+              <p className="page-subtitle" style={{ marginTop: 6, fontSize: 13, color: '#246142' }}>
+                {t('contact.cards.whatsappSub')}
+              </p>
+            </a>
+
+            <article className="surface-card" style={{ overflow: 'hidden' }}>
+              <img
+                src={settings.bannerContact || '/images-bens/photos/photo-contact.png'}
+                alt="Contact Ben's"
+                style={{ width: '100%', height: 220, objectFit: 'cover' }}
+              />
+            </article>
+          </div>
         </div>
-        <a href="https://wa.me/15145550123" target="_blank" rel="noopener noreferrer"
-          style={{ padding: 20, background: '#dcfce7', borderRadius: 14, textAlign: 'center', textDecoration: 'none', display: 'block' }}>
-          <span style={{ fontSize: 24, display: 'block', marginBottom: 6 }}>💬</span>
-          <p style={{ fontSize: 13, fontWeight: 600, color: '#166534', margin: '0 0 2px' }}>{t('contact.cards.whatsapp')}</p>
-          <p style={{ fontSize: 13, color: '#2a6a4f', margin: 0 }}>{t('contact.cards.whatsappSub')}</p>
-        </a>
-      </div>
-    </div>
+      </section>
     </div>
   );
 }

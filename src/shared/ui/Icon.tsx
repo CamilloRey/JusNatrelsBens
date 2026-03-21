@@ -2,7 +2,7 @@ type IconType =
   | 'home' | 'grid' | 'chart' | 'map' | 'star' | 'edit' | 'mail'
   | 'menu' | 'x' | 'plus' | 'check' | 'trash' | 'back' | 'lock'
   | 'eye' | 'send' | 'users' | 'shop' | 'settings' | 'clock'
-  | 'download' | 'refresh' | 'shield';
+  | 'download' | 'refresh' | 'shield' | 'instagram' | 'facebook' | 'whatsapp';
 
 interface IconProps {
   type: IconType;
@@ -34,6 +34,19 @@ const PATHS: Record<IconType, React.ReactNode> = {
   download: <><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></>,
   refresh:  <><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></>,
   shield:   <><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></>,
+  instagram: <>
+    <rect x="3" y="3" width="18" height="18" rx="5" />
+    <circle cx="12" cy="12" r="4" />
+    <circle cx="17.5" cy="6.5" r="1" />
+  </>,
+  facebook: <>
+    <path d="M15 8h-2a1 1 0 0 0-1 1v2h3l-.5 3H12v7" />
+    <rect x="4" y="2.5" width="16" height="19" rx="3" />
+  </>,
+  whatsapp: <>
+    <path d="M21 11.5a8.5 8.5 0 1 1-15.6 4.7L4 21l4.9-1.3A8.5 8.5 0 1 1 21 11.5z" />
+    <path d="M10.1 8.9c.2-.5.4-.5.7-.5.1 0 .3 0 .5.4.2.4.8 1.4.8 1.5.1.1.1.3 0 .5-.1.2-.2.3-.4.5-.1.1-.3.3-.1.6.2.3.8 1.2 2 1.6.9.3 1 .2 1.2 0 .2-.1.7-.8.8-.9.1-.1.3-.2.4-.1.2.1 1.2.6 1.4.7.2.1.3.2.3.3 0 .1 0 .9-.6 1.3-.6.4-1.3.5-1.6.4-.4-.1-2.8-.9-4.1-3-.3-.5-.6-1.1-.6-1.8 0-.7.3-1.1.5-1.4z" />
+  </>,
 };
 
 export function Icon({ type, size = 20, color = 'currentColor' }: IconProps) {

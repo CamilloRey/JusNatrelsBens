@@ -90,7 +90,7 @@ export default function AdminBlogPage() {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
-        <button onClick={() => { setEditing('new'); setForm({ title: '', category: 'Santé', content: '', published: false }); }}
+        <button onClick={() => { setEditing('new'); setForm({ title: '', category: 'Santé', content: '', published: false, img: '' }); }}
           style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 10, border: 'none', background: C.hibiscus, color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
           <Icon type="plus" size={16} color="#fff" /> Nouvel article
         </button>

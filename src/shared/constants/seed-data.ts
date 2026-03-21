@@ -9,6 +9,7 @@ import type { Settings }   from '@/features/auth/types/auth.types';
 import type { Event }         from '@/features/events/types/event.types';
 import type { StockMovement } from '@/features/stock/types/stock.types';
 import type { Transaction }   from '@/features/finance/types/finance.types';
+import type { Ingredient } from '@/features/ingredients/types/ingredient.types';
 
 export const SEED_PRODUCTS: Product[] = [
   { id: 'p1',  name: 'Hibiscus Gingembre',           category: 'Tisanes', price: 8.99,  formats: ['250ml','354ml','1L'], desc: "Alliance exquise de l'hibiscus et du gingembre piquant.", available: true, tag: 'Populaire', img: '/images-bens/produits/hibiscus-gingembre-trio-sans-sucre.png', color: '#c44536' },
@@ -41,6 +42,49 @@ export const SEED_LOCATIONS: Location[] = [
   { id: 'l1', name: 'Marché Jean-Talon',      address: '7070 Henri Julien, Montréal', type: 'Marché',   active: true },
   { id: 'l2', name: 'Épicerie Afro-Antillaise',address: '3456 Boul. Décarie, Montréal', type: 'Épicerie', active: true },
   { id: 'l3', name: 'Marché Atwater',          address: '138 Atwater, Montréal',      type: 'Marché',   active: true },
+];
+
+export const SEED_INGREDIENTS: Ingredient[] = [
+  {
+    id: 'ing-1',
+    name: 'Hibiscus',
+    image: 'https://images.unsplash.com/photo-1471943311424-646960669fbc?auto=format&fit=crop&w=1200&q=80',
+    benefits: ['Riche en antioxydants', 'Peut aider a la circulation', 'Source naturelle de vitamine C'],
+    note: 'Base florale traditionnelle de plusieurs jus.',
+    active: true,
+  },
+  {
+    id: 'ing-2',
+    name: 'Gingembre',
+    image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=1200&q=80',
+    benefits: ['Aide la digestion', 'Soutien immunitaire', 'Effet tonique naturel'],
+    note: 'Donne une note epicee et vive.',
+    active: true,
+  },
+  {
+    id: 'ing-3',
+    name: 'Citron',
+    image: 'https://images.unsplash.com/photo-1590502593747-42a996133562?auto=format&fit=crop&w=1200&q=80',
+    benefits: ['Fraicheur naturelle', 'Vitamine C', 'Saveur acidulee equilibree'],
+    note: 'Utilise pour equilibrer les melanges.',
+    active: true,
+  },
+  {
+    id: 'ing-4',
+    name: 'Ananas',
+    image: 'https://images.unsplash.com/photo-1589820296156-2454bb8a6ad1?auto=format&fit=crop&w=1200&q=80',
+    benefits: ['Saveur tropicale', 'Contient de la bromelaine', 'Apporte une douceur naturelle'],
+    note: 'Parfait dans les recettes exotiques.',
+    active: true,
+  },
+  {
+    id: 'ing-5',
+    name: 'Fraises',
+    image: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=1200&q=80',
+    benefits: ['Riches en antioxydants', 'Saveur fruitee', 'Faible en calories'],
+    note: 'Ajoute une touche douce et coloree.',
+    active: true,
+  },
 ];
 
 export const SEED_SUBSCRIBERS: Subscriber[] = [

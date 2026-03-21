@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lesjusnatuelsbens.com/sitemap.xml
+
+# Disallow admin routes
+Disallow: /admin/
+Disallow: /login/
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1

@@ -144,3 +144,16 @@ alter table settings disable row level security;
 --  DONNÉES INITIALES (seed)
 -- ════════════════════════════════════════════════════════════════
 -- Exécuter supabase/seed.sql après ce fichier.
+
+-- Ingredients table for public page + admin CRUD
+create table if not exists ingredients (
+  id          text primary key,
+  name        text not null,
+  image       text not null default '',
+  benefits    text[] not null default '{}',
+  note        text not null default '',
+  active      boolean default true,
+  created_at  timestamptz default now()
+);
+
+alter table ingredients disable row level security;

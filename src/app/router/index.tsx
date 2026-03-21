@@ -7,6 +7,8 @@ import HomePage          from '@/features/home/pages/HomePage';
 import AboutPage         from '@/features/about/pages/AboutPage';
 import ProductsPage      from '@/features/products/pages/ProductsPage';
 import ProductDetailPage from '@/features/products/pages/ProductDetailPage';
+import IngredientsPage   from '@/features/ingredients/pages/IngredientsPage';
+import RecipesPage       from '@/features/recipes/pages/RecipesPage';
 import BlogPage          from '@/features/blog/pages/BlogPage';
 import EventsPage        from '@/features/events/pages/EventsPage';
 import LocationsPage     from '@/features/locations/pages/LocationsPage';
@@ -15,6 +17,7 @@ import LoginPage         from '@/features/auth/pages/LoginPage';
 
 import DashboardPage          from '@/features/dashboard/pages/DashboardPage';
 import AdminProductsPage      from '@/features/products/pages/AdminProductsPage';
+import AdminIngredientsPage   from '@/features/ingredients/pages/AdminIngredientsPage';
 import AdminReviewsPage       from '@/features/reviews/pages/AdminReviewsPage';
 import AdminBlogPage          from '@/features/blog/pages/AdminBlogPage';
 import AdminLocationsPage     from '@/features/locations/pages/AdminLocationsPage';
@@ -38,7 +41,9 @@ export const router = createBrowserRouter([
       { path: ROUTES.home,      element: <HomePage /> },
       { path: ROUTES.about,     element: <AboutPage /> },
       { path: ROUTES.products,  element: <ProductsPage /> },
+      { path: ROUTES.ingredients, element: <IngredientsPage /> },
       { path: '/products/:id',  element: <ProductDetailPage /> },
+      { path: ROUTES.recipes,   element: <RecipesPage /> },
       { path: ROUTES.blog,      element: <BlogPage /> },
       { path: ROUTES.events,    element: <EventsPage /> },
       { path: ROUTES.locations, element: <LocationsPage /> },
@@ -57,6 +62,7 @@ export const router = createBrowserRouter([
       { index: true, element: <Navigate to={ROUTES.admin.dashboard} replace /> },
       { path: 'dashboard',  element: <DashboardPage /> },
       { path: 'products',   element: <AdminProductsPage /> },
+      { path: 'ingredients', element: <AdminIngredientsPage /> },
       { path: 'reviews',    element: <AdminReviewsPage /> },
       { path: 'blog',       element: <AdminBlogPage /> },
       { path: 'locations',  element: <AdminLocationsPage /> },

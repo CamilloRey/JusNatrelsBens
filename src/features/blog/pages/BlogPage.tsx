@@ -1,28 +1,116 @@
 import { useTranslation } from 'react-i18next';
 import { useData } from '@/app/providers/DataContext';
-import { C }       from '@/shared/constants/colors';
-import { CSS }     from '@/shared/constants/styles';
+import { SEO } from '@/shared/components/SEO';
+import { ROUTES } from '@/shared/constants/routes';
 
 export default function BlogPage() {
   const { t } = useTranslation();
   const { blogs } = useData();
-  const published = blogs.filter(b => b.published);
+  const published = blogs.filter((blog) => blog.published);
+  const featured = published[0];
+  const others = published.slice(1);
 
   return (
-    <div style={{ padding: '48px 24px', maxWidth: 800, margin: '0 auto' }}>
-      <h1 style={{ ...CSS.heading, fontSize: 36, fontWeight: 900, color: C.dark, margin: '0 0 8px' }}>{t('blog.title')}</h1>
-      <p style={{ color: C.muted, fontSize: 15, marginBottom: 40 }}>{t('blog.subtitle')}</p>
-      {published.map(b => (
-        <article key={b.id} style={{ background: '#fff', borderRadius: 16, padding: 28, border: `1px solid ${C.border}`, marginBottom: 20 }}>
-          <div style={{ display: 'flex', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
-            <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 6, background: `${C.red}12`, color: C.red, fontWeight: 600 }}>{b.category}</span>
-            <span style={{ fontSize: 12, color: C.muted }}>{b.date}</span>
+    <div>
+      <SEO
+        title="Blogue"
+        description="Lisez nos articles sur les jus naturels, la santé, les traditions africaines et les nouvelles de Ben's."
+        url="https://lesjusnatuelsbens.com/blogue"
+      />
+
+      <section className="page-hero">
+        <div className="page-hero-inner">
+          <p className="page-hero-eyebrow">Journal</p>
+          <h1 className="page-hero-title">{t('blog.title')}</h1>
+          <p className="page-hero-subtitle">{t('blog.subtitle')}</p>
+        </div>
+      </section>
+
+      <section className="blog-page-shell">
+        {published.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '60px 24px' }}>
+            <p style={{ fontSize: 16, color: 'var(--text-secondary)' }}>{t('blog.subtitle')}</p>
           </div>
-          <h2 style={{ ...CSS.heading, fontSize: 22, fontWeight: 700, margin: '0 0 12px', color: C.dark }}>{b.title}</h2>
-          <p style={{ fontSize: 15, color: C.text, lineHeight: 1.8, margin: 0 }}>{b.content}</p>
-        </article>
-      ))}
-      {published.length === 0 && <p style={{ color: C.muted, textAlign: 'center', padding: 40 }}>{t('blog.subtitle')}</p>}
+        ) : (
+          <>
+            {featured && (
+              <div className="blog-featured">
+                <div className="blog-featured-post">
+                  <div className="blog-featured-image">
+                    <div style={{
+                      width: '100%',
+                      height: '100%',
+                      background: `linear-gradient(135deg, rgba(90, 185, 55, 0.1), rgba(255, 138, 26, 0.05))`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: 48,
+                    }}>
+                      📰
+                    </div>
+                  </div>
+                  <div className="blog-featured-content">
+                    <span className="blog-card-category">{featured.category}</span>
+                    <h2>{featured.title}</h2>
+                    <div className="blog-featured-meta">
+                      <span>{featured.date}</span>
+                      <span>•</span>
+                      <span>{featured.content.split(' ').length} mots</span>
+                    </div>
+                    <p className="blog-featured-excerpt">{featured.content.substring(0, 300)}...</p>
+                    <a href={ROUTES.blog} className="blog-featured-cta">
+                      Lire plus →
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {others.length > 0 && (
+              <div>
+                <h2 style={{
+                  fontSize: 28,
+                  fontWeight: 700,
+                  marginBottom: 32,
+                  color: 'var(--text-primary)',
+                }}>
+                  Articles récents
+                </h2>
+                <div className="blog-grid">
+                  {others.map((blog) => (
+                    <article key={blog.id} className="blog-card">
+                      <div className="blog-card-image">
+                        <div style={{
+                          width: '100%',
+                          height: '100%',
+                          background: `linear-gradient(135deg, rgba(90, 185, 55, 0.1), rgba(255, 138, 26, 0.05))`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: 40,
+                        }}>
+                          📝
+                        </div>
+                      </div>
+                      <div className="blog-card-content">
+                        <div className="blog-card-meta">
+                          <span className="blog-card-category">{blog.category}</span>
+                          <span>{blog.date}</span>
+                        </div>
+                        <h3 className="blog-card-title">{blog.title}</h3>
+                        <p className="blog-card-excerpt">{blog.content.substring(0, 150)}...</p>
+                        <a href={ROUTES.blog} className="blog-card-link">
+                          Lire plus →
+                        </a>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </section>
     </div>
   );
 }

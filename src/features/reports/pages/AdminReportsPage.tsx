@@ -165,7 +165,7 @@ function TabPerformance() {
 /*  Onglet 2 — Rapport mensuel                               */
 /* ══════════════════════════════════════════════════════════ */
 function TabMonthly() {
-  const { finance, stock, events, products } = useData();
+  const { finance, stock, events } = useData();
 
   /* Mois disponibles (union finance + stock + events) */
   const allMonths = Array.from(new Set([
