@@ -1,16 +1,25 @@
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { useSupabaseAuth } from '@/features/auth/context/SupabaseAuthContext';
+import { useSecurityValidation } from '@/features/auth/hooks/useSecurityValidation';
+import { useRateLimit } from '@/features/auth/hooks/useRateLimit';
+import { GuestEmailValidator } from '../components/GuestEmailValidator';
 import { C } from '@/shared/constants/colors';
 import { CSS, inputSt, labelSt } from '@/shared/constants/styles';
 import type { ShippingAddress, DeliveryType, Order } from '../types/shop.types';
 
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
+  const { user } = useSupabaseAuth();
+  const { validateCheckoutForm, sanitizeCheckoutData } = useSecurityValidation();
+  const { isRateLimited, remainingTime, checkCheckoutLimit } = useRateLimit();
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
-  const [isGuest, setIsGuest] = useState(true);
+  const [isGuest, setIsGuest] = useState(!user);
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   // Step 2: Customer info
-  const [customerEmail, setCustomerEmail] = useState('');
+  const [customerEmail, setCustomerEmail] = useState(user?.email || '');
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
 
@@ -139,20 +148,66 @@ export default function CheckoutPage() {
   }
 
   const handleNextStep = () => {
+    setFormErrors({});
+
     if (step === 1) {
+      // Step 1: Cart review - always allowed
       setStep(2);
     } else if (step === 2) {
-      if (!customerEmail || !customerName) {
-        alert('Veuillez remplir tous les champs');
+      // Step 2: Customer info validation
+      const requiredFields = {
+        email: customerEmail,
+        name: customerName,
+        phone: customerPhone,
+      };
+
+      if (!customerEmail.trim()) {
+        setFormErrors({ email: 'Email requis' });
         return;
       }
-      setAddress((a) => ({ ...a, name: customerName, email: customerEmail, phone: customerPhone }));
+
+      if (!customerName.trim()) {
+        setFormErrors({ name: 'Nom requis' });
+        return;
+      }
+
+      // Check rate limiting for guest checkout
+      if (!user && !checkCheckoutLimit(customerEmail)) {
+        setFormErrors({
+          general: `Trop de tentatives. Réessayez dans ${Math.floor(remainingTime / 60)} minutes`,
+        });
+        return;
+      }
+
+      if (!emailVerified && isGuest) {
+        setFormErrors({ general: 'Veuillez vérifier votre email d\'abord' });
+        return;
+      }
+
+      setAddress((a) => ({
+        ...a,
+        name: customerName,
+        email: customerEmail,
+        phone: customerPhone,
+      }));
       setStep(3);
     } else if (step === 3) {
-      if (!address.street || !address.postalCode) {
-        alert('Veuillez remplir l\'adresse complète');
+      // Step 3: Address validation
+      const { isValid, errors } = validateCheckoutForm({
+        email: customerEmail,
+        name: customerName,
+        street: address.street,
+        city: address.city,
+        province: address.province,
+        postalCode: address.postalCode,
+        phone: address.phone,
+      });
+
+      if (!isValid) {
+        setFormErrors(errors);
         return;
       }
+
       setStep(4);
     }
   };
@@ -254,6 +309,35 @@ export default function CheckoutPage() {
                 Informations client
               </h2>
 
+              {/* Error Messages */}
+              {formErrors.general && (
+                <div
+                  style={{
+                    background: '#fee2e2',
+                    border: '1px solid #fecaca',
+                    borderRadius: 10,
+                    padding: 12,
+                    marginBottom: 16,
+                    fontSize: 13,
+                    color: '#dc2626',
+                  }}
+                >
+                  {formErrors.general}
+                </div>
+              )}
+
+              {/* Guest Email Verification */}
+              {isGuest && !user && (
+                <div style={{ marginBottom: 20 }}>
+                  <GuestEmailValidator
+                    onEmailVerified={(email) => {
+                      setCustomerEmail(email);
+                      setEmailVerified(true);
+                    }}
+                  />
+                </div>
+              )}
+
               <div style={{ marginBottom: 16 }}>
                 <label style={labelSt}>Nom complet *</label>
                 <input
@@ -261,8 +345,16 @@ export default function CheckoutPage() {
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   disabled={step > 2}
-                  style={inputSt}
+                  style={{
+                    ...inputSt,
+                    borderColor: formErrors.name ? '#dc2626' : undefined,
+                  }}
                 />
+                {formErrors.name && (
+                  <p style={{ fontSize: 12, color: '#dc2626', margin: '4px 0 0' }}>
+                    {formErrors.name}
+                  </p>
+                )}
               </div>
 
               <div style={{ marginBottom: 16 }}>
@@ -271,9 +363,17 @@ export default function CheckoutPage() {
                   type="email"
                   value={customerEmail}
                   onChange={(e) => setCustomerEmail(e.target.value)}
-                  disabled={step > 2}
-                  style={inputSt}
+                  disabled={step > 2 || (isGuest && emailVerified)}
+                  style={{
+                    ...inputSt,
+                    borderColor: formErrors.email ? '#dc2626' : undefined,
+                  }}
                 />
+                {formErrors.email && (
+                  <p style={{ fontSize: 12, color: '#dc2626', margin: '4px 0 0' }}>
+                    {formErrors.email}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -283,8 +383,16 @@ export default function CheckoutPage() {
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
                   disabled={step > 2}
-                  style={inputSt}
+                  style={{
+                    ...inputSt,
+                    borderColor: formErrors.phone ? '#dc2626' : undefined,
+                  }}
                 />
+                {formErrors.phone && (
+                  <p style={{ fontSize: 12, color: '#dc2626', margin: '4px 0 0' }}>
+                    {formErrors.phone}
+                  </p>
+                )}
               </div>
             </div>
           )}
