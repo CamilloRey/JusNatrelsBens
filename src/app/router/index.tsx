@@ -21,6 +21,7 @@ import AdminProductsPage      from '@/features/products/pages/AdminProductsPage'
 import AdminIngredientsPage   from '@/features/ingredients/pages/AdminIngredientsPage';
 import AdminReviewsPage       from '@/features/reviews/pages/AdminReviewsPage';
 import AdminBlogPage          from '@/features/blog/pages/AdminBlogPage';
+import AdminRecipesPage       from '@/features/recipes/pages/AdminRecipesPage';
 import AdminLocationsPage     from '@/features/locations/pages/AdminLocationsPage';
 import AdminSubscribersPage   from '@/features/newsletter/pages/AdminSubscribersPage';
 import AdminMessagesPage      from '@/features/contact/pages/AdminMessagesPage';
@@ -65,6 +66,7 @@ export const router = createBrowserRouter([
       { path: 'dashboard',  element: <DashboardPage /> },
       { path: 'products',   element: <AdminProductsPage /> },
       { path: 'ingredients', element: <AdminIngredientsPage /> },
+      { path: 'recipes',    element: <AdminRecipesPage /> },
       { path: 'reviews',    element: <AdminReviewsPage /> },
       { path: 'blog',       element: <AdminBlogPage /> },
       { path: 'locations',  element: <AdminLocationsPage /> },

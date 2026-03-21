@@ -12,6 +12,7 @@ import { eventService }      from '@/features/events/services/event.service';
 import { stockService }      from '@/features/stock/services/stock.service';
 import { financeService }    from '@/features/finance/services/finance.service';
 import { ingredientService } from '@/features/ingredients/services/ingredient.service';
+import { recipeService }     from '@/features/recipes/services/recipe.service';
 
 import type { Product }    from '@/features/products/types/product.types';
 import type { Review }     from '@/features/reviews/types/review.types';
@@ -25,6 +26,7 @@ import type { Event }         from '@/features/events/types/event.types';
 import type { StockMovement } from '@/features/stock/types/stock.types';
 import type { Transaction }   from '@/features/finance/types/finance.types';
 import type { Ingredient } from '@/features/ingredients/types/ingredient.types';
+import type { Recipe } from '@/features/recipes/types/recipe.types';
 import { normalizeTextDeep } from '@/shared/utils/text-normalize';
 import {
   SEED_ACTIVITY,
@@ -46,6 +48,7 @@ interface DataContextValue {
   blogs:       BlogPost[];
   locations:   Location[];
   ingredients: Ingredient[];
+  recipes:     Recipe[];
   subscribers: Subscriber[];
   messages:    Message[];
   activity:    Activity[];
@@ -56,6 +59,7 @@ interface DataContextValue {
   updateBlogs:       (b: BlogPost[])   => void;
   updateLocations:   (l: Location[])   => void;
   updateIngredients: (i: Ingredient[]) => void;
+  updateRecipes:     (r: Recipe[])     => void;
   updateSubscribers: (s: Subscriber[]) => void;
   updateMessages:    (m: Message[])    => void;
   events:         Event[];
@@ -79,6 +83,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [blogs,       setBlogs]       = useState<BlogPost[]>([]);
   const [locations,   setLocations]   = useState<Location[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [recipes,     setRecipes]     = useState<Recipe[]>([]);
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [messages,    setMessages]    = useState<Message[]>([]);
   const [events,      setEvents]      = useState<Event[]>([]);
@@ -90,12 +95,13 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   /* â”€â”€â”€ Chargement initial â”€â”€â”€ */
   useEffect(() => {
     (async () => {
-      const [p, r, b, l, i, s, m, ev, stk, fin, ac, st] = await Promise.all([
+      const [p, r, b, l, i, rec, s, m, ev, stk, fin, ac, st] = await Promise.all([
         productService.getAll(),
         reviewService.getAll(),
         blogService.getAll(),
         locationService.getAll(),
         ingredientService.getAll(),
+        recipeService.getAll(),
         subscriberService.getAll(),
         messageService.getAll(),
         eventService.getAll(),
@@ -109,6 +115,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       setBlogs(normalizeTextDeep(b));
       setLocations(normalizeTextDeep(l));
       setIngredients(normalizeTextDeep(i));
+      setRecipes(normalizeTextDeep(rec));
       setSubscribers(normalizeTextDeep(s));
       setMessages(normalizeTextDeep(m));
       setEvents(normalizeTextDeep(ev));
@@ -126,6 +133,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const updateBlogs       = (b: BlogPost[])   => { setBlogs(b);       blogService.save(b); };
   const updateLocations   = (l: Location[])   => { setLocations(l);   locationService.save(l); };
   const updateIngredients = (i: Ingredient[]) => { setIngredients(i); ingredientService.save(i); };
+  const updateRecipes     = (r: Recipe[])     => { setRecipes(r);     recipeService.save(r); };
   const updateSubscribers = (s: Subscriber[]) => { setSubscribers(s); subscriberService.save(s); };
   const updateMessages    = (m: Message[])    => { setMessages(m);    messageService.save(m); };
   const updateEvents      = (e: Event[])          => { setEvents(e);   eventService.save(e); };
@@ -171,9 +179,9 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <DataContext.Provider value={{
-      loaded, products, reviews, blogs, locations, ingredients, subscribers, messages, events, stock, finance, activity, settings,
+      loaded, products, reviews, blogs, locations, ingredients, recipes, subscribers, messages, events, stock, finance, activity, settings,
       updateProducts, updateReviews, updateBlogs, updateLocations,
-      updateIngredients, updateSubscribers, updateMessages, updateEvents, updateStock, updateFinance, updateSettings, logActivity, exportData, resetAll,
+      updateIngredients, updateRecipes, updateSubscribers, updateMessages, updateEvents, updateStock, updateFinance, updateSettings, logActivity, exportData, resetAll,
     }}>
       {children}
     </DataContext.Provider>
