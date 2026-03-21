@@ -148,7 +148,7 @@ CREATE POLICY "Admins can read all orders" ON orders
   );
 
 CREATE POLICY "Users can insert their own orders" ON orders
-  FOR INSERT WITH CHECK (auth.uid() = user_id OR true);
+  FOR INSERT WITH CHECK (auth.uid() = user_id OR (user_id IS NULL AND guest_email IS NOT NULL));
 
 CREATE POLICY "Admins can update orders" ON orders
   FOR UPDATE USING (

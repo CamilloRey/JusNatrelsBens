@@ -18,6 +18,8 @@ import ContactPage       from '@/features/contact/pages/ContactPage';
 import LoginPage         from '@/features/auth/pages/LoginPage';
 import SupabaseLoginPage from '@/features/auth/pages/SupabaseLoginPage';
 import SupabaseSignupPage from '@/features/auth/pages/SupabaseSignupPage';
+import SupabaseForgotPasswordPage from '@/features/auth/pages/SupabaseForgotPasswordPage';
+import SupabaseResetPasswordPage from '@/features/auth/pages/SupabaseResetPasswordPage';
 
 import DashboardPage          from '@/features/dashboard/pages/DashboardPage';
 import AdminProductsPage      from '@/features/products/pages/AdminProductsPage';
@@ -59,6 +61,7 @@ export const router = createBrowserRouter([
       { path: ROUTES.contact,   element: <ContactPage /> },
       { path: '/cart',          element: <CartPage /> },
       { path: '/checkout',      element: <CheckoutPage /> },
+      { path: '/shop',          element: <ProductsPage /> },
       // Redirects for removed pages
       { path: '/ingredients',   element: <Navigate to={ROUTES.products} replace /> },
       { path: '/recipes',       element: <Navigate to={ROUTES.blog} replace /> },
@@ -69,6 +72,8 @@ export const router = createBrowserRouter([
   { path: ROUTES.login, element: <LoginPage /> },
   { path: '/auth/login', element: <SupabaseLoginPage /> },
   { path: '/auth/signup', element: <SupabaseSignupPage /> },
+  { path: '/auth/forgot-password', element: <SupabaseForgotPasswordPage /> },
+  { path: '/auth/reset-password', element: <SupabaseResetPasswordPage /> },
 
   /* -- ADMIN (protected by Supabase) -- */
   {
