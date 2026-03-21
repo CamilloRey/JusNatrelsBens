@@ -6,7 +6,7 @@ import { Icon } from '@/shared/ui/Icon';
 
 export default function ContactPage() {
   const { t } = useTranslation();
-  const { messages, updateMessages, subscribers, updateSubscribers } = useData();
+  const { messages, updateMessages, subscribers, updateSubscribers, settings } = useData();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -48,13 +48,20 @@ export default function ContactPage() {
 
   return (
     <div>
-      <SEO 
+      <SEO
         title="Contact"
-        description="Contactez Les Jus Naturels Ben's pour toute question. Nous sommes à Montréal et ravis de vous servir."
+        description="Contactez Les Jus Naturels Ben's pour toute question. Nous sommes a Montreal et ravis de vous servir."
         url="https://lesjusnatuelsbens.com/contact"
       />
-      
-      <section className="page-hero">
+
+      <section
+        className="page-hero"
+        style={{
+          backgroundImage: `url('${settings.bannerContact || '/images-bens/photos/photo-contact.png'}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
         <div className="page-hero-inner">
           <p className="page-hero-eyebrow">Contact</p>
           <h1 className="page-hero-title">{t('contact.title')}</h1>
@@ -153,7 +160,7 @@ export default function ContactPage() {
 
             <article className="surface-card" style={{ overflow: 'hidden' }}>
               <img
-                src="/images-bens/photos/photo-contact.png"
+                src={settings.bannerContact || '/images-bens/photos/photo-contact.png'}
                 alt="Contact Ben's"
                 style={{ width: '100%', height: 220, objectFit: 'cover' }}
               />

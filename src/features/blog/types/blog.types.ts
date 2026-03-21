@@ -5,6 +5,7 @@ export interface BlogPost {
   content:   string;
   published: boolean;
   date:      string;
+  img?:      string;
 }
 
 export interface BlogFormState {
@@ -12,4 +13,5 @@ export interface BlogFormState {
   category:  string;
   content:   string;
   published: boolean;
+  img:       string;
 }

@@ -8,6 +8,7 @@ export interface Event {
   address:     string;
   type:        string;   // "Marché", "Dégustation", "Festival", etc.
   active:      boolean;
+  img?:        string;
 }
 
 export interface EventFormState {
@@ -19,4 +20,5 @@ export interface EventFormState {
   address:     string;
   type:        string;
   active:      boolean;
+  img:         string;
 }

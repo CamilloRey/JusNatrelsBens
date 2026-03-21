@@ -1,4 +1,4 @@
-﻿import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useData } from '@/app/providers/DataContext';
 import { SEO } from '@/shared/components/SEO';
 import { Icon } from '@/shared/ui/Icon';
@@ -15,7 +15,7 @@ const TYPE_EMOJIS: Record<string, string> = {
 
 export default function EventsPage() {
   const { t } = useTranslation();
-  const { events } = useData();
+  const { events, settings } = useData();
 
   const active = events.filter((event) => event.active).sort((a, b) => a.date.localeCompare(b.date));
   const today = new Date().toISOString().split('T')[0];
@@ -25,13 +25,14 @@ export default function EventsPage() {
 
   return (
     <div>
-      <SEO
-        title="Événements"
-        description="Découvrez les événements de Ben's Jus Naturels. Dégustations, ateliers, festivals et marchés à Montréal."
-        url="https://lesjusnatuelsbens.com/evenements"
-      />
-
-      <section className="page-hero">
+      <section
+        className="page-hero"
+        style={{
+          backgroundImage: `url('${settings.bannerEvents || '/images-bens/hero-banners/banniere-evenements.png'}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
         <div className="page-hero-inner">
           <p className="page-hero-eyebrow">Agenda</p>
           <h1 className="page-hero-title">{t('events.title')}</h1>
@@ -39,87 +40,68 @@ export default function EventsPage() {
         </div>
       </section>
 
-      <section className="events-page-shell">
-        {upcoming.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '60px 24px' }}>
-            <p style={{ fontSize: 40, marginBottom: 16 }}>📅</p>
-            <p style={{ fontSize: 16, color: 'var(--text-secondary)' }}>{t('events.none')}</p>
-          </div>
-        ) : (
-          <>
-            <h2 style={{
-              fontSize: 24,
-              fontWeight: 700,
-              marginBottom: 32,
-              color: 'var(--text-primary)',
-            }}>
-              Prochains événements
-            </h2>
-            <div className="events-timeline">
-              {upcoming.map((event) => {
-                const date = new Date(event.date);
-                const emoji = TYPE_EMOJIS[event.type] ?? '📅';
-                return (
-                  <article key={event.id} className="event-timeline-item anim-card">
-                    <div className="event-timeline-date">
-                      <span className="month">
-                        {date.toLocaleString('fr-CA', { month: 'short', timeZone: 'UTC' })}
-                      </span>
-                      <span className="day">{date.getUTCDate()}</span>
-                      <span className="year">{date.getUTCFullYear()}</span>
-                    </div>
+      <section className="page-shell">
+        {upcoming.length === 0 && (
+          <article className="surface-card" style={{ padding: 28, textAlign: 'center' }}>
+            <span style={{ display: 'inline-flex' }}>
+              <Icon type="clock" size={40} color={C.hibiscus} />
+            </span>
+            <p className="page-subtitle" style={{ marginTop: 8 }}>{t('events.none')}</p>
+          </article>
+        )}
 
-                    <div className="event-timeline-content">
-                      <span className="event-timeline-type">{emoji} {event.type}</span>
-                      <h3>{event.title}</h3>
-                      {event.description && (
-                        <p style={{
-                          fontSize: 14,
-                          color: 'var(--text-secondary)',
-                          margin: '8px 0 0',
-                          lineHeight: 1.5,
-                        }}>
-                          {event.description}
-                        </p>
-                      )}
-                      <div className="event-timeline-details">
-                        <p>
-                          <Icon type="map" size={14} />
+        {upcoming.length > 0 && (
+          <div style={{ display: 'grid', gap: 14 }}>
+            {upcoming.map((event) => {
+              const date = new Date(event.date);
+              const color = TYPE_COLORS[event.type] ?? C.hibiscus;
+              return (
+                <article key={event.id} className="surface-card anim-card" style={{ overflow: 'hidden', padding: 0 }}>
+                  {event.img && (
+                    <div style={{ height: 210, overflow: 'hidden' }}>
+                      <img
+                        src={event.img}
+                        alt={event.title}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    </div>
+                  )}
+
+                  <div style={{ padding: 16 }}>
+                    <div className="home-event-row">
+                      <div className="home-event-date" style={{ borderColor: `${color}55`, background: `${color}18` }}>
+                        <span className="day" style={{ color }}>{date.getUTCDate()}</span>
+                        <span className="month" style={{ color }}>
+                          {date.toLocaleString('fr-CA', { month: 'short', timeZone: 'UTC' })}
+                        </span>
+                      </div>
+
+                      <div className="home-event-body" style={{ flex: 1 }}>
+                        <span className="type" style={{ background: `${color}1a`, color }}>{event.type}</span>
+                        <h3>{event.title}</h3>
+                        <p style={{ fontSize: 13 }}>{event.description}</p>
+                        <p style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <Icon type="map" size={14} color={color} />
                           {event.location}{event.address ? ` - ${event.address}` : ''}
                         </p>
                         {event.time && (
-                          <p>
-                            <Icon type="clock" size={14} />
+                          <p style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <Icon type="clock" size={14} color={color} />
                             {event.time}
                           </p>
                         )}
+
+                        {event.address && (
+                          <a
+                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${event.location} ${event.address}`)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ marginTop: 8, display: 'inline-block', color, fontWeight: 700, textDecoration: 'none', fontSize: 13 }}
+                          >
+                            {t('events.directions')}
+                          </a>
+                        )}
                       </div>
-                      {event.address && (
-                        <a
-                          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${event.location} ${event.address}`)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            marginTop: 12,
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 6,
-                            color: 'var(--brand-primary)',
-                            fontWeight: 700,
-                            textDecoration: 'none',
-                            fontSize: 13,
-                            transition: 'all 0.24s ease',
-                          }}
-                          onMouseEnter={(e) => {
-                            (e.target as HTMLElement).style.gap = '10px';
-                          }}
-                          onMouseLeave={(e) => {
-                            (e.target as HTMLElement).style.gap = '6px';
-                          }}
-                        >
-                          {t('events.directions')} →
-                        </a>
-                      )}
                     </div>
                   </article>
                 );
@@ -173,5 +155,3 @@ export default function EventsPage() {
     </div>
   );
 }
-
-

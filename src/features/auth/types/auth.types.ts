@@ -14,6 +14,11 @@ export interface Settings {
   currency:     string;
   taxRate:      number;
   deliveryNote: string;
+  bannerHero?:     string;
+  bannerAbout?:    string;
+  bannerContact?:  string;
+  bannerProducts?: string;
+  bannerEvents?:   string;
 }
 
 export interface AuthState {
