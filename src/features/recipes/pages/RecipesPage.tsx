@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SEO } from '@/shared/components/SEO';
-import { useData } from '@/app/providers/DataContext';
 import type { Recipe } from '../types/recipe.types';
 
 // Mock recipes data
@@ -79,7 +78,6 @@ const MOCK_RECIPES: Recipe[] = [
 
 export default function RecipesPage() {
   const { t } = useTranslation();
-  const { products } = useData();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
 

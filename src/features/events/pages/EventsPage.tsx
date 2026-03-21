@@ -1,9 +1,19 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '@/app/providers/DataContext';
-import { SEO } from '@/shared/components/SEO';
+import { C } from '@/shared/constants/colors';
 import { Icon } from '@/shared/ui/Icon';
 import { C } from '@/shared/constants/colors';
+
+const TYPE_COLORS: Record<string, string> = {
+  Marche: C.green,
+  Festival: C.hibiscus,
+  Degustation: C.gold,
+  Atelier: C.red,
+  'Marché': C.green,
+  'Dégustation': C.gold,
+  'Événement': C.hibiscus,
+};
 
 const TYPE_EMOJIS: Record<string, string> = {
   'Marche': '🌍',
@@ -126,10 +136,11 @@ export default function EventsPage() {
                         )}
                       </div>
                     </div>
-                  </article>
+                  </div>
+                </article>
                 );
               })}
-            </div>
+          </div>
         )}
 
         {past.length > 0 && (
