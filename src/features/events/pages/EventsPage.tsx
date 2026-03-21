@@ -1,15 +1,16 @@
 ﻿import { useTranslation } from 'react-i18next';
 import { useData } from '@/app/providers/DataContext';
-import { C } from '@/shared/constants/colors';
+import { SEO } from '@/shared/components/SEO';
 import { Icon } from '@/shared/ui/Icon';
 
-const TYPE_COLORS: Record<string, string> = {
-  Marche: C.green,
-  Festival: C.hibiscus,
-  Degustation: C.gold,
-  Atelier: C.red,
-  'Marché': C.green,
-  'Dégustation': C.gold,
+const TYPE_EMOJIS: Record<string, string> = {
+  'Marche': '🌍',
+  'Festival': '🎉',
+  'Degustation': '🥤',
+  'Atelier': '👨‍🍳',
+  'Marché': '🌍',
+  'Dégustation': '🥤',
+  'Événement': '📅',
 };
 
 export default function EventsPage() {
@@ -24,6 +25,12 @@ export default function EventsPage() {
 
   return (
     <div>
+      <SEO
+        title="Événements"
+        description="Découvrez les événements de Ben's Jus Naturels. Dégustations, ateliers, festivals et marchés à Montréal."
+        url="https://lesjusnatuelsbens.com/evenements"
+      />
+
       <section className="page-hero">
         <div className="page-hero-inner">
           <p className="page-hero-eyebrow">Agenda</p>
@@ -32,88 +39,129 @@ export default function EventsPage() {
         </div>
       </section>
 
-      <section className="page-shell">
-        {upcoming.length === 0 && (
-          <article className="surface-card" style={{ padding: 28, textAlign: 'center' }}>
-            <span style={{ display: 'inline-flex' }}>
-              <Icon type="clock" size={40} color={C.hibiscus} />
-            </span>
-            <p className="page-subtitle" style={{ marginTop: 8 }}>{t('events.none')}</p>
-          </article>
-        )}
-
-        {upcoming.length > 0 && (
-          <div style={{ display: 'grid', gap: 14 }}>
-            {upcoming.map((event) => {
-              const date = new Date(event.date);
-              const color = TYPE_COLORS[event.type] ?? C.hibiscus;
-              return (
-                <article key={event.id} className="surface-card anim-card" style={{ padding: 16 }}>
-                  <div className="home-event-row">
-                    <div className="home-event-date" style={{ borderColor: `${color}55`, background: `${color}18` }}>
-                      <span className="day" style={{ color }}>{date.getUTCDate()}</span>
-                      <span className="month" style={{ color }}>
+      <section className="events-page-shell">
+        {upcoming.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '60px 24px' }}>
+            <p style={{ fontSize: 40, marginBottom: 16 }}>📅</p>
+            <p style={{ fontSize: 16, color: 'var(--text-secondary)' }}>{t('events.none')}</p>
+          </div>
+        ) : (
+          <>
+            <h2 style={{
+              fontSize: 24,
+              fontWeight: 700,
+              marginBottom: 32,
+              color: 'var(--text-primary)',
+            }}>
+              Prochains événements
+            </h2>
+            <div className="events-timeline">
+              {upcoming.map((event) => {
+                const date = new Date(event.date);
+                const emoji = TYPE_EMOJIS[event.type] ?? '📅';
+                return (
+                  <article key={event.id} className="event-timeline-item anim-card">
+                    <div className="event-timeline-date">
+                      <span className="month">
                         {date.toLocaleString('fr-CA', { month: 'short', timeZone: 'UTC' })}
                       </span>
+                      <span className="day">{date.getUTCDate()}</span>
+                      <span className="year">{date.getUTCFullYear()}</span>
                     </div>
 
-                    <div className="home-event-body" style={{ flex: 1 }}>
-                      <span className="type" style={{ background: `${color}1a`, color }}>{event.type}</span>
+                    <div className="event-timeline-content">
+                      <span className="event-timeline-type">{emoji} {event.type}</span>
                       <h3>{event.title}</h3>
-                      <p style={{ fontSize: 13 }}>{event.description}</p>
-                      <p style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <Icon type="map" size={14} color={color} />
-                        {event.location}{event.address ? ` - ${event.address}` : ''}
-                      </p>
-                      {event.time && (
-                        <p style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <Icon type="clock" size={14} color={color} />
-                          {event.time}
+                      {event.description && (
+                        <p style={{
+                          fontSize: 14,
+                          color: 'var(--text-secondary)',
+                          margin: '8px 0 0',
+                          lineHeight: 1.5,
+                        }}>
+                          {event.description}
                         </p>
                       )}
-
+                      <div className="event-timeline-details">
+                        <p>
+                          <Icon type="map" size={14} />
+                          {event.location}{event.address ? ` - ${event.address}` : ''}
+                        </p>
+                        {event.time && (
+                          <p>
+                            <Icon type="clock" size={14} />
+                            {event.time}
+                          </p>
+                        )}
+                      </div>
                       {event.address && (
                         <a
                           href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${event.location} ${event.address}`)}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{ marginTop: 8, display: 'inline-block', color, fontWeight: 700, textDecoration: 'none', fontSize: 13 }}
+                          style={{
+                            marginTop: 12,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 6,
+                            color: 'var(--brand-primary)',
+                            fontWeight: 700,
+                            textDecoration: 'none',
+                            fontSize: 13,
+                            transition: 'all 0.24s ease',
+                          }}
+                          onMouseEnter={(e) => {
+                            (e.target as HTMLElement).style.gap = '10px';
+                          }}
+                          onMouseLeave={(e) => {
+                            (e.target as HTMLElement).style.gap = '6px';
+                          }}
                         >
-                          {t('events.directions')}
+                          {t('events.directions')} →
                         </a>
                       )}
                     </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+                  </article>
+                );
+              })}
+            </div>
+          </>
         )}
 
         {past.length > 0 && (
-          <div className="section-stack" style={{ marginTop: 34 }}>
-            <h2 className="section-title" style={{ fontSize: 24, color: 'var(--ink-muted)' }}>
+          <div style={{ marginTop: 60, paddingTop: 60, borderTop: '1px solid var(--border-color)' }}>
+            <h2 style={{
+              fontSize: 24,
+              fontWeight: 700,
+              marginBottom: 32,
+              color: 'var(--text-secondary)',
+            }}>
               {t('events.pastTitle')}
             </h2>
 
-            <div style={{ marginTop: 12, display: 'grid', gap: 10 }}>
+            <div className="events-timeline" style={{ opacity: 0.7 }}>
               {past.map((event) => {
                 const date = new Date(event.date);
+                const emoji = TYPE_EMOJIS[event.type] ?? '📅';
                 return (
-                  <article key={event.id} className="surface-card" style={{ padding: 15, opacity: 0.72 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-                      <div>
-                        <h3 style={{ fontSize: 17, color: 'var(--ink-strong)' }}>{event.title}</h3>
-                        <p className="mini-muted" style={{ marginTop: 5 }}>{event.location}</p>
-                      </div>
-                      <span className="mini-muted">
-                        {date.toLocaleDateString('fr-CA', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          timeZone: 'UTC',
-                        })}
+                  <article key={event.id} className="event-timeline-item">
+                    <div className="event-timeline-date">
+                      <span className="month">
+                        {date.toLocaleString('fr-CA', { month: 'short', timeZone: 'UTC' })}
                       </span>
+                      <span className="day">{date.getUTCDate()}</span>
+                      <span className="year">{date.getUTCFullYear()}</span>
+                    </div>
+
+                    <div className="event-timeline-content">
+                      <span className="event-timeline-type">{emoji} {event.type}</span>
+                      <h3>{event.title}</h3>
+                      <div className="event-timeline-details">
+                        <p>
+                          <Icon type="map" size={14} />
+                          {event.location}
+                        </p>
+                      </div>
                     </div>
                   </article>
                 );
