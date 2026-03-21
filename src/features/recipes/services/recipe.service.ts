@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase/client';
-import { syncAll } from '@/lib/supabase/sync';
+import { syncAll } from '@/lib/api/http-client';
 import type { Recipe } from '../types/recipe.types';
 
 export const recipeService = {
