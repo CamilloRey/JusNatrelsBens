@@ -6,7 +6,7 @@ import { Reveal } from '@/shared/ui/Reveal';
 
 export default function AboutPage() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  useTranslation();
 
   return (
     <div>
@@ -147,7 +147,7 @@ export default function AboutPage() {
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
             gap: 32,
           }}>
-            <Reveal anim="slideUp">
+            <Reveal anim="fadeUp">
               <div style={{
                 background: 'white',
                 padding: 32,
@@ -180,7 +180,7 @@ export default function AboutPage() {
               </div>
             </Reveal>
 
-            <Reveal anim="slideUp">
+            <Reveal anim="fadeUp">
               <div style={{
                 background: 'white',
                 padding: 32,

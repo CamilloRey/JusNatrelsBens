@@ -7,13 +7,12 @@ import { SEO } from '@/shared/components/SEO';
 import { StructuredData, organizationSchema } from '@/shared/components/StructuredData';
 import { Reveal } from '@/shared/ui/Reveal';
 import { ProductImg } from '@/shared/ui/ProductImg';
-import { Icon } from '@/shared/ui/Icon';
 import { useInView } from '@/shared/hooks/useInView';
 import { ProductCard } from '@/features/products/components/ProductCard';
 
 export default function HomePage() {
-  const { t } = useTranslation();
-  const { products, reviews, blogs, events, ingredients, subscribers, updateSubscribers, settings } = useData();
+  useTranslation();
+  const { products, reviews, blogs, events, subscribers, updateSubscribers, settings } = useData();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
