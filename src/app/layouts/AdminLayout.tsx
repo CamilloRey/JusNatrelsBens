@@ -19,6 +19,7 @@ const MENU = [
   { route: ROUTES.admin.locations, label: 'Points de vente', icon: 'map' },
   { route: ROUTES.admin.stock, label: 'Stock', icon: 'grid' },
   { route: ROUTES.admin.finance, label: 'Finances', icon: 'chart' },
+  { route: '/admin/orders', label: 'Commandes 📦', icon: 'download' },
   { route: '/admin/payments', label: 'Paiements Square 💳', icon: 'chart' },
   { route: '/admin/square', label: 'Config. Square', icon: 'settings' },
   { route: ROUTES.admin.reports, label: 'Rapports', icon: 'download' },

@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useData } from '@/app/providers/DataContext';
+import { useCart } from '@/features/shop/context/CartContext';
 import { SEO } from '@/shared/components/SEO';
 import { ProductImg } from '@/shared/ui/ProductImg';
 import { ProductCard } from '../components/ProductCard';
@@ -11,8 +12,26 @@ export default function ProductDetailPage() {
   const { t } = useTranslation();
   const { products, reviews, ingredients } = useData();
   const navigate = useNavigate();
+  const { addItem } = useCart();
+  const [quantity, setQuantity] = React.useState(1);
+  const [addedToCart, setAddedToCart] = React.useState(false);
 
   const product = products.find((pr) => pr.id === id);
+
+  const handleAddToCart = () => {
+    if (!product) return;
+    addItem({
+      id: `${product.id}-${quantity}`,
+      productId: product.id,
+      name: product.name,
+      price: Math.round(product.price * 100), // convert to cents
+      quantity,
+      format: product.formats[0], // default format
+      img: product.img,
+    });
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
+  };
 
   if (!product) {
     return (
@@ -303,6 +322,62 @@ export default function ProductDetailPage() {
                 ))}
               </div>
 
+              {/* Quantity Selector */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                marginBottom: 16,
+                padding: '12px',
+                background: 'var(--bg-light)',
+                borderRadius: '8px',
+              }}>
+                <button
+                  type="button"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 6,
+                    border: '1px solid var(--border-color)',
+                    background: '#fff',
+                    cursor: 'pointer',
+                    fontSize: 18,
+                  }}
+                >
+                  −
+                </button>
+                <input
+                  type="number"
+                  min="1"
+                  value={quantity}
+                  onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                  style={{
+                    width: 50,
+                    textAlign: 'center',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: 6,
+                    padding: '6px 8px',
+                    fontSize: 14,
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setQuantity(quantity + 1)}
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 6,
+                    border: '1px solid var(--border-color)',
+                    background: '#fff',
+                    cursor: 'pointer',
+                    fontSize: 18,
+                  }}
+                >
+                  +
+                </button>
+              </div>
+
               {/* CTA Buttons */}
               <div style={{
                 display: 'grid',
@@ -312,13 +387,16 @@ export default function ProductDetailPage() {
                 <button
                   type="button"
                   className="btn-solid anim-btn"
+                  onClick={handleAddToCart}
                   style={{
                     padding: '16px 24px',
                     fontSize: 15,
                     fontWeight: 700,
+                    background: addedToCart ? 'var(--brand-secondary)' : undefined,
                   }}
+                  disabled={addedToCart}
                 >
-                  🛒 Ajouter au panier
+                  {addedToCart ? '✓ Ajouté au panier!' : '🛒 Ajouter au panier'}
                 </button>
                 <button
                   type="button"

@@ -7,6 +7,8 @@ import HomePage          from '@/features/home/pages/HomePage';
 import AboutPage         from '@/features/about/pages/AboutPage';
 import ProductsPage      from '@/features/products/pages/ProductsPage';
 import ProductDetailPage from '@/features/products/pages/ProductDetailPage';
+import CartPage from '@/features/shop/pages/CartPage';
+import CheckoutPage from '@/features/shop/pages/CheckoutPage';
 import IngredientsPage   from '@/features/ingredients/pages/IngredientsPage';
 import RecipesPage       from '@/features/recipes/pages/RecipesPage';
 import BlogPage          from '@/features/blog/pages/BlogPage';
@@ -35,6 +37,7 @@ import AdminSquarePaymentsPage from '@/features/payments/pages/AdminSquarePaymen
 import AdminStockPage         from '@/features/stock/pages/AdminStockPage';
 import AdminFinancePage       from '@/features/finance/pages/AdminFinancePage';
 import AdminReportsPage       from '@/features/reports/pages/AdminReportsPage';
+import AdminOrdersPage        from '@/features/shop/pages/AdminOrdersPage';
 
 import { ROUTES } from '@/shared/constants/routes';
 import { ProtectedRoute } from './ProtectedRoute';
@@ -56,6 +59,8 @@ export const router = createBrowserRouter([
       { path: '/events/:id',    element: <EventDetailPage /> },
       { path: ROUTES.locations, element: <LocationsPage /> },
       { path: ROUTES.contact,   element: <ContactPage /> },
+      { path: '/cart',          element: <CartPage /> },
+      { path: '/checkout',      element: <CheckoutPage /> },
     ],
   },
 
@@ -82,6 +87,7 @@ export const router = createBrowserRouter([
       { path: 'stock',      element: <AdminStockPage /> },
       { path: 'finance',    element: <AdminFinancePage /> },
       { path: 'business',   element: <AdminBusinessPage /> },
+      { path: 'orders',     element: <AdminOrdersPage /> },
       { path: 'payments',   element: <AdminSquarePaymentsPage /> },
       { path: 'square',     element: <AdminSquareSettingsPage /> },
       { path: 'reports',    element: <AdminReportsPage /> },
