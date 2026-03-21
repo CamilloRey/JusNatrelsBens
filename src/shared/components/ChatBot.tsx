@@ -204,13 +204,13 @@ export function ChatBot() {
           width: 52,
           height: 52,
           borderRadius: '50%',
-          background: C.hibiscus,
+          background: 'var(--brand-primary)',
           border: 'none',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 4px 16px rgba(139,26,26,0.3)',
+          boxShadow: '0 4px 16px rgba(90, 185, 55, 0.3)',
           transition: 'transform 0.3s',
           transform: open ? 'rotate(180deg)' : 'none',
         }}
@@ -236,7 +236,7 @@ export function ChatBot() {
 
       {open && (
         <div className="chat-bubble" style={{ position: 'fixed', bottom: 160, right: 24, zIndex: 1001, width: 370, maxHeight: 500, borderRadius: 20, overflow: 'hidden', background: '#fff', boxShadow: '0 12px 40px rgba(0,0,0,0.18)', display: 'flex', flexDirection: 'column', border: `1px solid ${C.border}` }}>
-          <div style={{ background: `linear-gradient(135deg, ${C.hibiscus}, ${C.red})`, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ background: 'linear-gradient(135deg, var(--brand-primary), var(--accent-primary))', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>
               <Icon type="send" size={20} color="#fff" />
             </div>
@@ -249,7 +249,7 @@ export function ChatBot() {
           <div style={{ flex: 1, overflow: 'auto', padding: '16px 16px 8px', maxHeight: 300, background: C.cream }}>
             {msgs.map((message, index) => (
               <div key={index} style={{ display: 'flex', justifyContent: message.from === 'user' ? 'flex-end' : 'flex-start', marginBottom: 10, animation: 'fadeUp 0.3s ease' }}>
-                <div style={{ maxWidth: '86%', padding: '10px 14px', borderRadius: message.from === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px', background: message.from === 'user' ? C.hibiscus : '#fff', color: message.from === 'user' ? '#fff' : C.dark, fontSize: 13, lineHeight: 1.55, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', whiteSpace: 'pre-line' }}>
+                <div style={{ maxWidth: '86%', padding: '10px 14px', borderRadius: message.from === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px', background: message.from === 'user' ? 'var(--brand-primary)' : '#fff', color: message.from === 'user' ? '#fff' : C.dark, fontSize: 13, lineHeight: 1.55, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', whiteSpace: 'pre-line' }}>
                   {message.text}
                 </div>
               </div>

@@ -41,6 +41,7 @@ export default function PublicLayout() {
     { path: ROUTES.about, label: t('nav.about') },
     { path: ROUTES.products, label: t('nav.products') },
     { path: ROUTES.ingredients, label: ingredientLabel },
+    { path: ROUTES.recipes, label: t('nav.recipes', 'Recettes') },
     { path: ROUTES.blog, label: t('nav.blog') },
     { path: ROUTES.events, label: t('nav.events') },
     { path: ROUTES.locations, label: t('nav.locations') },

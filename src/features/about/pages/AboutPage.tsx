@@ -1,10 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { C } from '@/shared/constants/colors';
 import { ROUTES } from '@/shared/constants/routes';
 import { SEO } from '@/shared/components/SEO';
 import { Reveal } from '@/shared/ui/Reveal';
-import { Icon } from '@/shared/ui/Icon';
 
 export default function AboutPage() {
   const navigate = useNavigate();
@@ -12,169 +10,340 @@ export default function AboutPage() {
 
   return (
     <div>
-      <SEO 
+      <SEO
         title="Notre Histoire"
         description="Découvrez l'histoire de Ben's : une femme, un héritage africain et une passion pour les jus naturels fabriqués à Montréal."
         url="https://lesjusnatuelsbens.com/notre-histoire"
       />
-      
+
+      {/* HERO */}
       <section className="page-hero">
         <div className="page-hero-inner">
-          <p className="page-hero-eyebrow">{t('about.hero.eyebrow')}</p>
-          <h1 className="page-hero-title">{t('about.hero.title')}</h1>
-          <p className="page-hero-subtitle">{t('about.hero.subtitle')}</p>
+          <p className="page-hero-eyebrow">📖 Notre Voyage</p>
+          <h1 className="page-hero-title">Notre Histoire</h1>
+          <p className="page-hero-subtitle">Une passion pour les saveurs authentiques, un héritage africain et un rêve de partager la pureté avec Montréal</p>
         </div>
       </section>
 
-      <section className="page-shell" style={{ paddingTop: 36 }}>
-        <div className="two-col" style={{ alignItems: 'start' }}>
+      {/* FOUNDER STORY */}
+      <section className="page-shell" style={{ paddingTop: 60 }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: 40,
+          alignItems: 'center',
+        }}>
           <Reveal anim="slideLeft">
-            <article className="surface-card" style={{ padding: 18 }}>
-              <img
-                src="/images-bens/photos/univers-jus-bens.png"
-                alt="Fondatrice Ben's"
-                style={{ width: '100%', height: 340, objectFit: 'cover', borderRadius: 16 }}
-              />
-              <h3 style={{ marginTop: 14, fontFamily: "'Playfair Display', serif", fontSize: 26, color: 'var(--ink-strong)' }}>
-                {t('about.founder.title')}
-              </h3>
-              <p style={{ marginTop: 5, fontSize: 13, fontWeight: 700, color: C.hibiscus }}>
-                {t('about.founder.subtitle')}
-              </p>
-              <p className="page-subtitle" style={{ marginTop: 8 }}>{t('about.founder.desc')}</p>
-            </article>
+            <div>
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(90, 185, 55, 0.15), rgba(255, 138, 26, 0.1))',
+                borderRadius: 'var(--radius-xl)',
+                padding: 24,
+                textAlign: 'center',
+              }}>
+                <div style={{
+                  fontSize: 120,
+                  marginBottom: 16,
+                }}>
+                  👩‍🌾
+                </div>
+                <h3 style={{
+                  fontSize: 24,
+                  fontWeight: 700,
+                  fontFamily: "'Playfair Display', serif",
+                  color: 'var(--text-primary)',
+                  margin: '0 0 8px 0',
+                }}>
+                  Benédicte (Ben)
+                </h3>
+                <p style={{
+                  fontSize: 14,
+                  color: 'var(--text-secondary)',
+                  fontWeight: 600,
+                  margin: 0,
+                }}>
+                  Fondatrice & Créatrice
+                </p>
+              </div>
+            </div>
           </Reveal>
 
           <Reveal anim="slideRight">
-            <article className="surface-card" style={{ padding: 24 }}>
-              <h2 className="section-title" style={{ marginTop: 0 }}>{t('about.story.title')}</h2>
-              <p className="page-subtitle">{t('about.story.p1')}</p>
-              <p className="page-subtitle">{t('about.story.p2')}</p>
-              <p className="page-subtitle">{t('about.story.p3')}</p>
+            <div>
+              <h2 style={{
+                fontSize: 32,
+                fontWeight: 800,
+                fontFamily: "'Playfair Display', serif",
+                color: 'var(--text-primary)',
+                marginBottom: 24,
+              }}>
+                Un héritage, une passion
+              </h2>
 
-              <div
-                style={{
-                  marginTop: 14,
-                  borderLeft: `3px solid ${C.hibiscus}`,
-                  background: 'rgba(196,69,54,0.08)',
-                  borderRadius: 12,
-                  padding: '14px 16px',
-                }}
-              >
-                <p style={{ margin: 0, fontStyle: 'italic', lineHeight: 1.7, color: 'var(--ink)' }}>
-                  {t('about.story.quote')}
-                </p>
-              </div>
-            </article>
+              <p style={{
+                fontSize: 16,
+                lineHeight: 1.8,
+                color: 'var(--text-secondary)',
+                marginBottom: 16,
+              }}>
+                Benédicte grandit en Afrique de l'Ouest, entourée des traditions culinaires de sa famille. Depuis l'enfance, elle regardait sa grand-mère préparer des jus naturels avec les fruits les plus frais - une sagesse transmise de génération en génération.
+              </p>
+
+              <p style={{
+                fontSize: 16,
+                lineHeight: 1.8,
+                color: 'var(--text-secondary)',
+                marginBottom: 16,
+              }}>
+                Quand elle s'installe à Montréal, elle réalise qu'une partie importante de son héritage lui manque. Elle décide alors de ramener ces saveurs authentiques à ses voisins, en créant une entreprise qui honore les traditions tout en s'inscrivant dans la modernité.
+              </p>
+
+              <p style={{
+                fontSize: 16,
+                lineHeight: 1.8,
+                color: 'var(--text-secondary)',
+                marginBottom: 24,
+              }}>
+                Aujourd'hui, Ben's est bien plus qu'une marque de jus. C'est une celebration des saveurs, un pont entre deux cultures, et une promesse de qualité sans compromis.
+              </p>
+
+              <blockquote style={{
+                padding: 24,
+                background: 'var(--bg-tertiary)',
+                borderLeft: '4px solid var(--brand-primary)',
+                borderRadius: 'var(--radius-lg)',
+                fontSize: 16,
+                fontStyle: 'italic',
+                color: 'var(--text-primary)',
+                margin: 0,
+              }}>
+                "Chaque gorgée devrait goûter comme l'amour de sa grand-mère."
+              </blockquote>
+            </div>
           </Reveal>
         </div>
       </section>
 
-      <section className="page-shell section-stack" style={{ paddingTop: 0 }}>
-        <h2 className="section-title" style={{ textAlign: 'center' }}>{t('about.award.title')}</h2>
+      {/* MISSION & VISION */}
+      <section style={{
+        marginTop: 80,
+        padding: '60px 24px',
+        background: 'linear-gradient(135deg, rgba(90, 185, 55, 0.04), rgba(255, 138, 26, 0.02))',
+      }}>
+        <div style={{ maxWidth: 'var(--max-w)', margin: '0 auto' }}>
+          <h2 style={{
+            fontSize: 32,
+            fontWeight: 800,
+            fontFamily: "'Playfair Display', serif",
+            textAlign: 'center',
+            marginBottom: 48,
+            color: 'var(--text-primary)',
+          }}>
+            Notre Mission & Vision
+          </h2>
 
-        <Reveal anim="fadeUp">
-          <div className="two-col" style={{ marginTop: 16 }}>
-            {['/images-bens/recompenses/recompense_1.avif', '/images-bens/recompenses/recompense_2.avif'].map((src, i) => (
-              <article key={src} className="surface-card anim-card" style={{ padding: 20, textAlign: 'center' }}>
-                <img
-                  src={src}
-                  alt={`Award ${i + 1}`}
-                  style={{ width: '100%', maxHeight: 220, objectFit: 'contain', borderRadius: 14, background: 'rgba(255,255,255,0.7)' }}
-                />
-                <h3 style={{ marginTop: 12, fontFamily: "'Playfair Display', serif", fontSize: 22, color: 'var(--ink-strong)' }}>
-                  {t('about.award.name')}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: 32,
+          }}>
+            <Reveal anim="slideUp">
+              <div style={{
+                background: 'white',
+                padding: 32,
+                borderRadius: 'var(--radius-lg)',
+                border: '1px solid var(--border-color)',
+                textAlign: 'center',
+              }}>
+                <div style={{
+                  fontSize: 48,
+                  marginBottom: 16,
+                }}>
+                  🎯
+                </div>
+                <h3 style={{
+                  fontSize: 20,
+                  fontWeight: 700,
+                  color: 'var(--text-primary)',
+                  marginBottom: 12,
+                }}>
+                  Notre Mission
                 </h3>
-                <p className="page-subtitle" style={{ marginTop: 6 }}>{t('about.award.org')}</p>
-              </article>
-            ))}
+                <p style={{
+                  fontSize: 15,
+                  lineHeight: 1.7,
+                  color: 'var(--text-secondary)',
+                  margin: 0,
+                }}>
+                  Fournir des jus naturels de qualité supérieure qui honorent les traditions africaines tout en répondant aux besoins des consommateurs modernes de Montréal.
+                </p>
+              </div>
+            </Reveal>
+
+            <Reveal anim="slideUp">
+              <div style={{
+                background: 'white',
+                padding: 32,
+                borderRadius: 'var(--radius-lg)',
+                border: '1px solid var(--border-color)',
+                textAlign: 'center',
+              }}>
+                <div style={{
+                  fontSize: 48,
+                  marginBottom: 16,
+                }}>
+                  🌍
+                </div>
+                <h3 style={{
+                  fontSize: 20,
+                  fontWeight: 700,
+                  color: 'var(--text-primary)',
+                  marginBottom: 12,
+                }}>
+                  Notre Vision
+                </h3>
+                <p style={{
+                  fontSize: 15,
+                  lineHeight: 1.7,
+                  color: 'var(--text-secondary)',
+                  margin: 0,
+                }}>
+                  Devenir la marque incontournable des jus naturels authentiques au Canada, en établissant un pont culturel et en créant une communauté de consommateurs conscients.
+                </p>
+              </div>
+            </Reveal>
           </div>
-        </Reveal>
+        </div>
       </section>
 
-      <section className="home-values-wrap" style={{ marginTop: 64 }}>
-        <div style={{ maxWidth: 'var(--max-w)', margin: '0 auto', padding: '0 24px' }}>
-          <h2 className="section-title" style={{ textAlign: 'center' }}>{t('about.values.title')}</h2>
+      {/* VALEURS */}
+      <section className="home-section">
+        <h2 style={{
+          fontSize: 32,
+          fontWeight: 800,
+          fontFamily: "'Playfair Display', serif",
+          textAlign: 'center',
+          marginBottom: 48,
+        }}>
+          Nos Valeurs Fondamentales
+        </h2>
 
-          <div className="home-values-grid" style={{ marginTop: 18 }}>
-            {(([
-              { icon: 'shield', key: 'natural' },
-              { icon: 'check', key: 'zero' },
-              { icon: 'map', key: 'local' },
-              { icon: 'star', key: 'heritage' },
-              { icon: 'edit', key: 'artisanal' },
-              { icon: 'users', key: 'community' },
-            ] as const)).map((item, i) => (
-              <Reveal key={item.key} delay={i * 0.08} anim="fadeUp">
-                <article className="home-value-card anim-card">
-                  <span className="icon">
-                    <Icon type={item.icon} size={22} color="currentColor" />
-                  </span>
-                  <h3>{t(`about.values.${item.key}.title`)}</h3>
-                  <p>{t(`about.values.${item.key}.desc`)}</p>
-                </article>
+        <div className="home-values-grid">
+          {[
+            { icon: '🌱', title: 'Authenticité', desc: 'Nos recettes sont authentiques, transmises de génération en génération' },
+            { icon: '♻️', title: 'Durabilité', desc: 'Nous respectons l\'environnement dans chaque aspect de notre production' },
+            { icon: '❤️', title: 'Passion', desc: 'Chaque bouteille est créée avec amour et dévouement' },
+            { icon: '🤝', title: 'Communauté', desc: 'Nous croyons en la force de nos relations avec nos clients' },
+          ].map((val) => (
+            <div key={val.title} className="home-value-card">
+              <div className="icon" style={{ fontSize: 40 }}>{val.icon}</div>
+              <h3>{val.title}</h3>
+              <p>{val.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* TIMELINE */}
+      <section style={{
+        marginTop: 80,
+        padding: '60px 24px',
+        background: 'var(--bg-tertiary)',
+      }}>
+        <div style={{ maxWidth: 'var(--max-w)', margin: '0 auto' }}>
+          <h2 style={{
+            fontSize: 32,
+            fontWeight: 800,
+            fontFamily: "'Playfair Display', serif",
+            textAlign: 'center',
+            marginBottom: 48,
+          }}>
+            Notre Parcours
+          </h2>
+
+          <div style={{
+            display: 'grid',
+            gap: 24,
+          }}>
+            {[
+              { year: '2018', title: 'La fondation', desc: 'Ben crée son premier lot de jus dans sa cuisine' },
+              { year: '2019', title: 'Première vente', desc: 'Marché Jean-Talon - Premier point de vente officiel' },
+              { year: '2020', title: 'Expansion', desc: 'Ouverture dans 3 nouveaux points de vente à Montréal' },
+              { year: '2022', title: 'Reconnaissance', desc: 'Récompense de "Meilleur Produit Local" au Salon des Saveurs' },
+              { year: '2024', title: 'Aujourd\'hui', desc: 'Plus de 2000 bouteilles vendues, une communauté de 500+ familles' },
+            ].map((item, i) => (
+              <Reveal key={item.year} anim="slideLeft">
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '100px 1fr',
+                  gap: 24,
+                  alignItems: 'flex-start',
+                  paddingBottom: i !== 4 ? 32 : 0,
+                  borderBottom: i !== 4 ? '1px solid var(--border-color)' : 'none',
+                }}>
+                  <div style={{
+                    fontSize: 24,
+                    fontWeight: 800,
+                    color: 'var(--brand-primary)',
+                    fontFamily: "'Playfair Display', serif",
+                  }}>
+                    {item.year}
+                  </div>
+                  <div>
+                    <h3 style={{
+                      fontSize: 18,
+                      fontWeight: 700,
+                      color: 'var(--text-primary)',
+                      margin: '0 0 8px 0',
+                    }}>
+                      {item.title}
+                    </h3>
+                    <p style={{
+                      fontSize: 15,
+                      color: 'var(--text-secondary)',
+                      margin: 0,
+                      lineHeight: 1.6,
+                    }}>
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="page-shell section-stack" style={{ paddingTop: 0 }}>
-        <div className="surface-card" style={{ overflow: 'hidden', padding: 0 }}>
-          <img
-            src="/images-bens/photos/soiree-festive-jus-bens.jpg"
-            alt="Ben's moment"
-            style={{ width: '100%', height: 290, objectFit: 'cover' }}
-          />
-        </div>
-      </section>
-
-      <section className="page-shell section-stack" style={{ paddingTop: 0 }}>
-        <div className="two-col" style={{ alignItems: 'center' }}>
-          <article className="surface-card" style={{ padding: 24 }}>
-            <h2 className="section-title" style={{ marginTop: 0 }}>{t('about.process.title')}</h2>
-            <div style={{ marginTop: 14, display: 'grid', gap: 16 }}>
-              {(['s1', 's2', 's3', 's4'] as const).map((step, idx) => (
-                <Reveal key={step} delay={idx * 0.08} anim="fadeUp">
-                  <div style={{ display: 'flex', gap: 12 }}>
-                    <span style={{ fontSize: 20, fontWeight: 900, color: C.hibiscus, minWidth: 30 }}>
-                      0{idx + 1}
-                    </span>
-                    <div>
-                      <h3 style={{ fontSize: 17, color: 'var(--ink-strong)', margin: 0 }}>
-                        {t(`about.process.${step}.title`)}
-                      </h3>
-                      <p className="page-subtitle" style={{ marginTop: 6 }}>
-                        {t(`about.process.${step}.desc`)}
-                      </p>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </article>
-
-          <Reveal anim="scaleIn">
-            <div className="surface-card" style={{ overflow: 'hidden', padding: 12 }}>
-              <img
-                src="/images-bens/photos/mission-engagement.png"
-                alt="Mission"
-                style={{ width: '100%', height: 420, objectFit: 'cover', borderRadius: 14 }}
-              />
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="page-shell section-stack" style={{ textAlign: 'center', paddingBottom: 12 }}>
-        <h2 className="section-title">{t('about.cta.title')}</h2>
-        <p className="page-subtitle" style={{ marginTop: 8 }}>{t('about.cta.subtitle')}</p>
-        <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center', gap: 10, flexWrap: 'wrap' }}>
-          <button type="button" className="btn-solid anim-btn" onClick={() => navigate(ROUTES.products)}>
-            {t('about.cta.products')}
-          </button>
-          <button type="button" className="btn-light anim-btn" onClick={() => navigate(ROUTES.locations)}>
-            {t('about.cta.locations')}
+      {/* CTA */}
+      <section className="home-section">
+        <div style={{
+          textAlign: 'center',
+          paddingTop: 40,
+          paddingBottom: 40,
+        }}>
+          <h2 style={{
+            fontSize: 32,
+            fontWeight: 800,
+            fontFamily: "'Playfair Display', serif",
+            marginBottom: 16,
+          }}>
+            Prêt à déguster l'authenticité?
+          </h2>
+          <p style={{
+            fontSize: 16,
+            color: 'var(--text-secondary)',
+            marginBottom: 28,
+            maxWidth: 500,
+            margin: '0 auto 28px',
+          }}>
+            Rejoignez notre communauté de plus de 500 familles satisfaites
+          </p>
+          <button
+            className="btn-solid anim-btn"
+            onClick={() => navigate(ROUTES.products)}
+            style={{ padding: '16px 32px', fontSize: 16, fontWeight: 700 }}
+          >
+            🛍️ Découvrir nos produits
           </button>
         </div>
       </section>
