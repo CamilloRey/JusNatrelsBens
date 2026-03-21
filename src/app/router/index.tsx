@@ -10,6 +10,7 @@ import ProductDetailPage from '@/features/products/pages/ProductDetailPage';
 import IngredientsPage   from '@/features/ingredients/pages/IngredientsPage';
 import RecipesPage       from '@/features/recipes/pages/RecipesPage';
 import BlogPage          from '@/features/blog/pages/BlogPage';
+import BlogDetailPage    from '@/features/blog/pages/BlogDetailPage';
 import EventsPage        from '@/features/events/pages/EventsPage';
 import LocationsPage     from '@/features/locations/pages/LocationsPage';
 import ContactPage       from '@/features/contact/pages/ContactPage';
@@ -45,6 +46,7 @@ export const router = createBrowserRouter([
       { path: '/products/:id',  element: <ProductDetailPage /> },
       { path: ROUTES.recipes,   element: <RecipesPage /> },
       { path: ROUTES.blog,      element: <BlogPage /> },
+      { path: '/blog/:id',      element: <BlogDetailPage /> },
       { path: ROUTES.events,    element: <EventsPage /> },
       { path: ROUTES.locations, element: <LocationsPage /> },
       { path: ROUTES.contact,   element: <ContactPage /> },

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { useData } from '@/app/providers/DataContext';
 import { SEO } from '@/shared/components/SEO';
 import { ROUTES } from '@/shared/constants/routes';
@@ -6,6 +7,12 @@ import { ROUTES } from '@/shared/constants/routes';
 export default function BlogPage() {
   const { t } = useTranslation();
   const { blogs } = useData();
+  const navigate = useNavigate();
+
+  const handleReadMore = (blogId: string) => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigate(`/blog/${blogId}`);
+  };
   const published = blogs.filter((blog) => blog.published);
   const featured = published[0];
   const others = published.slice(1);
@@ -58,9 +65,31 @@ export default function BlogPage() {
                       <span>{featured.content.split(' ').length} mots</span>
                     </div>
                     <p className="blog-featured-excerpt">{featured.content.substring(0, 300)}...</p>
-                    <a href={ROUTES.blog} className="blog-featured-cta">
+                    <button
+                      onClick={() => handleReadMore(featured.id)}
+                      className="blog-featured-cta"
+                      style={{
+                        border: 'none',
+                        background: 'var(--accent-primary)',
+                        color: 'white',
+                        padding: '12px 24px',
+                        borderRadius: 'var(--radius-lg)',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        transition: 'all 0.24s ease',
+                        display: 'inline-block',
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.target as HTMLElement).style.background = 'var(--accent-dark)';
+                        (e.target as HTMLElement).style.transform = 'translateY(-2px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.target as HTMLElement).style.background = 'var(--accent-primary)';
+                        (e.target as HTMLElement).style.transform = 'translateY(0)';
+                      }}
+                    >
                       Lire plus →
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -99,9 +128,21 @@ export default function BlogPage() {
                         </div>
                         <h3 className="blog-card-title">{blog.title}</h3>
                         <p className="blog-card-excerpt">{blog.content.substring(0, 150)}...</p>
-                        <a href={ROUTES.blog} className="blog-card-link">
+                        <button
+                          onClick={() => handleReadMore(blog.id)}
+                          className="blog-card-link"
+                          style={{
+                            border: 'none',
+                            background: 'none',
+                            color: 'var(--accent-primary)',
+                            cursor: 'pointer',
+                            padding: 0,
+                            font: 'inherit',
+                            textDecoration: 'underline',
+                          }}
+                        >
                           Lire plus →
-                        </a>
+                        </button>
                       </div>
                     </article>
                   ))}
