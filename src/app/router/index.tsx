@@ -12,6 +12,7 @@ import RecipesPage       from '@/features/recipes/pages/RecipesPage';
 import BlogPage          from '@/features/blog/pages/BlogPage';
 import BlogDetailPage    from '@/features/blog/pages/BlogDetailPage';
 import EventsPage        from '@/features/events/pages/EventsPage';
+import EventDetailPage   from '@/features/events/pages/EventDetailPage';
 import LocationsPage     from '@/features/locations/pages/LocationsPage';
 import ContactPage       from '@/features/contact/pages/ContactPage';
 import LoginPage         from '@/features/auth/pages/LoginPage';
@@ -49,6 +50,7 @@ export const router = createBrowserRouter([
       { path: ROUTES.blog,      element: <BlogPage /> },
       { path: '/blog/:id',      element: <BlogDetailPage /> },
       { path: ROUTES.events,    element: <EventsPage /> },
+      { path: '/events/:id',    element: <EventDetailPage /> },
       { path: ROUTES.locations, element: <LocationsPage /> },
       { path: ROUTES.contact,   element: <ContactPage /> },
     ],
