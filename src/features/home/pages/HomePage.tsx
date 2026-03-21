@@ -9,10 +9,11 @@ import { Reveal } from '@/shared/ui/Reveal';
 import { ProductImg } from '@/shared/ui/ProductImg';
 import { Icon } from '@/shared/ui/Icon';
 import { useInView } from '@/shared/hooks/useInView';
+import { ProductCard } from '@/features/products/components/ProductCard';
 
 export default function HomePage() {
   const { t } = useTranslation();
-  const { products, reviews, subscribers, updateSubscribers, events, settings } = useData();
+  const { products, reviews, blogs, events, ingredients, subscribers, updateSubscribers, settings } = useData();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
@@ -21,354 +22,311 @@ export default function HomePage() {
 
   const handleSub = () => {
     if (!email || !email.includes('@')) return;
-    updateSubscribers([
-      ...subscribers,
-      {
-        id: 's' + Date.now(),
-        email,
-        date: new Date().toISOString().split('T')[0],
-        active: true,
-      },
-    ]);
+    updateSubscribers([...subscribers, {
+      id: 's' + Date.now(),
+      email,
+      date: new Date().toISOString().split('T')[0],
+      active: true,
+    }]);
     setEmail('');
   };
 
   useEffect(() => {
     if (!countVisible) return;
-
     const targets = { bottles: 2000, families: 500, flavors: 11 };
     const durationMs = 2000;
     const start = Date.now();
-
     const tick = () => {
       const progress = Math.min((Date.now() - start) / durationMs, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-
       setCount({
         bottles: Math.round(targets.bottles * eased),
         families: Math.round(targets.families * eased),
         flavors: Math.round(targets.flavors * eased),
       });
-
       if (progress < 1) requestAnimationFrame(tick);
     };
-
     tick();
   }, [countVisible]);
 
-  const approvedReviews = useMemo(() => reviews.filter((r) => r.approved), [reviews]);
-
+  // Data
+  const availableProducts = useMemo(() => products.filter((p) => p.available), [products]);
   const featuredProducts = useMemo(() => {
-    const available = products.filter((p) => p.available);
-    const sorted = available.sort((a, b) => {
-      const aTagValue = a.tag === 'Populaire' ? 0 : a.tag === 'Nouveau' ? 1 : 2;
-      const bTagValue = b.tag === 'Populaire' ? 0 : b.tag === 'Nouveau' ? 1 : 2;
-      return aTagValue - bTagValue;
+    const sorted = availableProducts.sort((a, b) => {
+      const aVal = a.tag === 'Populaire' ? 0 : a.tag === 'Nouveau' ? 1 : 2;
+      const bVal = b.tag === 'Populaire' ? 0 : b.tag === 'Nouveau' ? 1 : 2;
+      return aVal - bVal;
     });
-    return sorted.slice(0, 8);
-  }, [products]);
+    return sorted.slice(0, 6);
+  }, [availableProducts]);
 
-  const heroProducts = featuredProducts.slice(0, 2);
+  const approvedReviews = useMemo(() => reviews.filter((r) => r.approved).slice(0, 6), [reviews]);
+
+  const publishedBlogs = useMemo(() => blogs.filter((b) => b.published).slice(0, 3), [blogs]);
 
   const upcomingEvents = useMemo(() => {
     const today = new Date().toISOString().split('T')[0];
-    return events
-      .filter((e) => e.active && e.date >= today)
-      .sort((a, b) => a.date.localeCompare(b.date))
-      .slice(0, 3);
+    return events.filter((e) => e.active && e.date >= today).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 4);
   }, [events]);
 
-  const badges = [
-    { icon: 'map', text: t('home.badges.montreal') },
-    { icon: 'shield', text: t('home.badges.noSugar') },
-    { icon: 'check', text: t('home.badges.noPreservatives') },
-    { icon: 'refresh', text: t('home.badges.eco') },
-    { icon: 'star', text: t('home.badges.awarded') },
-  ] as const;
-
   const values = [
-    { icon: 'shield', title: t('home.values.natural.title'), desc: t('home.values.natural.desc') },
-    { icon: 'refresh', title: t('home.values.eco.title'), desc: t('home.values.eco.desc') },
-    { icon: 'map', title: t('home.values.local.title'), desc: t('home.values.local.desc') },
-    { icon: 'star', title: t('home.values.unique.title'), desc: t('home.values.unique.desc') },
-  ] as const;
+    { icon: '🌱', title: 'Naturel 100%', desc: 'Zéro sucre ajouté, zéro conservateurs' },
+    { icon: '♻️', title: 'Écologique', desc: 'Emballages respectueux de l\'environnement' },
+    { icon: '🇨🇦', title: 'Local', desc: 'Fabriqué à Montréal avec fierté' },
+    { icon: '🌍', title: 'Traditionnel', desc: 'Inspiré des traditions africaines authentiques' },
+  ];
 
   return (
     <div className="home-page">
       <SEO
         title="Accueil"
-        description="Decouvrez les jus naturels artisanaux Ben's. Des jus sans sucre ajoute inspires des traditions africaines, fabriques a Montreal."
+        description="Découvrez les jus naturels artisanaux Ben's. Des jus sans sucre ajouté inspirés des traditions africaines, fabriqués à Montréal."
         url="https://lesjusnatuelsbens.com/"
       />
       <StructuredData type="Organization" data={organizationSchema} />
 
-      <section
-        className="home-hero"
-        style={{
-          backgroundImage: `linear-gradient(135deg, rgba(255, 248, 240, 0.94), rgba(251, 244, 233, 0.88)), url('${settings.bannerHero || '/images-bens/hero-banners/banniere-accueil-hero.png'}')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
+      {/* HERO */}
+      <section className="home-hero" style={{
+        backgroundImage: `linear-gradient(135deg, rgba(255, 248, 240, 0.94), rgba(251, 244, 233, 0.88)), url('${settings.bannerHero || '/images-bens/hero-banners/banniere-accueil-hero.png'}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}>
         <div className="home-hero-inner">
           <div className="home-hero-copy">
-            <p className="eyebrow">{t('home.hero.eyebrow')}</p>
-            <h1>{t('home.hero.title')}</h1>
-            <p>{t('home.hero.subtitle')}</p>
+            <p className="eyebrow">🍹 Jus Naturels Artisanaux</p>
+            <h1>Découvrez la Saveur de l'Authenticité</h1>
+            <p>Des jus purs, sans sucre ajouté, inspirés des traditions africaines et fabriqués à Montréal avec amour.</p>
 
             <div className="home-hero-cta">
-              <button
-                type="button"
-                onClick={() => navigate(ROUTES.products)}
-                className="btn-solid anim-btn"
-              >
-                {t('home.hero.cta1')}
+              <button type="button" onClick={() => navigate(ROUTES.products)} className="btn-solid anim-btn">
+                🛍️ Découvrir nos produits
               </button>
-              <button
-                type="button"
-                onClick={() => navigate(ROUTES.about)}
-                className="btn-light anim-btn"
-              >
-                {t('home.hero.cta2')}
+              <button type="button" onClick={() => navigate(ROUTES.about)} className="btn-light anim-btn">
+                📖 Notre histoire
               </button>
             </div>
 
             <div className="home-badge-row">
-              {badges.map((badge) => (
-                <span key={badge.text} className="home-badge-pill">
-                  <Icon type={badge.icon} size={13} />
-                  {badge.text}
-                </span>
+              {['✓ Sans sucre ajouté', '✓ 100% Naturel', '✓ Montréal', '✓ Écologique'].map((badge) => (
+                <span key={badge} className="home-badge-pill">{badge}</span>
               ))}
             </div>
           </div>
 
           <div className="home-hero-media">
             <div className="hero-media-feature">
-              <ProductImg
-                src={heroProducts[0]?.img || '/images-bens/photos/photo-jus.png'}
-                alt={heroProducts[0]?.name || "Ben's natural juice"}
-                size={360}
-                borderRadius={24}
-                style={{ width: 'min(86%, 340px)', height: 'auto' }}
-              />
-            </div>
-
-            <div className="hero-mini-grid">
-              {heroProducts.map((product) => (
-                <div key={product.id} className="hero-mini-card">
-                  <ProductImg src={product.img} alt={product.name} size={44} borderRadius={12} />
-                  <span>{product.name}</span>
-                </div>
-              ))}
-              {heroProducts.length < 2 && (
-                <div className="hero-mini-card">
-                  <ProductImg src="/images-bens/photos/photo-jus-2.png" alt="Fresh juice" size={44} borderRadius={12} />
-                  <span>Artisanal</span>
-                </div>
-              )}
+              <ProductImg src={featuredProducts[0]?.img || '/images-bens/photos/photo-jus.png'} alt="Jus Ben's" size={360} borderRadius={24} style={{ width: 'min(86%, 340px)', height: 'auto' }} />
             </div>
           </div>
         </div>
       </section>
 
-      <div className="home-stats-block" ref={countRef}>
+      {/* STATS */}
+      <section className="home-stats-block" ref={countRef}>
         <Reveal anim="fadeUp">
           <div className="home-stats-grid">
             <div className="stat-card">
-              <span className="icon">
-                <Icon type="shop" size={22} color="currentColor" />
-              </span>
               <p className="value">{count.bottles}+</p>
-              <p className="label">{t('home.counters.bottles')}</p>
+              <p className="label">Bouteilles vendues</p>
             </div>
             <div className="stat-card">
-              <span className="icon">
-                <Icon type="users" size={22} color="currentColor" />
-              </span>
               <p className="value">{count.families}+</p>
-              <p className="label">{t('home.counters.families')}</p>
+              <p className="label">Familles satisfaites</p>
             </div>
             <div className="stat-card">
-              <span className="icon">
-                <Icon type="grid" size={22} color="currentColor" />
-              </span>
               <p className="value">{count.flavors}</p>
-              <p className="label">{t('home.counters.flavors')}</p>
+              <p className="label">Saveurs uniques</p>
             </div>
           </div>
         </Reveal>
-      </div>
+      </section>
 
-      <section className="home-section">
-        <Reveal anim="fadeUp">
+      {/* VALEURS */}
+      <section className="home-values-wrap">
+        <div className="home-section">
           <div className="section-head">
-            <div>
-              <p className="eyebrow">{t('home.featured.eyebrow')}</p>
-              <h2>{t('home.featured.title')}</h2>
-            </div>
+            <h2>Nos Valeurs</h2>
           </div>
-        </Reveal>
+          <div className="home-values-grid">
+            {values.map((val) => (
+              <div key={val.title} className="home-value-card">
+                <div className="icon" style={{ fontSize: 32 }}>{val.icon}</div>
+                <h3>{val.title}</h3>
+                <p>{val.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-        <div className="home-products-grid">
-          {featuredProducts.map((product, i) => (
-            <Reveal key={product.id} delay={i * 0.06} anim="scaleIn">
-              <article
-                className="home-product-card anim-card"
-                onClick={() => navigate(ROUTES.product(product.id))}
+      {/* PRODUITS */}
+      {featuredProducts.length > 0 && (
+        <section className="home-section">
+          <div className="section-head">
+            <h2>Nos Produits</h2>
+            <button className="btn-light" onClick={() => navigate(ROUTES.products)}>Voir tous →</button>
+          </div>
+          <div className="home-products-grid">
+            {featuredProducts.map((p) => <ProductCard key={p.id} product={p} />)}
+          </div>
+        </section>
+      )}
+
+      {/* RECETTES */}
+      <section className="home-section" style={{ background: 'var(--bg-tertiary)', padding: '60px 24px', marginTop: 0 }}>
+        <div style={{ maxWidth: 'var(--max-w)', margin: '0 auto' }}>
+          <div className="section-head">
+            <h2>Recettes Inspirantes</h2>
+            <button className="btn-solid" onClick={() => navigate(ROUTES.recipes)}>Voir plus →</button>
+          </div>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: 24,
+          }}>
+            {[
+              { name: 'Smoothie Tropical', emoji: '🥤', time: '5 min' },
+              { name: 'Detox Vert', emoji: '🍎', time: '3 min' },
+              { name: 'Cocktail d\'Été', emoji: '🍹', time: '10 min' },
+            ].map((recipe) => (
+              <div key={recipe.name} className="anim-card" style={{
+                background: 'white',
+                borderRadius: 'var(--radius-lg)',
+                overflow: 'hidden',
+                border: '1px solid var(--border-color)',
+                cursor: 'pointer',
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.transform = 'translateY(-6px)';
+                (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-card-hover)';
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+                (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-sm)';
+              }}
               >
-                <div className="cover">
-                  <ProductImg
-                    src={product.img}
-                    alt={product.name}
-                    size={220}
-                    borderRadius={18}
-                    style={{ width: 'min(92%, 220px)', height: 'min(92%, 220px)' }}
-                  />
+                <div style={{
+                  height: 150,
+                  background: 'linear-gradient(135deg, rgba(90, 185, 55, 0.1), rgba(255, 138, 26, 0.1))',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 60,
+                }}>
+                  {recipe.emoji}
                 </div>
-                <div className="body">
-                  {product.tag && <span className="tag">{product.tag}</span>}
-                  <h3>{product.name}</h3>
-                  <p>{product.desc}</p>
-                  <div className="meta">
-                    <span className="price">{product.price.toFixed(2)}$</span>
-                    <span className="view">{t('home.featured.view')}</span>
+                <div style={{ padding: 20 }}>
+                  <h3 style={{ fontSize: 16, fontWeight: 700, margin: '0 0 8px 0' }}>{recipe.name}</h3>
+                  <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: 0 }}>⏱️ {recipe.time}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* BLOGS */}
+      {publishedBlogs.length > 0 && (
+        <section className="home-section">
+          <div className="section-head">
+            <h2>Dernier du Blogue</h2>
+            <button className="btn-light" onClick={() => navigate(ROUTES.blog)}>Tous les articles →</button>
+          </div>
+          <div className="blog-grid">
+            {publishedBlogs.map((blog) => (
+              <div key={blog.id} className="blog-card">
+                <div className="blog-card-image">
+                  <div style={{
+                    width: '100%',
+                    height: '100%',
+                    background: 'linear-gradient(135deg, rgba(90, 185, 55, 0.1), rgba(255, 138, 26, 0.1))',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 40,
+                  }}>
+                    📝
                   </div>
                 </div>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-
-        <Reveal anim="fadeUp" delay={0.2}>
-          <div style={{ marginTop: 26, textAlign: 'center' }}>
-            <button
-              type="button"
-              className="btn-solid anim-btn"
-              onClick={() => navigate(ROUTES.products)}
-            >
-              {t('home.featured.cta')}
-            </button>
-          </div>
-        </Reveal>
-      </section>
-
-      <section className="home-values-wrap">
-        <div className="home-values-grid">
-          {values.map((value, i) => (
-            <Reveal key={value.title} delay={i * 0.08} anim="fadeUp">
-              <article className="home-value-card anim-card">
-                <span className="icon">
-                  <Icon type={value.icon} size={22} color="currentColor" />
-                </span>
-                <h3>{value.title}</h3>
-                <p>{value.desc}</p>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {approvedReviews.length > 0 && (
-        <section className="home-section">
-          <Reveal anim="fadeUp">
-            <div className="section-head">
-              <div>
-                <p className="eyebrow">{t('home.reviews.eyebrow')}</p>
-                <h2>{t('home.reviews.title')}</h2>
+                <div className="blog-card-content">
+                  <span className="blog-card-category">{blog.category}</span>
+                  <h3 className="blog-card-title">{blog.title}</h3>
+                  <p className="blog-card-excerpt">{blog.content.substring(0, 120)}...</p>
+                  <a href="#" className="blog-card-link">Lire plus →</a>
+                </div>
               </div>
-            </div>
-          </Reveal>
-
-          <div className="home-reviews-grid">
-            {approvedReviews.map((review, i) => (
-              <Reveal key={review.id} delay={i * 0.08} anim="fadeUp">
-                <article className="home-review-card anim-card">
-                  <p className="stars">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</p>
-                  <blockquote>"{review.text}"</blockquote>
-                  <p className="author">{review.name}</p>
-                </article>
-              </Reveal>
             ))}
           </div>
         </section>
       )}
 
+      {/* ÉVÉNEMENTS */}
       {upcomingEvents.length > 0 && (
-        <section className="home-section">
-          <Reveal anim="fadeUp">
+        <section className="home-section" style={{ background: 'var(--bg-tertiary)', padding: '60px 24px', marginTop: 0 }}>
+          <div style={{ maxWidth: 'var(--max-w)', margin: '0 auto' }}>
             <div className="section-head">
-              <div>
-                <p className="eyebrow">{t('events.upcoming')}</p>
-                <h2>{t('events.title')}</h2>
-              </div>
-              <button
-                type="button"
-                className="btn-light anim-btn"
-                onClick={() => navigate(ROUTES.events)}
-              >
-                {t('events.seeAll')}
-              </button>
+              <h2>Prochains Événements</h2>
+              <button className="btn-solid" onClick={() => navigate(ROUTES.events)}>Voir l'agenda →</button>
             </div>
-          </Reveal>
-
-          <div className="home-events-grid">
-            {upcomingEvents.map((event, i) => {
-              const date = new Date(event.date);
-              return (
-                <Reveal key={event.id} delay={i * 0.08} anim="fadeUp">
-                  <article className="home-event-card anim-card" onClick={() => navigate(ROUTES.events)}>
+            <div className="home-events-grid">
+              {upcomingEvents.map((event) => {
+                const date = new Date(event.date);
+                return (
+                  <div key={event.id} className="home-event-card anim-card">
                     <div className="home-event-row">
                       <div className="home-event-date">
                         <span className="day">{date.getUTCDate()}</span>
-                        <span className="month">
-                          {date.toLocaleString('fr-CA', { month: 'short', timeZone: 'UTC' })}
-                        </span>
+                        <span className="month">{date.toLocaleString('fr-CA', { month: 'short', timeZone: 'UTC' })}</span>
                       </div>
                       <div className="home-event-body">
                         <span className="type">{event.type}</span>
                         <h3>{event.title}</h3>
-                        <p style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <Icon type="map" size={14} color="currentColor" />
-                          {event.location}
-                        </p>
-                        {event.time && (
-                          <p style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                            <Icon type="clock" size={14} color="currentColor" />
-                            {event.time}
-                          </p>
-                        )}
+                        <p>{event.location}</p>
                       </div>
                     </div>
-                  </article>
-                </Reveal>
-              );
-            })}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </section>
       )}
 
-      <div className="home-news-wrap">
-        <Reveal anim="scaleIn">
-          <section className="home-news-card">
-            <h2>{t('home.newsletter.title')}</h2>
-            <p>{t('home.newsletter.subtitle')}</p>
+      {/* TÉMOIGNAGES */}
+      {approvedReviews.length > 0 && (
+        <section className="home-section">
+          <div className="section-head">
+            <h2>Ce que disent nos clients</h2>
+          </div>
+          <div className="home-reviews-grid">
+            {approvedReviews.map((review) => (
+              <div key={review.id} className="home-review-card anim-card">
+                <p className="stars">{'⭐'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</p>
+                <blockquote>"{review.text}"</blockquote>
+                <p className="author">— {review.name}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
-            <div className="home-news-form">
-              <input
-                type="email"
-                placeholder={t('home.newsletter.placeholder')}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSub()}
-              />
-              <button type="button" className="anim-btn" onClick={handleSub}>
-                {t('home.newsletter.cta')}
-              </button>
-            </div>
-          </section>
-        </Reveal>
-      </div>
+      {/* NEWSLETTER */}
+      <section className="home-news-wrap">
+        <div className="home-news-card">
+          <h2>Restez Inspiré</h2>
+          <p>Recevez nos recettes, conseils et actualisations directement dans votre boîte mail.</p>
+          <div className="home-news-form">
+            <input
+              type="email"
+              placeholder="Votre email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSub()}
+            />
+            <button onClick={handleSub}>S'abonner</button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
