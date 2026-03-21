@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { C } from '@/shared/constants/colors';
@@ -19,7 +19,7 @@ const WHATSAPP_TEXT =
 */
 
 export default function PublicLayout() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { settings } = useData();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -32,8 +32,7 @@ export default function PublicLayout() {
     { path: ROUTES.home, label: t('nav.home') },
     { path: ROUTES.about, label: t('nav.about') },
     { path: ROUTES.products, label: t('nav.products') },
-    { path: ROUTES.recipes, label: t('nav.recipes', 'Recettes') },
-    { path: ROUTES.blog, label: t('nav.blog') },
+    { path: ROUTES.blog, label: t('nav.blog', 'Blogue & Recettes') },
     { path: ROUTES.events, label: t('nav.events') },
     { path: ROUTES.contact, label: t('nav.contact') },
   ];

@@ -9,8 +9,6 @@ import ProductsPage      from '@/features/products/pages/ProductsPage';
 import ProductDetailPage from '@/features/products/pages/ProductDetailPage';
 import CartPage from '@/features/shop/pages/CartPage';
 import CheckoutPage from '@/features/shop/pages/CheckoutPage';
-import IngredientsPage   from '@/features/ingredients/pages/IngredientsPage';
-import RecipesPage       from '@/features/recipes/pages/RecipesPage';
 import BlogPage          from '@/features/blog/pages/BlogPage';
 import BlogDetailPage    from '@/features/blog/pages/BlogDetailPage';
 import EventsPage        from '@/features/events/pages/EventsPage';
@@ -42,20 +40,17 @@ import AdminReportsPage       from '@/features/reports/pages/AdminReportsPage';
 import AdminOrdersPage        from '@/features/shop/pages/AdminOrdersPage';
 
 import { ROUTES } from '@/shared/constants/routes';
-import { ProtectedRoute } from './ProtectedRoute';
 import { ProtectedAdminRoute } from '@/features/auth/components/ProtectedAdminRoute';
 
 export const router = createBrowserRouter([
-  /* ── PUBLIC ── */
+  /* -- PUBLIC -- */
   {
     element: <PublicLayout />,
     children: [
       { path: ROUTES.home,      element: <HomePage /> },
       { path: ROUTES.about,     element: <AboutPage /> },
       { path: ROUTES.products,  element: <ProductsPage /> },
-      { path: ROUTES.ingredients, element: <IngredientsPage /> },
       { path: '/products/:id',  element: <ProductDetailPage /> },
-      { path: ROUTES.recipes,   element: <RecipesPage /> },
       { path: ROUTES.blog,      element: <BlogPage /> },
       { path: '/blog/:id',      element: <BlogDetailPage /> },
       { path: ROUTES.events,    element: <EventsPage /> },
@@ -64,15 +59,18 @@ export const router = createBrowserRouter([
       { path: ROUTES.contact,   element: <ContactPage /> },
       { path: '/cart',          element: <CartPage /> },
       { path: '/checkout',      element: <CheckoutPage /> },
+      // Redirects for removed pages
+      { path: '/ingredients',   element: <Navigate to={ROUTES.products} replace /> },
+      { path: '/recipes',       element: <Navigate to={ROUTES.blog} replace /> },
     ],
   },
 
-  /* ── AUTH ── */
+  /* -- AUTH -- */
   { path: ROUTES.login, element: <LoginPage /> },
   { path: '/auth/login', element: <SupabaseLoginPage /> },
   { path: '/auth/signup', element: <SupabaseSignupPage /> },
 
-  /* ── ADMIN (protected by Supabase) ── */
+  /* -- ADMIN (protected by Supabase) -- */
   {
     path: ROUTES.admin.root,
     element: <ProtectedAdminRoute><AdminLayout /></ProtectedAdminRoute>,
@@ -100,6 +98,6 @@ export const router = createBrowserRouter([
     ],
   },
 
-  /* ── FALLBACK ── */
+  /* -- FALLBACK -- */
   { path: '*', element: <Navigate to={ROUTES.home} replace /> },
 ]);
