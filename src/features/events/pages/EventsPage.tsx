@@ -1,4 +1,4 @@
-﻿import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useData } from '@/app/providers/DataContext';
 import { C } from '@/shared/constants/colors';
 import { Icon } from '@/shared/ui/Icon';
@@ -14,7 +14,7 @@ const TYPE_COLORS: Record<string, string> = {
 
 export default function EventsPage() {
   const { t } = useTranslation();
-  const { events } = useData();
+  const { events, settings } = useData();
 
   const active = events.filter((event) => event.active).sort((a, b) => a.date.localeCompare(b.date));
   const today = new Date().toISOString().split('T')[0];
@@ -24,7 +24,14 @@ export default function EventsPage() {
 
   return (
     <div>
-      <section className="page-hero">
+      <section
+        className="page-hero"
+        style={{
+          backgroundImage: `url('${settings.bannerEvents || '/images-bens/hero-banners/banniere-evenements.png'}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
         <div className="page-hero-inner">
           <p className="page-hero-eyebrow">Agenda</p>
           <h1 className="page-hero-title">{t('events.title')}</h1>
@@ -48,40 +55,52 @@ export default function EventsPage() {
               const date = new Date(event.date);
               const color = TYPE_COLORS[event.type] ?? C.hibiscus;
               return (
-                <article key={event.id} className="surface-card anim-card" style={{ padding: 16 }}>
-                  <div className="home-event-row">
-                    <div className="home-event-date" style={{ borderColor: `${color}55`, background: `${color}18` }}>
-                      <span className="day" style={{ color }}>{date.getUTCDate()}</span>
-                      <span className="month" style={{ color }}>
-                        {date.toLocaleString('fr-CA', { month: 'short', timeZone: 'UTC' })}
-                      </span>
+                <article key={event.id} className="surface-card anim-card" style={{ overflow: 'hidden', padding: 0 }}>
+                  {event.img && (
+                    <div style={{ height: 210, overflow: 'hidden' }}>
+                      <img
+                        src={event.img}
+                        alt={event.title}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
                     </div>
+                  )}
 
-                    <div className="home-event-body" style={{ flex: 1 }}>
-                      <span className="type" style={{ background: `${color}1a`, color }}>{event.type}</span>
-                      <h3>{event.title}</h3>
-                      <p style={{ fontSize: 13 }}>{event.description}</p>
-                      <p style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <Icon type="map" size={14} color={color} />
-                        {event.location}{event.address ? ` - ${event.address}` : ''}
-                      </p>
-                      {event.time && (
+                  <div style={{ padding: 16 }}>
+                    <div className="home-event-row">
+                      <div className="home-event-date" style={{ borderColor: `${color}55`, background: `${color}18` }}>
+                        <span className="day" style={{ color }}>{date.getUTCDate()}</span>
+                        <span className="month" style={{ color }}>
+                          {date.toLocaleString('fr-CA', { month: 'short', timeZone: 'UTC' })}
+                        </span>
+                      </div>
+
+                      <div className="home-event-body" style={{ flex: 1 }}>
+                        <span className="type" style={{ background: `${color}1a`, color }}>{event.type}</span>
+                        <h3>{event.title}</h3>
+                        <p style={{ fontSize: 13 }}>{event.description}</p>
                         <p style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <Icon type="clock" size={14} color={color} />
-                          {event.time}
+                          <Icon type="map" size={14} color={color} />
+                          {event.location}{event.address ? ` - ${event.address}` : ''}
                         </p>
-                      )}
+                        {event.time && (
+                          <p style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <Icon type="clock" size={14} color={color} />
+                            {event.time}
+                          </p>
+                        )}
 
-                      {event.address && (
-                        <a
-                          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${event.location} ${event.address}`)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ marginTop: 8, display: 'inline-block', color, fontWeight: 700, textDecoration: 'none', fontSize: 13 }}
-                        >
-                          {t('events.directions')}
-                        </a>
-                      )}
+                        {event.address && (
+                          <a
+                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${event.location} ${event.address}`)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ marginTop: 8, display: 'inline-block', color, fontWeight: 700, textDecoration: 'none', fontSize: 13 }}
+                          >
+                            {t('events.directions')}
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </article>
@@ -125,5 +144,3 @@ export default function EventsPage() {
     </div>
   );
 }
-
-

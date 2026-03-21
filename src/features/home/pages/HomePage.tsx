@@ -12,7 +12,7 @@ import { useInView } from '@/shared/hooks/useInView';
 
 export default function HomePage() {
   const { t } = useTranslation();
-  const { products, reviews, subscribers, updateSubscribers, events } = useData();
+  const { products, reviews, subscribers, updateSubscribers, events, settings } = useData();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
@@ -60,7 +60,6 @@ export default function HomePage() {
 
   const featuredProducts = useMemo(() => {
     const available = products.filter((p) => p.available);
-    // Sort: Populaire first, then Nouveau, then others
     const sorted = available.sort((a, b) => {
       const aTagValue = a.tag === 'Populaire' ? 0 : a.tag === 'Nouveau' ? 1 : 2;
       const bTagValue = b.tag === 'Populaire' ? 0 : b.tag === 'Nouveau' ? 1 : 2;
@@ -96,14 +95,21 @@ export default function HomePage() {
 
   return (
     <div className="home-page">
-      <SEO 
+      <SEO
         title="Accueil"
-        description="Découvrez les jus naturels artisanaux Ben's. Des jus sans sucre ajouté inspirés des traditions africaines, fabriqués à Montréal."
+        description="Decouvrez les jus naturels artisanaux Ben's. Des jus sans sucre ajoute inspires des traditions africaines, fabriques a Montreal."
         url="https://lesjusnatuelsbens.com/"
       />
       <StructuredData type="Organization" data={organizationSchema} />
-      
-      <section className="home-hero">
+
+      <section
+        className="home-hero"
+        style={{
+          backgroundImage: `linear-gradient(135deg, rgba(255, 248, 240, 0.94), rgba(251, 244, 233, 0.88)), url('${settings.bannerHero || '/images-bens/hero-banners/banniere-accueil-hero.png'}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
         <div className="home-hero-inner">
           <div className="home-hero-copy">
             <p className="eyebrow">{t('home.hero.eyebrow')}</p>

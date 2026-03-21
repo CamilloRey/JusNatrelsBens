@@ -12,11 +12,11 @@ const WHATSAPP_PHONE = '15145550123';
 const WHATSAPP_TEXT =
   "Bonjour Ben's, je voudrais des informations sur vos jus naturels.";
 
-const SALES_POINTS = [
+/*
   'Marché Jean-Talon',
   'Épicerie Afro-Antillaise',
   'Marché Atwater',
-];
+*/
 
 export default function PublicLayout() {
   const { t, i18n } = useTranslation();

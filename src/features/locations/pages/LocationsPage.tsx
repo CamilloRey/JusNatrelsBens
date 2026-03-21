@@ -5,7 +5,7 @@ import { Icon } from '@/shared/ui/Icon';
 
 export default function LocationsPage() {
   const { t } = useTranslation();
-  const { locations } = useData();
+  const { locations, settings } = useData();
 
   const active = useMemo(() => locations.filter((location) => location.active), [locations]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -17,7 +17,14 @@ export default function LocationsPage() {
 
   return (
     <div>
-      <section className="page-hero">
+      <section
+        className="page-hero"
+        style={{
+          backgroundImage: `url('${settings.bannerEvents || '/images-bens/hero-banners/banniere-points-vente.png'}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
         <div className="page-hero-inner">
           <p className="page-hero-eyebrow">Points de vente</p>
           <h1 className="page-hero-title">{t('locations.title')}</h1>
