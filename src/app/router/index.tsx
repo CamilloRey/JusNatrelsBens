@@ -28,6 +28,7 @@ import AdminSubscribersPage   from '@/features/newsletter/pages/AdminSubscribers
 import AdminMessagesPage      from '@/features/contact/pages/AdminMessagesPage';
 import AdminSettingsPage      from '@/features/auth/pages/AdminSettingsPage';
 import AdminDataPage          from '@/features/dashboard/pages/AdminDataPage';
+import AdminBusinessPage      from '@/features/dashboard/pages/AdminBusinessPage';
 import AdminEventsPage        from '@/features/events/pages/AdminEventsPage';
 import AdminStockPage         from '@/features/stock/pages/AdminStockPage';
 import AdminFinancePage       from '@/features/finance/pages/AdminFinancePage';
@@ -78,6 +79,7 @@ export const router = createBrowserRouter([
       { path: 'events',     element: <AdminEventsPage /> },
       { path: 'stock',      element: <AdminStockPage /> },
       { path: 'finance',    element: <AdminFinancePage /> },
+      { path: 'business',   element: <AdminBusinessPage /> },
       { path: 'reports',    element: <AdminReportsPage /> },
       { path: 'data',       element: <AdminDataPage /> },
     ],

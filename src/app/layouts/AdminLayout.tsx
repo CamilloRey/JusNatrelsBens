@@ -8,9 +8,11 @@ import { ROUTES } from '@/shared/constants/routes';
 
 const MENU = [
   { route: ROUTES.admin.dashboard, label: 'Tableau de bord', icon: 'chart' },
+  { route: '/admin/business', label: 'Business 📊', icon: 'chart' },
   { route: ROUTES.admin.messages, label: 'Messages', icon: 'mail' },
   { route: ROUTES.admin.products, label: 'Catalogue', icon: 'grid' },
   { route: ROUTES.admin.ingredients, label: 'Ingredients', icon: 'shop' },
+  { route: '/admin/recipes', label: 'Recettes', icon: 'grid' },
   { route: ROUTES.admin.blog, label: 'Blogue', icon: 'edit' },
   { route: ROUTES.admin.events, label: 'Evenements', icon: 'map' },
   { route: ROUTES.admin.reviews, label: 'Avis clients', icon: 'star' },
