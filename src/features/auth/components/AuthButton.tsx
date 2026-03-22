@@ -3,11 +3,10 @@
  * Shows user profile or login button depending on auth state
  */
 
-'use client'
 
 import React, { useState } from 'react'
 import { useSupabaseAuth } from '../context/SupabaseAuthContext'
-import Link from 'next/link'
+import { Link } from 'react-router-dom'
 
 export const AuthButton: React.FC<{
   className?: string
@@ -23,7 +22,7 @@ export const AuthButton: React.FC<{
   if (!user) {
     return (
       <Link
-        href="/auth/login"
+        to="/auth/login"
         className={`px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold transition-colors ${className}`}
       >
         Se connecter
@@ -56,7 +55,7 @@ export const AuthButton: React.FC<{
               </div>
 
               <Link
-                href="/account/profile"
+                to="/account/profile"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 onClick={() => setIsOpen(false)}
               >
@@ -65,7 +64,7 @@ export const AuthButton: React.FC<{
 
               {isAdmin && (
                 <Link
-                  href="/admin"
+                  to="/admin"
                   className="block px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 font-medium"
                   onClick={() => setIsOpen(false)}
                 >

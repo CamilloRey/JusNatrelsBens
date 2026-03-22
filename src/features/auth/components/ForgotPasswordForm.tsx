@@ -3,10 +3,9 @@
  * Request password reset email
  */
 
-'use client'
 
 import React, { useState } from 'react'
-import Link from 'next/link'
+import { Link } from 'react-router-dom'
 import { resetPassword } from '@/lib/supabase-auth'
 
 interface ForgotPasswordFormProps {
@@ -79,7 +78,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onSucces
           <div className="space-y-2 text-center text-sm">
             <p className="text-gray-600">
               Vous avez reçu l'email?{' '}
-              <Link href="/auth/login" className="text-blue-600 hover:text-blue-700 font-semibold">
+              <Link to="/auth/login" className="text-blue-600 hover:text-blue-700 font-semibold">
                 Retour à la connexion
               </Link>
             </p>
@@ -146,7 +145,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onSucces
         <div className="text-center">
           <p className="text-gray-600 text-sm">
             Vous vous souvenez de votre mot de passe?{' '}
-            <Link href="/auth/login" className="text-blue-600 hover:text-blue-700 font-semibold">
+            <Link to="/auth/login" className="text-blue-600 hover:text-blue-700 font-semibold">
               Retour à la connexion
             </Link>
           </p>

@@ -3,11 +3,9 @@
  * User enters new password after clicking reset link
  */
 
-'use client'
 
-import React, { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import React, { useState, useMemo } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { updatePassword } from '@/lib/supabase-auth'
 import { supabase } from '@/lib/supabase'
 
@@ -16,8 +14,11 @@ interface ResetPasswordFormProps {
 }
 
 export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onSuccess }) => {
-  const router = useRouter()
-  const searchParams = useSearchParams()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const searchParams = useMemo(() => {
+    return new URLSearchParams(location.search)
+  }, [location.search])
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -102,7 +103,7 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onSuccess 
 
       // Redirect after a short delay
       setTimeout(() => {
-        router.push('/auth/login')
+        navigate('/auth/login')
       }, 2000)
     } catch (err) {
       setError('Erreur inattendue. Veuillez réessayer.')
@@ -136,13 +137,13 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onSuccess 
 
           <div className="space-y-3">
             <Link
-              href="/auth/forgot-password"
+              to="/auth/forgot-password"
               className="block text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
             >
               Demander un nouveau lien
             </Link>
             <Link
-              href="/auth/login"
+              to="/auth/login"
               className="block text-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold"
             >
               Retour à la connexion
@@ -181,7 +182,7 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onSuccess 
           </p>
 
           <Link
-            href="/auth/login"
+            to="/auth/login"
             className="block text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
           >
             Aller à la connexion
@@ -256,7 +257,7 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onSuccess 
         {/* Back to Login */}
         <div className="text-center">
           <p className="text-gray-600 text-sm">
-            <Link href="/auth/login" className="text-blue-600 hover:text-blue-700 font-semibold">
+            <Link to="/auth/login" className="text-blue-600 hover:text-blue-700 font-semibold">
               Retour à la connexion
             </Link>
           </p>

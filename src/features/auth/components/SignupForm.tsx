@@ -3,11 +3,8 @@
  * Complete registration form with validation
  */
 
-'use client'
-
 import React, { useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { Link, useNavigate } from 'react-router-dom'
 import { signUp } from '@/lib/supabase-auth'
 
 interface SignupFormProps {
@@ -16,7 +13,7 @@ interface SignupFormProps {
 }
 
 export const SignupForm: React.FC<SignupFormProps> = ({ redirectTo = '/auth/verify-email', onSuccess }) => {
-  const router = useRouter()
+  const navigate = useNavigate()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -93,7 +90,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({ redirectTo = '/auth/veri
       onSuccess?.()
 
       setTimeout(() => {
-        router.push(redirectTo)
+        navigate(redirectTo)
       }, 500)
     } catch (err) {
       setError('Erreur inattendue. Veuillez réessayer.')
@@ -187,11 +184,11 @@ export const SignupForm: React.FC<SignupFormProps> = ({ redirectTo = '/auth/veri
             />
             <label htmlFor="agree" className="text-sm text-gray-600">
               J'accepte les{' '}
-              <Link href="/terms" className="text-blue-600 hover:text-blue-700 font-medium">
+              <Link to="/terms" className="text-blue-600 hover:text-blue-700 font-medium">
                 conditions d'utilisation
               </Link>{' '}
               et la{' '}
-              <Link href="/privacy" className="text-blue-600 hover:text-blue-700 font-medium">
+              <Link to="/privacy" className="text-blue-600 hover:text-blue-700 font-medium">
                 politique de confidentialité
               </Link>
             </label>
@@ -211,7 +208,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({ redirectTo = '/auth/veri
         <div className="text-center">
           <p className="text-gray-600 text-sm">
             Vous avez déjà un compte?{' '}
-            <Link href="/auth/login" className="text-blue-600 hover:text-blue-700 font-semibold">
+            <Link to="/auth/login" className="text-blue-600 hover:text-blue-700 font-semibold">
               Se connecter
             </Link>
           </p>

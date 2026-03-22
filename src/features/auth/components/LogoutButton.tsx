@@ -3,10 +3,9 @@
  * Simple button to sign out user
  */
 
-'use client'
 
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router-dom'
 import { useSupabaseAuth } from '../context/SupabaseAuthContext'
 
 interface LogoutButtonProps {
@@ -24,7 +23,7 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({
   showConfirm = false,
   onLogout,
 }) => {
-  const router = useRouter()
+  const navigate = useNavigate()
   const { logout, loading } = useSupabaseAuth()
   const [isConfirming, setIsConfirming] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
@@ -36,7 +35,7 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({
       onLogout?.()
 
       setTimeout(() => {
-        router.push(redirectTo)
+        navigate(redirectTo)
       }, 500)
     } catch (error) {
       console.error('Logout error:', error)

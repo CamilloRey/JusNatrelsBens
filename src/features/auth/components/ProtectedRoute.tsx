@@ -3,11 +3,10 @@
  * Ensures only authenticated users can access protected pages
  */
 
-'use client'
 
 import React from 'react'
 import { useSupabaseAuth } from '../context/SupabaseAuthContext'
-import Link from 'next/link'
+import { Link } from 'react-router-dom'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -41,7 +40,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
             <h1 className="text-2xl font-bold text-gray-900">Accès refusé</h1>
             <p className="text-gray-600">Vous devez être connecté pour accéder à cette page.</p>
             <Link
-              href="/auth/login"
+              to="/auth/login"
               className="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
             >
               Se connecter
@@ -60,7 +59,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
             <h1 className="text-2xl font-bold text-gray-900">Accès administrateur requis</h1>
             <p className="text-gray-600">Vous n'avez pas les permissions pour accéder à cette page.</p>
             <Link
-              href="/"
+              to="/"
               className="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
             >
               Retour à l'accueil

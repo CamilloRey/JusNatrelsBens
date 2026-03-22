@@ -3,11 +3,8 @@
  * Complete Supabase authentication with email and password
  */
 
-'use client'
-
 import React, { useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { Link, useNavigate } from 'react-router-dom'
 import { signIn } from '@/lib/supabase-auth'
 
 interface LoginFormProps {
@@ -16,7 +13,7 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ redirectTo = '/account', onSuccess }: LoginFormProps) {
-  const router = useRouter()
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -55,7 +52,7 @@ export function LoginForm({ redirectTo = '/account', onSuccess }: LoginFormProps
       onSuccess?.()
 
       setTimeout(() => {
-        router.push(redirectTo)
+        navigate(redirectTo)
       }, 500)
     } catch (err) {
       setError('Erreur inattendue. Veuillez réessayer.')
@@ -108,7 +105,7 @@ export function LoginForm({ redirectTo = '/account', onSuccess }: LoginFormProps
             </div>
           </div>
 
-          <Link href="/auth/forgot-password" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+          <Link to="/auth/forgot-password" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
             Mot de passe oublié?
           </Link>
 
@@ -124,7 +121,7 @@ export function LoginForm({ redirectTo = '/account', onSuccess }: LoginFormProps
         <div className="text-center">
           <p className="text-gray-600 text-sm">
             Pas encore de compte?{' '}
-            <Link href="/auth/signup" className="text-blue-600 hover:text-blue-700 font-semibold">
+            <Link to="/auth/signup" className="text-blue-600 hover:text-blue-700 font-semibold">
               Créer un compte
             </Link>
           </p>
