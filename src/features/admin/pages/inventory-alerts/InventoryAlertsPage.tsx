@@ -1,5 +1,3 @@
-'use client'
-
 import { useState, useEffect } from 'react'
 import { getActiveAlerts, getAlertsBySeverity, getInventoryMetrics, resolveAlert } from '@/lib/inventory/inventory-alerts'
 

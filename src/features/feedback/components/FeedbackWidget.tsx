@@ -1,5 +1,3 @@
-'use client'
-
 import { useState } from 'react'
 import { submitFeedback } from '@/lib/feedback/feedback-system'
 
