@@ -55,6 +55,11 @@ export async function signUp(data: SignUpData): Promise<AuthResponse> {
     })
 
     if (authError) {
+      // Log signup failure
+      if (typeof window !== 'undefined') {
+        const { logAuthError } = await import('@/lib/error-tracking')
+        await logAuthError(email, 'signup', authError.message || 'Signup failed')
+      }
       return { success: false, error: authError }
     }
 
@@ -83,6 +88,12 @@ export async function signUp(data: SignUpData): Promise<AuthResponse> {
 
     if (roleError) {
       console.error('Error creating user role:', roleError)
+    }
+
+    // Log signup success
+    if (typeof window !== 'undefined') {
+      const { logAuthSuccess } = await import('@/lib/error-tracking')
+      await logAuthSuccess(email, 'signup')
     }
 
     return {
