@@ -10,6 +10,7 @@ import type { Event }         from '@/features/events/types/event.types';
 import type { StockMovement } from '@/features/stock/types/stock.types';
 import type { Transaction }   from '@/features/finance/types/finance.types';
 import type { Ingredient } from '@/features/ingredients/types/ingredient.types';
+import type { Recipe } from '@/features/recipes/types/recipe.types';
 
 export const SEED_PRODUCTS: Product[] = [
   { id: 'p1',  name: 'Hibiscus Gingembre',           category: 'Tisanes', price: 8.99,  formats: ['250ml','354ml','1L'], desc: "Alliance exquise de l'hibiscus et du gingembre piquant.", available: true, tag: 'Populaire', img: '/images-bens/produits/hibiscus-gingembre-trio-sans-sucre.png', color: '#c44536' },
@@ -151,4 +152,148 @@ export const SEED_MESSAGES: Message[] = [
   { id: 'm2', name: 'Paul Tremblay', email: 'paul.t@hotmail.com',     message: "J'aimerais savoir si vous faites des collaborations avec des restaurants.", read: false, responded: false, date: '2025-03-05T14:15:00' },
   { id: 'm3', name: 'Nadia Benali',  email: 'nadia.b@outlook.com',    message: "Avez-vous du jus de gingembre sans sucre en format 1L ?", read: false, responded: false, date: '2025-03-06T08:45:00' },
   { id: 'm4', name: 'Sophie Martin', email: 'sophie.martin@yahoo.com',message: 'Vos jus sont excellents ! Est-ce que vous livrez à Laval ?', read: true,  responded: true,  date: '2025-02-28T16:20:00' },
+];
+
+export const SEED_RECIPES: Recipe[] = [
+  {
+    id: 'rec1',
+    name: 'Smoothie Tropical Détox',
+    description: 'Un smoothie vibrant et énergisant avec nos jus exotiques. Parfait pour commencer la journée avec un coup de peps !',
+    category: 'Smoothie',
+    difficulty: 'Facile',
+    prepTime: 8,
+    servings: 2,
+    products: ['p6', 'p8'],
+    ingredients: ['250ml Jus d\'Ananas', '150ml Ananas Passion', '1 banane', '100g yaourt nature', '50ml lait de coco', 'Glaçons'],
+    instructions: [
+      'Versez les jus d\'ananas et d\'ananas passion dans un mélangeur',
+      'Ajoutez la banane coupée en morceaux',
+      'Versez le yaourt et le lait de coco',
+      'Ajoutez une bonne poignée de glaçons',
+      'Mélangez jusqu\'à obtenir une consistance lisse',
+      'Versez dans des verres et servez immédiatement'
+    ],
+    image: 'https://images.unsplash.com/photo-1505252585461-04db1921b902?auto=format&fit=crop&w=800&q=80',
+    featured: true,
+    published: true,
+    tags: ['Tropical', 'Rapide', 'Énergisant']
+  },
+  {
+    id: 'rec2',
+    name: 'Infusion Gingembre-Citron Apaisante',
+    description: 'Une tisane réconfortante pour les froids matins d\'hiver. Elle aide à la digestion et renforce votre système immunitaire.',
+    category: 'Jus',
+    difficulty: 'Facile',
+    prepTime: 5,
+    servings: 1,
+    products: ['p5'],
+    ingredients: ['250ml Gingembre Citron Sans Sucre', '200ml eau chaude', '1 tranche de citron frais', '1 cuillère de miel'],
+    instructions: [
+      'Versez le jus de gingembre citron dans une tasse',
+      'Complétez avec 200ml d\'eau chaude',
+      'Remuez bien',
+      'Ajoutez une tranche de citron frais et du miel selon votre goût',
+      'Dégustez lentement et profitez des bienfaits'
+    ],
+    image: 'https://images.unsplash.com/photo-1563241527-3004b1df584e?auto=format&fit=crop&w=800&q=80',
+    featured: false,
+    published: true,
+    tags: ['Hivernal', 'Santé', 'Réconfort']
+  },
+  {
+    id: 'rec3',
+    name: 'Cocktail Fraise-Hibiscus Festif',
+    description: 'Un cocktail coloré et rafraîchissant parfait pour les soirées d\'été. Avec ou sans alcool selon vos préférences !',
+    category: 'Cocktail',
+    difficulty: 'Moyen',
+    prepTime: 10,
+    servings: 2,
+    products: ['p2', 'p3'],
+    ingredients: ['150ml Hibiscus Fraises', '150ml Hibiscus Fraises Sans Sucre', '50ml sirop simple', '60ml rhum blanc (optionnel)', 'Glaçons', 'Fraises fraîches', 'Menthe fraîche'],
+    instructions: [
+      'Remplissez deux verres de glaçons',
+      'Versez 75ml de jus d\'hibiscus fraises dans chaque verre',
+      'Ajoutez 75ml de jus hibiscus fraises sans sucre pour la couleur profonde',
+      'Versez 30ml de rhum blanc par verre (optionnel)',
+      'Complétez avec un trait de sirop simple',
+      'Remuez bien et garnissez avec des fraises fraîches et un brin de menthe',
+      'Servez immédiatement'
+    ],
+    image: 'https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?auto=format&fit=crop&w=800&q=80',
+    featured: true,
+    published: true,
+    tags: ['Cocktail', 'Fête', 'Rafraîchissant']
+  },
+  {
+    id: 'rec4',
+    name: 'Bol Acai aux Jus Naturels',
+    description: 'Un dessert sain et coloré garni de nos jus concentrés. Parfait pour une collation énergisante après l\'entraînement.',
+    category: 'Desset',
+    difficulty: 'Facile',
+    prepTime: 10,
+    servings: 2,
+    products: ['p2', 'p9'],
+    ingredients: ['200g purée açai congelée', '100ml jus d\'hibiscus fraises', '50ml jus de bleuets', 'Granola', 'Noix de coco râpée', 'Miel', 'Fraises fraîches'],
+    instructions: [
+      'Décongelez légèrement la purée d\'açai',
+      'Préparez deux bols',
+      'Versez une généreuse portion d\'açai dans chaque bol',
+      'Arrosez avec le jus d\'hibiscus fraises et le jus de bleuets pour créer des motifs',
+      'Garnissez généreusement de granola',
+      'Ajoutez de la noix de coco râpée',
+      'Ajoutez des fraises fraîches coupées en morceaux',
+      'Versez un trait de miel sur le dessus',
+      'Dégustez immédiatement'
+    ],
+    image: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?auto=format&fit=crop&w=800&q=80',
+    featured: true,
+    published: true,
+    tags: ['Dessert', 'Sain', 'Énergisant']
+  },
+  {
+    id: 'rec5',
+    name: 'Jus Frais Pressé — Trio Gingembre',
+    description: 'Un jus triple action avec tous les bienfaits du gingembre et du citron. Simple, efficace et délicieux !',
+    category: 'Jus',
+    difficulty: 'Facile',
+    prepTime: 3,
+    servings: 1,
+    products: ['p4', 'p5'],
+    ingredients: ['150ml Gingembre Citron Sucré', '150ml Gingembre Citron Sans Sucre', 'Glaçons', 'Tranche de citron frais'],
+    instructions: [
+      'Remplissez un verre de glaçons',
+      'Versez 75ml de jus gingembre citron sucré',
+      'Complétez avec 75ml de jus gingembre citron sans sucre',
+      'Remuez bien',
+      'Garnissez avec une tranche de citron',
+      'Servez immédiatement pour une fraîcheur optimale'
+    ],
+    image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=800&q=80',
+    featured: false,
+    published: true,
+    tags: ['Jus', 'Rapide', 'Santé']
+  },
+  {
+    id: 'rec6',
+    name: 'Séance Détox Herbal Intense',
+    description: 'Une cure de trois jours avec nos tisanes pour revitaliser votre corps. Idéal pour recommencer l\'année du bon pied.',
+    category: 'Jus',
+    difficulty: 'Difficile',
+    prepTime: 15,
+    servings: 3,
+    products: ['p1', 'p5', 'p11'],
+    ingredients: ['250ml Hibiscus Gingembre', '250ml Gingembre Citron Sans Sucre', '250ml Gingembre Bio', 'Citrons', 'Miel cru'],
+    instructions: [
+      'Jour 1 : Buvez 250ml de tisane d\'hibiscus gingembre le matin à jeun',
+      'Jour 1 : Complétez avec 250ml de gingembre citron sans sucre l\'après-midi',
+      'Jour 1 : Terminez avec 250ml de gingembre bio le soir',
+      'Jour 2-3 : Répétez la même séquence',
+      'Entre chaque verre : Buvez de l\'eau filtrée',
+      'N\'oubliez pas : Mangez sainement pendant la détox et consultez un professionnel avant de commencer'
+    ],
+    image: 'https://images.unsplash.com/photo-1544367567-0d0fcf3665d0?auto=format&fit=crop&w=800&q=80',
+    featured: false,
+    published: true,
+    tags: ['Détox', 'Santé', 'Bien-être']
+  }
 ];
