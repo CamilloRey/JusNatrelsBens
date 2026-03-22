@@ -20,6 +20,7 @@ export function FeedbackWidget() {
       email: feedback.title || 'anonymous@example.com',
       page: typeof window !== 'undefined' ? window.location.pathname : '/',
       userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+      rating: feedback.rating as 1 | 2 | 3 | 4 | 5,
       resolved: false,
     })
 
