@@ -235,16 +235,16 @@ export async function getInventoryMetrics(): Promise<InventoryMetrics | null> {
     if (alertsError) throw alertsError
 
     const lowStockCount =
-      alerts?.filter((a) => a.alert_type === 'LOW_STOCK').length || 0
+      alerts?.filter((a: any) => a.alert_type === 'LOW_STOCK').length || 0
     const outOfStockCount =
-      alerts?.filter((a) => a.alert_type === 'OUT_OF_STOCK').length || 0
+      alerts?.filter((a: any) => a.alert_type === 'OUT_OF_STOCK').length || 0
     const overstockCount =
-      alerts?.filter((a) => a.alert_type === 'OVERSTOCK').length || 0
+      alerts?.filter((a: any) => a.alert_type === 'OVERSTOCK').length || 0
     const criticalCount =
-      alerts?.filter((a) => a.severity === 'critical').length || 0
+      alerts?.filter((a: any) => a.severity === 'critical').length || 0
 
     const stockValue = (items || []).reduce(
-      (sum, item) => sum + item.current_stock * (item.unit_price || 0),
+      (sum: any, item: any) => sum + item.current_stock * (item.unit_price || 0),
       0
     )
 

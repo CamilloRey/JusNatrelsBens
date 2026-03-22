@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { C } from '@/shared/constants/colors';
 import { CSS, inputSt, labelSt } from '@/shared/constants/styles';
-import { Icon } from '@/shared/ui/Icon';
 import type { SquarePayment } from '../types/payment.types';
 
 export default function AdminSquarePaymentsPage() {
@@ -319,10 +318,10 @@ export default function AdminSquarePaymentsPage() {
                 .map((item, i) => (
                   <div key={i}>
                     <p style={{ fontSize: 12, color: C.muted, fontWeight: 600, margin: 0, marginBottom: 4 }}>
-                      {item!.label}
+                      {(item as { label: string; value: string }).label}
                     </p>
                     <p style={{ fontSize: 14, color: C.dark, margin: 0, wordBreak: 'break-all' }}>
-                      {item!.value}
+                      {(item as { label: string; value: string }).value}
                     </p>
                   </div>
                 ))}

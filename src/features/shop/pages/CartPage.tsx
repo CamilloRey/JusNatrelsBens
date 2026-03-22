@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { C } from '@/shared/constants/colors';
-import { CSS, inputSt } from '@/shared/constants/styles';
+import { CSS } from '@/shared/constants/styles';
 
 export default function CartPage() {
   const navigate = useNavigate();

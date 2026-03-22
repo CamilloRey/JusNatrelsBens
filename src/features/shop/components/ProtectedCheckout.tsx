@@ -30,8 +30,6 @@ export function ProtectedCheckout({ children, allowGuest = true }: ProtectedChec
 }
 
 export function ProtectedCart({ children }: { children: React.ReactNode }) {
-  const { cart } = useCart();
-
   // Empty cart is OK, just show empty state
   return <>{children}</>;
 }

@@ -22,13 +22,9 @@ export interface PaymentResponse {
 }
 
 class SquareClient {
-  private applicationId: string = '';
-  private locationId: string = '';
   private web: any = null;
 
-  async initialize(config: SquareConfig): Promise<void> {
-    this.applicationId = config.applicationId;
-    this.locationId = config.locationId;
+  async initialize(_config: SquareConfig): Promise<void> {
 
     // Load Square Web Payments SDK
     if (!window.Square) {
@@ -47,25 +43,12 @@ class SquareClient {
   }
 
   async requestCardPayment(
-    request: PaymentRequest
+    _request: PaymentRequest
   ): Promise<PaymentResponse> {
     try {
       if (!this.web) {
         throw new Error('Square SDK not initialized');
       }
-
-      // Create payment request for Web Payments Form
-      const paymentRequest = {
-        requestShippingAddress: false,
-        requestBillingInfo: true,
-        currencyCode: request.currency || 'CAD',
-        countryCode: 'CA',
-        total: {
-          amount: String(request.amount),
-          label: request.description,
-          pending: false,
-        },
-      };
 
       // Note: Full implementation would include:
       // 1. Web Payments Form initialization

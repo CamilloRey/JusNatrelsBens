@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getIPGeolocation, isAccessAllowed, detectVPN, DEFAULT_GEO_CONFIG } from '@/lib/geoBlocking';
+import { isAccessAllowed, detectVPN, DEFAULT_GEO_CONFIG } from '@/lib/geoBlocking';
 import { calculateAnomalyScore, storeBehavior, getBehaviorHistory } from '@/lib/anomalyDetection';
 import { verifyZeroTrust, requireZeroTrustVerification } from '@/lib/zeroTrust';
 import { useSupabaseAuth } from '@/features/auth/context/SupabaseAuthContext';
@@ -66,7 +66,8 @@ export function useAdvancedSecurity() {
         storeBehavior(user.id, behavior as any);
 
         if (anomaly.isAnomaly) {
-          monitoring.logSecurity('anomaly_detected', user.id, anomaly.severity);
+          const logSev: 'warning' | 'critical' = anomaly.severity === 'critical' ? 'critical' : 'warning';
+          monitoring.logSecurity('anomaly_detected', user.id, logSev);
           setSecurityStatus(anomaly.severity === 'critical' ? 'blocked' : 'warning');
         }
 

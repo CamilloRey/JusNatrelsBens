@@ -11,10 +11,10 @@ import type { ShippingAddress, DeliveryType, Order } from '../types/shop.types';
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
   const { user } = useSupabaseAuth();
-  const { validateCheckoutForm, sanitizeCheckoutData } = useSecurityValidation();
-  const { isRateLimited, remainingTime, checkCheckoutLimit } = useRateLimit();
+  const { validateCheckoutForm } = useSecurityValidation();
+  const { remainingTime, checkCheckoutLimit } = useRateLimit();
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
-  const [isGuest, setIsGuest] = useState(!user);
+  const [isGuest] = useState(!user);
   const [emailVerified, setEmailVerified] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
@@ -155,12 +155,6 @@ export default function CheckoutPage() {
       setStep(2);
     } else if (step === 2) {
       // Step 2: Customer info validation
-      const requiredFields = {
-        email: customerEmail,
-        name: customerName,
-        phone: customerPhone,
-      };
-
       if (!customerEmail.trim()) {
         setFormErrors({ email: 'Email requis' });
         return;

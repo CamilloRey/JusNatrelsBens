@@ -24,7 +24,7 @@ export async function logError(error: ErrorEvent): Promise<void> {
       data: { user },
     } = await supabase.auth.getUser()
 
-    const { err } = await supabase.from('error_logs').insert({
+    const { error: insertError } = await supabase.from('error_logs').insert({
       error_type: error.type,
       error_message: error.message,
       error_stack: error.stack || null,
@@ -35,8 +35,8 @@ export async function logError(error: ErrorEvent): Promise<void> {
       metadata: error.metadata || {},
     })
 
-    if (err) {
-      console.error('Failed to log error:', err)
+    if (insertError) {
+      console.error('Failed to log error:', insertError)
     }
 
     // Also log to console in development
@@ -202,9 +202,8 @@ export async function getErrorStatistics(days = 7) {
 
     const { data, error } = await supabase
       .from('error_logs')
-      .select('severity, count(*)')
+      .select('severity')
       .gte('created_at', date.toISOString())
-      .group_by('severity')
 
     if (error) {
       console.error('Error fetching error statistics:', error)

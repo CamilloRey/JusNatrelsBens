@@ -76,12 +76,12 @@ export async function getSalesReport(
     if (itemsError) throw itemsError
 
     const totalSales = orders?.length || 0
-    const totalRevenue = (orders || []).reduce((sum, o) => sum + (o.total || 0), 0)
+    const totalRevenue = (orders || []).reduce((sum: any, o: any) => sum + (o.total || 0), 0)
     const avgOrderValue = totalSales > 0 ? totalRevenue / totalSales : 0
 
     // Get top products
     const productSales: Record<string, any> = {}
-    ;(items || []).forEach((item) => {
+    ;(items || []).forEach((item: any) => {
       if (!productSales[item.product_name]) {
         productSales[item.product_name] = { quantity: 0, revenue: 0 }
       }
@@ -100,7 +100,7 @@ export async function getSalesReport(
 
     // Get top customers
     const customerSpending: Record<string, any> = {}
-    ;(orders || []).forEach((order) => {
+    ;(orders || []).forEach((order: any) => {
       if (!customerSpending[order.customer_name]) {
         customerSpending[order.customer_name] = { orders: 0, spent: 0 }
       }
@@ -155,15 +155,15 @@ export async function getAnalyticsMetrics(): Promise<AnalyticsMetrics | null> {
     if (itemsError) throw itemsError
 
     const totalOrders = orders?.length || 0
-    const totalRevenue = (orders || []).reduce((sum, o) => sum + (o.total || 0), 0)
+    const totalRevenue = (orders || []).reduce((sum: any, o: any) => sum + (o.total || 0), 0)
     const customerCount = customers?.length || 0
     const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0
-    const totalItems = (items || []).reduce((sum, i) => sum + i.quantity, 0)
+    const totalItems = (items || []).reduce((sum: any, i: any) => sum + i.quantity, 0)
     const avgProductsPerOrder = totalOrders > 0 ? totalItems / totalOrders : 0
 
     // Calculate repeat customer rate
     const customerOrderCounts: Record<string, number> = {}
-    ;(orders || []).forEach((order) => {
+    ;(orders || []).forEach((order: any) => {
       customerOrderCounts[order.customer_id] =
         (customerOrderCounts[order.customer_id] || 0) + 1
     })
@@ -231,17 +231,17 @@ export async function getProductAnalytics(): Promise<ProductAnalytics[]> {
 
     if (reviewsError) throw reviewsError
 
-    const analytics: ProductAnalytics[] = (products || []).map((product) => {
-      const productSales = (sales || []).filter((s) => s.product_id === product.id)
+    const analytics: ProductAnalytics[] = (products || []).map((product: any) => {
+      const productSales = (sales || []).filter((s: any) => s.product_id === product.id)
       const productReviews = (reviews || []).filter(
-        (r) => r.product_id === product.id
+        (r: any) => r.product_id === product.id
       )
 
-      const totalSold = productSales.reduce((sum, s) => sum + s.quantity, 0)
-      const totalRevenue = productSales.reduce((sum, s) => sum + (s.total || 0), 0)
+      const totalSold = productSales.reduce((sum: any, s: any) => sum + s.quantity, 0)
+      const totalRevenue = productSales.reduce((sum: any, s: any) => sum + (s.total || 0), 0)
       const avgRating =
         productReviews.length > 0
-          ? productReviews.reduce((sum, r) => sum + r.rating, 0) /
+          ? productReviews.reduce((sum: any, r: any) => sum + r.rating, 0) /
             productReviews.length
           : 0
 
@@ -278,13 +278,13 @@ export async function getCustomerAnalytics(): Promise<CustomerAnalytics[]> {
 
     if (ordersError) throw ordersError
 
-    const analytics: CustomerAnalytics[] = (customers || []).map((customer) => {
+    const analytics: CustomerAnalytics[] = (customers || []).map((customer: any) => {
       const customerOrders = (orders || []).filter(
-        (o) => o.customer_id === customer.id
+        (o: any) => o.customer_id === customer.id
       )
 
       const totalOrders = customerOrders.length
-      const totalSpent = customerOrders.reduce((sum, o) => sum + (o.total || 0), 0)
+      const totalSpent = customerOrders.reduce((sum: any, o: any) => sum + (o.total || 0), 0)
       const avgOrderValue = totalOrders > 0 ? totalSpent / totalOrders : 0
       const lastOrderDate =
         customerOrders.length > 0

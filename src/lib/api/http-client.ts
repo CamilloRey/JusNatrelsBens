@@ -17,7 +17,8 @@ type TableName =
   | 'messages'
   | 'events'
   | 'stock'
-  | 'finance';
+  | 'finance'
+  | 'recipes';
 
 /** Charger tous les enregistrements d'une table, triés par created_at. */
 export async function fetchAll<T>(table: TableName, fallback: T[]): Promise<T[]> {

@@ -176,7 +176,7 @@ function scoreUnusualAmount(
  * Score: Is frequency unusual?
  */
 function scoreUnusualFrequency(
-  current: Partial<UserBehavior>,
+  _current: Partial<UserBehavior>,
   historical: UserBehavior[]
 ): number {
   if (historical.length < 5) return 0;
@@ -191,8 +191,6 @@ function scoreUnusualFrequency(
   }
 
   if (intervals.length === 0) return 0;
-
-  const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
 
   // If user logs in way more frequently = anomaly
   const todayCount = historical.filter(

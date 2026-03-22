@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useCart } from './CartContext';
 import { useSupabaseAuth } from '@/features/auth/context/SupabaseAuthContext';
 import { supabase } from '@/lib/supabase';

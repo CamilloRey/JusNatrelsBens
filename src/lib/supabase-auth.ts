@@ -101,7 +101,7 @@ export async function signUp(data: SignUpData): Promise<AuthResponse> {
       data: authData.user,
     }
   } catch (error) {
-    return { success: false, error }
+    return { success: false, error: error as Error }
   }
 }
 
@@ -126,7 +126,7 @@ export async function signIn(data: SignInData): Promise<AuthResponse> {
       data: authData,
     }
   } catch (error) {
-    return { success: false, error }
+    return { success: false, error: error as Error }
   }
 }
 
@@ -143,7 +143,7 @@ export async function signOut(): Promise<AuthResponse> {
 
     return { success: true }
   } catch (error) {
-    return { success: false, error }
+    return { success: false, error: error as Error }
   }
 }
 
@@ -193,7 +193,7 @@ export async function refreshSession(): Promise<AuthResponse> {
       data: data.session,
     }
   } catch (error) {
-    return { success: false, error }
+    return { success: false, error: error as Error }
   }
 }
 
@@ -203,7 +203,7 @@ export async function refreshSession(): Promise<AuthResponse> {
 export async function resetPassword(email: string): Promise<AuthResponse> {
   try {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectUrl: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/reset-password`,
+      redirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/reset-password`,
     })
 
     if (error) {
@@ -212,7 +212,7 @@ export async function resetPassword(email: string): Promise<AuthResponse> {
 
     return { success: true }
   } catch (error) {
-    return { success: false, error }
+    return { success: false, error: error as Error }
   }
 }
 
@@ -234,7 +234,7 @@ export async function updatePassword(newPassword: string): Promise<AuthResponse>
       data: data.user,
     }
   } catch (error) {
-    return { success: false, error }
+    return { success: false, error: error as Error }
   }
 }
 
@@ -277,7 +277,7 @@ export async function updateUserProfile(
 
     return { success: true }
   } catch (error) {
-    return { success: false, error }
+    return { success: false, error: error as Error }
   }
 }
 
@@ -351,7 +351,7 @@ export async function isUserAdmin(userId: string): Promise<boolean> {
 export function onAuthStateChange(callback: (user: User | null, session: Session | null) => void) {
   const {
     data: { subscription },
-  } = supabase.auth.onAuthStateChange(async (event, session) => {
+  } = supabase.auth.onAuthStateChange(async (_event: any, session: any) => {
     const user = session?.user || null
     callback(user, session)
   })

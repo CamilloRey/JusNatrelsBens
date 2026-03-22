@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMFA } from '../hooks/useMFA';
 import { C } from '@/shared/constants/colors';
@@ -11,7 +11,7 @@ export default function MFAEnrollPage() {
   const [qrCode, setQrCode] = useState('');
   const [secret, setSecret] = useState('');
   const [code, setCode] = useState('');
-  const [factorId, setFactorId] = useState('');
+  const [factorId, _setFactorId] = useState('');
   const [backupCodes, setBackupCodes] = useState<string[]>([]);
 
   const handleSetupMFA = async () => {

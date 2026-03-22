@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useSupabaseAuth } from '../context/SupabaseAuthContext';
 import { C } from '@/shared/constants/colors';
 import { CSS, inputSt, labelSt } from '@/shared/constants/styles';
 
 export default function SupabaseForgotPasswordPage() {
-  const navigate = useNavigate();
   const { resetPassword } = useSupabaseAuth();
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');

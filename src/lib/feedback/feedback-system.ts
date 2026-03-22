@@ -64,7 +64,7 @@ export async function getFeedbackMetrics(): Promise<FeedbackMetrics | null> {
     const feedback = data || []
     const avgRating =
       feedback.length > 0
-        ? feedback.reduce((sum, f) => sum + f.rating, 0) / feedback.length
+        ? feedback.reduce((sum: any, f: any) => sum + f.rating, 0) / feedback.length
         : 0
 
     const byType: Record<string, number> = {
@@ -74,13 +74,13 @@ export async function getFeedbackMetrics(): Promise<FeedbackMetrics | null> {
       general: 0,
     }
 
-    feedback.forEach((f) => {
+    feedback.forEach((f: any) => {
       byType[f.type]++
     })
 
     const satisfactionRate =
       feedback.length > 0
-        ? ((feedback.filter((f) => f.rating >= 4).length / feedback.length) * 100)
+        ? ((feedback.filter((f: any) => f.rating >= 4).length / feedback.length) * 100)
         : 0
 
     return {

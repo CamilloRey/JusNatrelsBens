@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { C } from '@/shared/constants/colors';
-import { CSS, inputSt, labelSt } from '@/shared/constants/styles';
+import { inputSt, labelSt } from '@/shared/constants/styles';
 import { validateEmail } from '@/middleware/securityHeaders';
 
 interface GuestEmailValidatorProps {

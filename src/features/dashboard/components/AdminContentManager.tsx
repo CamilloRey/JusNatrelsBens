@@ -52,7 +52,7 @@ export const AdminContentManager: React.FC<AdminContentManagerProps> = ({
     }
   }
 
-  const crud = getCRUD()
+  const crud = getCRUD() as any
 
   // Load items
   useEffect(() => {

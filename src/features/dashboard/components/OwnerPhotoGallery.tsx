@@ -78,11 +78,6 @@ export const OwnerPhotoGallery: React.FC<OwnerPhotoGalleryProps> = ({ onPhotoAdd
     }
   }
 
-  const handleUpdatePhoto = async (photoId: string, updates: Partial<OwnerPhoto>) => {
-    // Update via database if needed
-    await loadPhotos()
-  }
-
   const filteredPhotos = selectedSection === 'all' ? photos : photos.filter((p) => p.gallery_section === selectedSection)
 
   return (

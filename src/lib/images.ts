@@ -184,24 +184,20 @@ export function subscribeToImageUpdates(
 ) {
   if (!supabase) return null
 
-  let query = supabase
-    .from('images')
-    .on('*', (payload) => {
-      console.log('Image update:', payload)
-      callback?.(payload)
-    })
-
-  if (productId) {
-    query = supabase
-      .from(`images:product_id=eq.${productId}`)
-      .on('*', (payload) => {
-        console.log('Product image update:', payload)
+  const filter = productId ? `product_id=eq.${productId}` : undefined
+  const channel = supabase
+    .channel('images-changes')
+    .on(
+      'postgres_changes' as any,
+      { event: '*', schema: 'public', table: 'images', ...(filter ? { filter } : {}) },
+      (payload: any) => {
+        console.log('Image update:', payload)
         callback?.(payload)
-      })
-  }
+      }
+    )
+    .subscribe()
 
-  const subscription = query.subscribe()
-  return subscription
+  return channel
 }
 
 /**
@@ -210,15 +206,19 @@ export function subscribeToImageUpdates(
 export function subscribeToOwnerPhotoUpdates(callback?: (event: any) => void) {
   if (!supabase) return null
 
-  const subscription = supabase
-    .from('owner_photos')
-    .on('*', (payload) => {
-      console.log('Owner photo update:', payload)
-      callback?.(payload)
-    })
+  const channel = supabase
+    .channel('owner-photos-changes')
+    .on(
+      'postgres_changes' as any,
+      { event: '*', schema: 'public', table: 'owner_photos' },
+      (payload: any) => {
+        console.log('Owner photo update:', payload)
+        callback?.(payload)
+      }
+    )
     .subscribe()
 
-  return subscription
+  return channel
 }
 
 /**

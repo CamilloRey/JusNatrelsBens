@@ -71,7 +71,7 @@ export function useMFA() {
         return { error: mfaError };
       }
 
-      return { success: true, session: data.session };
+      return { success: true, session: data };
     } catch (err: any) {
       setError(err.message);
       return { error: err };
@@ -87,7 +87,7 @@ export function useMFA() {
     try {
       const { data, error } = await supabase.auth.mfa.listFactors();
       if (error) return { error };
-      return { factors: data?.factors || [] };
+      return { factors: data?.all || [] };
     } catch (err) {
       return { error: err };
     }
@@ -138,11 +138,11 @@ export function useMFA() {
 
       setMfaState((prev) => ({
         ...prev,
-        challengeId: data.challenge.id,
+        challengeId: data.id,
         factorId,
       }));
 
-      return { challengeId: data.challenge.id };
+      return { challengeId: data.id };
     } catch (err: any) {
       setError(err.message);
       return { error: err };
@@ -175,7 +175,7 @@ export function useMFA() {
         return { error: mfaError };
       }
 
-      return { success: true, session: data.session };
+      return { success: true, session: data };
     } catch (err: any) {
       setError(err.message);
       return { error: err };

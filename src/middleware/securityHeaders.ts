@@ -120,7 +120,6 @@ export function escapeHtml(text: string): string {
 export class SessionManager {
   private sessionTimeout = 30 * 60 * 1000; // 30 min
   private warningTime = 5 * 60 * 1000; // 5 min warning
-  private lastActivity = Date.now();
   private timeoutHandle: NodeJS.Timeout | null = null;
   private warningCallback?: () => void;
   private logoutCallback?: () => void;
@@ -141,7 +140,6 @@ export class SessionManager {
   }
 
   private updateActivity() {
-    this.lastActivity = Date.now();
     this.resetTimer();
   }
 

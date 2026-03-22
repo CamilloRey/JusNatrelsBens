@@ -6,7 +6,7 @@ import { ROUTES } from '@/shared/constants/routes';
 
 export default function BlogDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { t } = useTranslation();
+  useTranslation();
   const { blogs } = useData();
   const navigate = useNavigate();
 

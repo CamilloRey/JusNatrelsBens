@@ -121,9 +121,8 @@ export async function getEmailStats(days = 7) {
 
     const { data, error } = await supabase
       .from('email_logs')
-      .select('event_type, status, count(*)')
+      .select('event_type, status')
       .gte('created_at', date.toISOString())
-      .group_by('event_type', 'status')
 
     if (error) {
       console.error('Error fetching email stats:', error)

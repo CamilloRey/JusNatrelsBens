@@ -5,7 +5,7 @@
 
 import { useEffect, useCallback, useRef } from 'react'
 import { subscribeToImageUpdates, subscribeToOwnerPhotoUpdates } from '@/lib/images'
-import type { Image, OwnerPhoto, ImageRealtimeEvent, OwnerPhotoRealtimeEvent } from '@/shared/types/images'
+import type { ImageRealtimeEvent, OwnerPhotoRealtimeEvent } from '@/shared/types/images'
 
 interface UseRealtimeImagesOptions {
   productId?: string

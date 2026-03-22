@@ -188,7 +188,7 @@ async function verifyPermissions(
 ): Promise<boolean> {
   try {
     // Check RLS policies
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from(resource)
       .select('id', { count: 'exact' })
       .eq('user_id', userId);
@@ -252,7 +252,7 @@ async function verifyLocationLegitimacy(
       .ilike('city', location)
       .limit(1);
 
-    return data && data.length > 0;
+    return data != null && data.length > 0;
   } catch {
     return false;
   }
@@ -274,7 +274,7 @@ async function verifyActionLegitimacy(
       .eq('action', action)
       .limit(1);
 
-    return data && data.length > 0;
+    return data != null && data.length > 0;
   } catch {
     return true; // If can't verify, allow (new user)
   }

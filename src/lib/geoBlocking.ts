@@ -190,7 +190,7 @@ export function storeLocationHistory(
  */
 export function detectSuspiciousLocationChange(
   userId: string,
-  currentGeo: any,
+  _currentGeo: any,
   maxChanges: number = 3
 ): {
   isSuspicious: boolean;

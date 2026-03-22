@@ -4,8 +4,8 @@
  */
 
 
-import React, { useState, useMemo, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { updatePassword } from '@/lib/supabase-auth'
 import { supabase } from '@/lib/supabase'
 
@@ -15,10 +15,6 @@ interface ResetPasswordFormProps {
 
 export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onSuccess }) => {
   const navigate = useNavigate()
-  const location = useLocation()
-  const searchParams = useMemo(() => {
-    return new URLSearchParams(location.search)
-  }, [location.search])
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)

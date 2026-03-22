@@ -41,7 +41,7 @@ export default function SupabaseResetPasswordPage() {
 
     setIsLoading(true);
 
-    const { data, error: updateError } = await (window as any).supabase.auth.updateUser({
+    const { error: updateError } = await (window as any).supabase.auth.updateUser({
       password: password,
     });
 
