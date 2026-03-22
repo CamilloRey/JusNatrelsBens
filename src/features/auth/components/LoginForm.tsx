@@ -1,65 +1,135 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/app/providers/AuthContext';
-import { useData } from '@/app/providers/DataContext';
-import { C } from '@/shared/constants/colors';
-import { ROUTES } from '@/shared/constants/routes';
-import { Icon } from '@/shared/ui/Icon';
+/**
+ * Login Form Component
+ * Complete Supabase authentication with email and password
+ */
 
-export function LoginForm() {
-  const { login } = useAuth();
-  const { settings, logActivity } = useData();
-  const navigate = useNavigate();
-  const [password, setPassword] = useState('');
-  const [error, setError]       = useState(false);
+'use client'
 
-  const handleSubmit = () => {
-    const ok = login(password, settings.password);
-    if (ok) {
-      logActivity('Connexion', 'Connexion au panneau admin', 'auth');
-      navigate(ROUTES.admin.dashboard);
-    } else {
-      setError(true);
-      logActivity('Tentative échouée', 'Tentative de connexion avec mauvais mot de passe', 'auth');
+import React, { useState } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { signIn } from '@/lib/supabase-auth'
+
+interface LoginFormProps {
+  redirectTo?: string
+  onSuccess?: () => void
+}
+
+export function LoginForm({ redirectTo = '/account', onSuccess }: LoginFormProps) {
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [showPassword, setShowPassword] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    setLoading(true)
+
+    try {
+      if (!email || !password) {
+        setError('Email et mot de passe requis')
+        setLoading(false)
+        return
+      }
+
+      if (!email.includes('@')) {
+        setError('Veuillez entrer un email valide')
+        setLoading(false)
+        return
+      }
+
+      const result = await signIn({ email, password })
+
+      if (!result.success) {
+        const errorMessage = result.error instanceof Error ? result.error.message : String(result.error)
+        setError(errorMessage || 'Erreur de connexion')
+        setLoading(false)
+        return
+      }
+
+      setEmail('')
+      setPassword('')
+      onSuccess?.()
+
+      setTimeout(() => {
+        router.push(redirectTo)
+      }, 500)
+    } catch (err) {
+      setError('Erreur inattendue. Veuillez réessayer.')
+      console.error('Login error:', err)
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: `linear-gradient(135deg, ${C.dark} 0%, #2d1117 100%)` }}>
-      <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 20, padding: '48px 40px', maxWidth: 380, width: '90%', textAlign: 'center' }}>
-        <div style={{ fontSize: 40, marginBottom: 12 }}>🔐</div>
-        <h2 style={{ fontFamily: "'Playfair Display', serif", color: '#f0e6d3', fontSize: 24, margin: '0 0 8px' }}>Panneau Admin</h2>
-        <p style={{ color: '#8a7968', fontSize: 14, marginBottom: 24 }}>Les Jus Naturels Ben's</p>
+    <div className="max-w-md mx-auto p-6">
+      <div className="space-y-6">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Connexion</h1>
+          <p className="text-gray-600">Accédez à votre compte</p>
+        </div>
 
-        {error && (
-          <div style={{ background: 'rgba(220,38,38,0.15)', border: '1px solid rgba(220,38,38,0.3)', borderRadius: 10, padding: '10px 14px', marginBottom: 16 }}>
-            <p style={{ fontSize: 13, color: '#fca5a5', margin: 0 }}>Mot de passe incorrect.</p>
+        {error && <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">{error}</div>}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="nom@exemple.com"
+              disabled={loading}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+            />
           </div>
-        )}
 
-        <input
-          type="password"
-          placeholder="Mot de passe"
-          value={password}
-          onChange={e => { setPassword(e.target.value); setError(false); }}
-          onKeyDown={e => e.key === 'Enter' && handleSubmit()}
-          style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: error ? '1px solid rgba(220,38,38,0.5)' : '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.06)', color: '#f0e6d3', fontSize: 15, outline: 'none', boxSizing: 'border-box', marginBottom: 12 }}
-        />
-        <button
-          onClick={handleSubmit}
-          style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: C.red, color: '#fff', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}
-        >
-          <Icon type="lock" size={16} color="#fff" /> Connexion
-        </button>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                disabled={loading}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-900"
+              >
+                {showPassword ? '👁️' : '👁️‍🗨️'}
+              </button>
+            </div>
+          </div>
 
-        <button
-          onClick={() => navigate(ROUTES.home)}
-          style={{ background: 'none', border: 'none', color: C.red, cursor: 'pointer', marginTop: 16, fontSize: 13 }}
-        >
-          ← Retour au site
-        </button>
-        <p style={{ color: '#6b5e52', fontSize: 12, marginTop: 8 }}>Accès réservé à l'administratrice</p>
+          <Link href="/auth/forgot-password" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+            Mot de passe oublié?
+          </Link>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 font-semibold transition-colors"
+          >
+            {loading ? 'Connexion en cours...' : 'Se connecter'}
+          </button>
+        </form>
+
+        <div className="text-center">
+          <p className="text-gray-600 text-sm">
+            Pas encore de compte?{' '}
+            <Link href="/auth/signup" className="text-blue-600 hover:text-blue-700 font-semibold">
+              Créer un compte
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
-  );
+  )
 }
