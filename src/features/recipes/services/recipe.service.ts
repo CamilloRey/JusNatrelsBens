@@ -5,6 +5,7 @@ import type { Recipe } from '../types/recipe.types';
 export const recipeService = {
   async getAll(): Promise<Recipe[]> {
     try {
+      if (!supabase) return [];
       const { data, error } = await supabase
         .from('recipes')
         .select('*');
@@ -18,6 +19,7 @@ export const recipeService = {
 
   async getById(id: string): Promise<Recipe | null> {
     try {
+      if (!supabase) return null;
       const { data, error } = await supabase
         .from('recipes')
         .select('*')
@@ -33,6 +35,7 @@ export const recipeService = {
 
   async create(recipe: Omit<Recipe, 'id'>): Promise<Recipe | null> {
     try {
+      if (!supabase) return null;
       const { data, error } = await supabase
         .from('recipes')
         .insert([recipe])
@@ -48,6 +51,7 @@ export const recipeService = {
 
   async update(id: string, updates: Partial<Recipe>): Promise<Recipe | null> {
     try {
+      if (!supabase) return null;
       const { data, error } = await supabase
         .from('recipes')
         .update(updates)
@@ -64,6 +68,7 @@ export const recipeService = {
 
   async delete(id: string): Promise<boolean> {
     try {
+      if (!supabase) return false;
       const { error } = await supabase
         .from('recipes')
         .delete()
