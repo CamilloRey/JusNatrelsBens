@@ -4,7 +4,7 @@
  */
 
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { updatePassword } from '@/lib/supabase-auth'
 import { supabase } from '@/lib/supabase'
