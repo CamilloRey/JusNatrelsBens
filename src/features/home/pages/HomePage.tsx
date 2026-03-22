@@ -86,35 +86,157 @@ export default function HomePage() {
 
       {/* HERO */}
       <section className="home-hero" style={{
-        backgroundImage: `linear-gradient(135deg, rgba(255, 248, 240, 0.94), rgba(251, 244, 233, 0.88)), url('${settings.bannerHero || '/images-bens/hero-banners/banniere-accueil-hero.png'}')`,
+        background: `linear-gradient(135deg, #5ab937 0%, #2d7a25 30%, #1f5017 60%, #5ab937 100%)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+        minHeight: '700px',
+        display: 'flex',
+        alignItems: 'center',
       }}>
-        <div className="home-hero-inner">
-          <div className="home-hero-copy">
-            <p className="eyebrow">🍹 Jus Naturels Artisanaux</p>
-            <h1>Découvrez la Saveur de l'Authenticité</h1>
-            <p>Des jus purs, sans sucre ajouté, inspirés des traditions africaines et fabriqués à Montréal avec amour.</p>
+        {/* Gradient Overlay */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.12) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, rgba(255,138,26,0.08) 0%, transparent 50%)',
+          pointerEvents: 'none',
+        }} />
 
-            <div className="home-hero-cta">
-              <button type="button" onClick={() => navigate(ROUTES.products)} className="btn-solid anim-btn">
+        {/* Floating Elements */}
+        <div style={{
+          position: 'absolute',
+          width: 300,
+          height: 300,
+          background: 'radial-gradient(circle, rgba(255,138,26,0.15) 0%, transparent 70%)',
+          borderRadius: '50%',
+          top: '-100px',
+          right: '-50px',
+          animation: 'float 6s ease-in-out infinite',
+        }} />
+        <div style={{
+          position: 'absolute',
+          width: 200,
+          height: 200,
+          background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+          borderRadius: '50%',
+          bottom: '-50px',
+          left: '-30px',
+          animation: 'float 8s ease-in-out infinite 1s',
+        }} />
+
+        <div className="home-hero-inner" style={{ position: 'relative', zIndex: 1 }}>
+          <div className="home-hero-copy" style={{ animation: 'slideUp 1s ease-out' }}>
+            <p className="eyebrow" style={{
+              color: 'rgba(255,255,255,0.95)',
+              fontSize: '16px',
+              fontWeight: '600',
+              letterSpacing: '1px',
+              textTransform: 'uppercase',
+            }}>🍹 Saveurs Authentiques</p>
+
+            <h1 style={{
+              color: 'white',
+              fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+              fontWeight: '900',
+              lineHeight: 1.1,
+              marginBottom: '1.5rem',
+              textShadow: '0 4px 12px rgba(0,0,0,0.2)',
+            }}>
+              Découvrez la Magie des Jus Naturels
+            </h1>
+
+            <p style={{
+              color: 'rgba(255,255,255,0.92)',
+              fontSize: '1.15rem',
+              lineHeight: 1.8,
+              marginBottom: '2.5rem',
+              maxWidth: '600px',
+            }}>
+              Des jus purs et vivifiants, sans sucre ajouté, inspirés des traditions africaines et fabriqués à Montréal avec passion. Chaque gorgée est une célébration de l'authenticité.
+            </p>
+
+            <div className="home-hero-cta" style={{ gap: '16px', marginBottom: '2.5rem' }}>
+              <button type="button" onClick={() => navigate(ROUTES.products)} className="btn-solid anim-btn" style={{
+                background: 'linear-gradient(135deg, #ff8a1a 0%, #ff6b00 100%)',
+                color: 'white',
+                padding: '14px 32px',
+                fontSize: '1.05rem',
+                fontWeight: '700',
+                border: 'none',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                boxShadow: '0 8px 24px rgba(255, 138, 26, 0.4)',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                (e.target as HTMLElement).style.transform = 'translateY(-4px)';
+                (e.target as HTMLElement).style.boxShadow = '0 12px 36px rgba(255, 138, 26, 0.6)';
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLElement).style.transform = 'translateY(0)';
+                (e.target as HTMLElement).style.boxShadow = '0 8px 24px rgba(255, 138, 26, 0.4)';
+              }}
+              >
                 🛍️ Découvrir nos produits
               </button>
-              <button type="button" onClick={() => navigate(ROUTES.about)} className="btn-light anim-btn">
+              <button type="button" onClick={() => navigate(ROUTES.about)} className="btn-light anim-btn" style={{
+                background: 'rgba(255,255,255,0.15)',
+                border: '2px solid rgba(255,255,255,0.4)',
+                color: 'white',
+                padding: '12px 32px',
+                fontSize: '1.05rem',
+                fontWeight: '700',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                backdropFilter: 'blur(8px)',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.2)';
+                (e.target as HTMLElement).style.borderColor = 'rgba(255,255,255,0.6)';
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.15)';
+                (e.target as HTMLElement).style.borderColor = 'rgba(255,255,255,0.4)';
+              }}
+              >
                 📖 Notre histoire
               </button>
             </div>
 
-            <div className="home-badge-row">
+            <div className="home-badge-row" style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '12px',
+            }}>
               {['✓ Sans sucre ajouté', '✓ 100% Naturel', '✓ Montréal', '✓ Écologique'].map((badge) => (
-                <span key={badge} className="home-badge-pill">{badge}</span>
+                <span key={badge} className="home-badge-pill" style={{
+                  background: 'rgba(255,255,255,0.15)',
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  color: 'white',
+                  padding: '8px 16px',
+                  borderRadius: '999px',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  backdropFilter: 'blur(6px)',
+                }}>{badge}</span>
               ))}
             </div>
           </div>
 
           <div className="home-hero-media">
-            <div className="hero-media-feature">
-              <ProductImg src={featuredProducts[0]?.img || '/images-bens/photos/photo-jus.png'} alt="Jus Ben's" size={360} borderRadius={24} style={{ width: 'min(86%, 340px)', height: 'auto' }} />
+            <div className="hero-media-feature" style={{
+              animation: 'fadeIn 1.2s ease-out 0.3s both',
+            }}>
+              <ProductImg src={featuredProducts[0]?.img || '/images-bens/photos/photo-jus.png'} alt="Jus Ben's" size={360} borderRadius={24} style={{
+                width: 'min(86%, 340px)',
+                height: 'auto',
+                filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.3))',
+              }} />
             </div>
           </div>
         </div>

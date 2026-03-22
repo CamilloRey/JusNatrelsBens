@@ -35,6 +35,7 @@ import {
   SEED_LOCATIONS,
   SEED_MESSAGES,
   SEED_PRODUCTS,
+  SEED_RECIPES,
   SEED_REVIEWS,
   SEED_SETTINGS,
   SEED_SUBSCRIBERS,
@@ -170,6 +171,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     updateBlogs(SEED_BLOGS);
     updateLocations(SEED_LOCATIONS);
     updateIngredients(SEED_INGREDIENTS);
+    updateRecipes(SEED_RECIPES);
     updateSubscribers(SEED_SUBSCRIBERS);
     updateMessages(SEED_MESSAGES);
     updateSettings(SEED_SETTINGS);
