@@ -1,9 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { C }              from '@/shared/constants/colors';
 
 const LANGS = [
-  { code: 'fr', label: 'FR', flag: '🇫🇷' },
-  { code: 'en', label: 'EN', flag: '🇬🇧' },
+  { code: 'fr', label: 'FR' },
+  { code: 'en', label: 'EN' },
 ];
 
 export function LanguageSwitcher() {
@@ -11,27 +10,32 @@ export function LanguageSwitcher() {
   const current  = i18n.language?.startsWith('en') ? 'en' : 'fr';
 
   return (
-    <div style={{ display: 'flex', gap: 1, alignItems: 'center', borderRadius: 16, border: `1px solid rgba(101, 85, 72, 0.3)`, overflow: 'hidden', background: '#fff' }}>
-      {LANGS.map(lang => (
+    <div style={{
+      display: 'flex', gap: 0, alignItems: 'center',
+      borderRadius: 20, border: '1px solid rgba(3,36,22,0.18)',
+      overflow: 'hidden', background: 'transparent',
+    }}>
+      {LANGS.map((lang, idx) => (
         <button
           key={lang.code}
           onClick={() => i18n.changeLanguage(lang.code)}
           title={lang.code === 'fr' ? 'Français' : 'English'}
           style={{
-            padding:      '6px 12px',
+            padding:      '5px 11px',
             border:       'none',
-            background:   current === lang.code ? C.hibiscus : 'transparent',
-            color:        current === lang.code ? '#fff' : C.muted,
+            background:   current === lang.code ? '#032416' : 'transparent',
+            color:        current === lang.code ? '#fef9ef' : '#424843',
             cursor:       'pointer',
-            fontSize:     12,
-            fontWeight:   current === lang.code ? 700 : 400,
-            transition:   'all 0.2s',
-            fontFamily:   'inherit',
+            fontSize:     11,
+            fontWeight:   current === lang.code ? 700 : 500,
+            transition:   'all 0.18s',
+            fontFamily:   "'Plus Jakarta Sans', sans-serif",
+            letterSpacing: '0.08em',
             lineHeight:   1,
-            borderRadius: 14,
+            borderRight:  idx === 0 ? '1px solid rgba(3,36,22,0.12)' : 'none',
           }}
         >
-          {lang.flag} {lang.label}
+          {lang.label}
         </button>
       ))}
     </div>
