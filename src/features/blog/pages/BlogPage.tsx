@@ -1,318 +1,687 @@
 import { useState, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '@/app/providers/DataContext';
 import { SEO } from '@/shared/components/SEO';
-import { C } from '@/shared/constants/colors';
+import { ROUTES } from '@/shared/constants/routes';
 
-const CONTENT_FILTERS = [
-  { key: 'all', label: 'Tout' },
-  { key: 'article', label: 'Articles' },
-  { key: 'recette', label: 'Recettes' },
-];
-
-const CATEGORY_COLORS: Record<string, string> = {
-  'Sante': C.green,
-  'Nutrition': '#2563eb',
-  'Traditions': C.hibiscus,
-  'Nouveautes': C.gold,
-  'Smoothie': '#059669',
-  'Jus': '#0891b2',
-  'Cocktail': '#d97706',
-  'Dessert': '#be185d',
-  'Recette': '#7c3aed',
+/* ── Design tokens ─────────────────────────────────────────── */
+const CLR = {
+  primary:              '#032416',
+  primaryContainer:     '#1a3a2a',
+  secondary:            '#7b5804',
+  secondaryContainer:   '#fdcd74',
+  surface:              '#fef9ef',
+  surfaceContainer:     '#f2ede3',
+  surfaceContainerLow:  '#f8f3e9',
+  onSurface:            '#1d1c16',
+  onSurfaceVariant:     '#424843',
+  tertiaryContainer:    '#5a2400',
+  onTertiaryContainer:  '#f37b32',
 };
 
-export default function BlogPage() {
-  const { t } = useTranslation();
-  const { blogs, recipes } = useData();
-  const navigate = useNavigate();
-  const [filter, setFilter] = useState('all');
-  const [search, setSearch] = useState('');
+const FONT_HEADLINE = "'Noto Serif', serif";
+const FONT_BODY     = "'Plus Jakarta Sans', sans-serif";
+const MAX_W         = 1440;
 
-  // Combine blogs and recipes into unified list
-  const allContent = useMemo(() => {
-    const blogItems = blogs
-      .filter(b => b.published)
-      .map(b => ({
-        ...b,
-        contentType: (b.contentType || 'article') as 'article' | 'recette',
-        tags: b.tags || [b.category],
-      }));
+const POSTS_PER_PAGE = 6;
 
-    const recipeItems = recipes
-      .filter(r => r.published)
-      .map(r => ({
-        id: r.id,
-        title: r.name,
-        category: r.category,
-        content: `${r.description}\n\nIngredients: ${r.ingredients.join(', ')}\n\nInstructions:\n${r.instructions.join('\n')}`,
-        published: true,
-        date: new Date().toISOString().split('T')[0],
-        img: undefined as string | undefined,
-        contentType: 'recette' as const,
-        tags: r.tags || [r.category, r.difficulty],
-        prepTime: r.prepTime,
-        servings: r.servings,
-        difficulty: r.difficulty,
-        emoji: r.image,
-      }));
+/* ── Category list derived at render time ──────────────────── */
+function buildCategories(posts: { category: string }[]) {
+  const map: Record<string, number> = {};
+  for (const p of posts) {
+    map[p.category] = (map[p.category] ?? 0) + 1;
+  }
+  return Object.entries(map).map(([name, count]) => ({ name, count }));
+}
 
-    return [...blogItems, ...recipeItems];
-  }, [blogs, recipes]);
+/* ── Article card ──────────────────────────────────────────── */
+interface CardPost {
+  id: string;
+  title: string;
+  category: string;
+  content: string;
+  date: string;
+  img?: string;
+}
 
-  const filtered = useMemo(() => {
-    return allContent.filter(item => {
-      const typeMatch = filter === 'all' || item.contentType === filter;
-      const searchMatch = !search || item.title.toLowerCase().includes(search.toLowerCase()) || item.content.toLowerCase().includes(search.toLowerCase());
-      return typeMatch && searchMatch;
-    });
-  }, [allContent, filter, search]);
+function ArticleCard({
+  post,
+  onClick,
+}: {
+  post: CardPost;
+  onClick: () => void;
+}) {
+  const [hovered, setHovered] = useState(false);
 
-  const featured = filtered[0];
-  const others = filtered.slice(1);
+  const excerpt = post.content.length > 130
+    ? post.content.slice(0, 130) + '\u2026'
+    : post.content;
 
   return (
-    <div>
+    <article
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        position: 'relative',
+        overflow: 'hidden',
+        aspectRatio: '4/5',
+        borderRadius: '40% 10% 40% 10%',
+        background: CLR.surfaceContainerLow,
+        cursor: 'pointer',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {/* Image */}
+      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+        {post.img ? (
+          <img
+            src={post.img}
+            alt={post.title}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              transition: 'transform 0.4s ease',
+              transform: hovered ? 'scale(1.10)' : 'scale(1)',
+            }}
+          />
+        ) : (
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              background: `linear-gradient(135deg, ${CLR.secondaryContainer}40, ${CLR.surfaceContainerLow})`,
+            }}
+          />
+        )}
+        {/* Overlay gradient for text legibility */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to top, rgba(3,36,22,0.82) 0%, rgba(3,36,22,0.18) 55%, transparent 100%)',
+          }}
+        />
+      </div>
+
+      {/* Category badge */}
+      <div style={{ position: 'relative', padding: '18px 18px 0' }}>
+        <span
+          style={{
+            display: 'inline-block',
+            background: CLR.tertiaryContainer,
+            color: CLR.onTertiaryContainer,
+            padding: '4px 16px',
+            borderRadius: 9999,
+            fontSize: 11,
+            fontWeight: 700,
+            fontFamily: FONT_BODY,
+            textTransform: 'uppercase',
+            letterSpacing: '0.06em',
+          }}
+        >
+          {post.category}
+        </span>
+      </div>
+
+      {/* Bottom content */}
+      <div style={{ position: 'relative', marginTop: 'auto', padding: '0 18px 22px' }}>
+        <p
+          style={{
+            fontFamily: FONT_BODY,
+            fontSize: 11,
+            color: 'rgba(254,249,239,0.7)',
+            marginBottom: 6,
+          }}
+        >
+          {post.date}
+        </p>
+
+        <h3
+          style={{
+            fontFamily: FONT_HEADLINE,
+            fontSize: 20,
+            fontWeight: 700,
+            color: '#fef9ef',
+            lineHeight: 1.3,
+            margin: '0 0 8px',
+          }}
+        >
+          {post.title}
+        </h3>
+
+        <p
+          style={{
+            fontFamily: FONT_BODY,
+            fontSize: 12,
+            color: 'rgba(254,249,239,0.75)',
+            lineHeight: 1.55,
+            margin: '0 0 12px',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}
+        >
+          {excerpt}
+        </p>
+
+        <span
+          style={{
+            fontFamily: FONT_BODY,
+            fontSize: 12,
+            fontWeight: 600,
+            color: CLR.secondaryContainer,
+            borderBottom: `1px solid ${CLR.secondaryContainer}`,
+            paddingBottom: 1,
+          }}
+        >
+          {'Lire la suite \u2192'}
+        </span>
+      </div>
+    </article>
+  );
+}
+
+/* ── Main page ─────────────────────────────────────────────── */
+export default function BlogPage() {
+  const { blogs } = useData();
+  const navigate  = useNavigate();
+
+  const [page,              setPage]              = useState(1);
+  const [activeCategory,    setActiveCategory]    = useState<string | null>(null);
+  const [email,             setEmail]             = useState('');
+  const [subscribed,        setSubscribed]        = useState(false);
+
+  const publishedPosts = useMemo(
+    () => blogs.filter(b => b.published),
+    [blogs],
+  );
+
+  const categories = useMemo(
+    () => buildCategories(publishedPosts),
+    [publishedPosts],
+  );
+
+  const filtered = useMemo(() => {
+    if (!activeCategory) return publishedPosts;
+    return publishedPosts.filter(b => b.category === activeCategory);
+  }, [publishedPosts, activeCategory]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / POSTS_PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+
+  const pagePosts = useMemo(
+    () => filtered.slice((currentPage - 1) * POSTS_PER_PAGE, currentPage * POSTS_PER_PAGE),
+    [filtered, currentPage],
+  );
+
+  const featuredPost = publishedPosts.length > 0 ? publishedPosts[0] : null;
+
+  function goToPost(id: string) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigate('/blog/' + id);
+  }
+
+  function handleSubscribe(e: React.FormEvent) {
+    e.preventDefault();
+    if (email.trim()) {
+      setSubscribed(true);
+      setEmail('');
+    }
+  }
+
+  return (
+    <div style={{ fontFamily: FONT_BODY, background: CLR.surface, minHeight: '100vh' }}>
       <SEO
-        title="Blogue & Recettes"
-        description="Articles, recettes et inspirations avec nos jus naturels Ben's."
-        url="https://lesjusnatuelsbens.com/blogue"
+        title="Notre Journal"
+        description={"Découvrez les secrets de la nature à travers nos articles botaniques, recettes et inspirations vertes."}
+        url="https://lesjusnatuelsbens.com/blog"
       />
 
-      <section className="page-hero">
-        <div className="page-hero-inner">
-          <p className="page-hero-eyebrow">Journal & Cuisine</p>
-          <h1 className="page-hero-title">{t('blog.title', 'Blogue & Recettes')}</h1>
-          <p className="page-hero-subtitle">{t('blog.subtitle', 'Articles, recettes et inspirations')}</p>
+      {/* ── HERO ───────────────────────────────────────────── */}
+      <section
+        style={{
+          paddingTop: 80,
+          paddingBottom: 72,
+          textAlign: 'center',
+          background: CLR.surface,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 768,
+            margin: '0 auto',
+            padding: '0 24px',
+          }}
+        >
+          <span
+            style={{
+              display: 'inline-block',
+              background: CLR.secondaryContainer,
+              color: CLR.secondary,
+              padding: '6px 20px',
+              borderRadius: 9999,
+              fontSize: 12,
+              fontWeight: 700,
+              fontFamily: FONT_BODY,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              marginBottom: 20,
+            }}
+          >
+            {'Édition Botanique'}
+          </span>
+
+          <h1
+            style={{
+              fontFamily: FONT_HEADLINE,
+              fontSize: 'clamp(3rem, 6vw, 4.5rem)',
+              fontWeight: 800,
+              color: CLR.primaryContainer,
+              lineHeight: 1.1,
+              margin: '0 0 24px',
+            }}
+          >
+            {'Notre Journal'}
+          </h1>
+
+          <p
+            style={{
+              fontFamily: FONT_BODY,
+              fontSize: 17,
+              fontStyle: 'italic',
+              color: CLR.onSurfaceVariant,
+              lineHeight: 1.7,
+              maxWidth: 560,
+              margin: '0 auto',
+            }}
+          >
+            {'Découvrez les secrets de la nature \u2014 plantes, recettes et traditions botaniques partagés avec passion.'}
+          </p>
         </div>
       </section>
 
-      <section className="blog-page-shell">
-        {/* FILTERS */}
-        <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 32, flexWrap: 'wrap' }}>
-          {/* Content type filters */}
-          <div style={{ display: 'flex', gap: 6 }}>
-            {CONTENT_FILTERS.map(f => (
-              <button
-                key={f.key}
-                onClick={() => setFilter(f.key)}
-                style={{
-                  padding: '8px 18px',
-                  borderRadius: 999,
-                  border: `2px solid ${filter === f.key ? C.hibiscus : C.border}`,
-                  background: filter === f.key ? C.hibiscus : '#fff',
-                  color: filter === f.key ? '#fff' : C.text,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                }}
-              >
-                {f.key === 'recette' ? '🍹 ' : f.key === 'article' ? '📝 ' : ''}{f.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Search */}
-          <div style={{ flex: 1, minWidth: 200 }}>
-            <input
-              type="text"
-              placeholder="Rechercher..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
+      {/* ── MAIN LAYOUT ────────────────────────────────────── */}
+      <div
+        style={{
+          maxWidth: MAX_W,
+          margin: '0 auto',
+          padding: '0 32px 80px',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
+          gap: 32,
+          alignItems: 'start',
+        }}
+      >
+        {/* ── LEFT: Blog grid ──────────────────────────────── */}
+        <div style={{ gridColumn: 'span 8' }}>
+          {filtered.length === 0 ? (
+            <div
               style={{
-                width: '100%',
-                padding: '10px 16px',
-                borderRadius: 12,
-                border: `1px solid ${C.border}`,
-                fontSize: 13,
-                outline: 'none',
-                background: '#fff',
+                textAlign: 'center',
+                padding: '80px 24px',
+                color: CLR.onSurfaceVariant,
+                fontFamily: FONT_BODY,
+                fontSize: 15,
               }}
-            />
-          </div>
-        </div>
-
-        {filtered.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '60px 24px' }}>
-            <span style={{ fontSize: 48, display: 'block', marginBottom: 16 }}>📚</span>
-            <p style={{ fontSize: 16, color: C.muted }}>Aucun contenu ne correspond a votre recherche</p>
-          </div>
-        ) : (
-          <>
-            {/* FEATURED */}
-            {featured && (
+            >
+              {'Aucun article dans cette catégorie pour le moment.'}
+            </div>
+          ) : (
+            <>
               <div
-                onClick={() => {
-                  if (featured.contentType === 'article') {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    navigate(`/blog/${featured.id}`);
-                  }
-                }}
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: 0,
-                  background: '#fff',
-                  borderRadius: 20,
-                  overflow: 'hidden',
-                  border: `1px solid ${C.border}`,
-                  marginBottom: 40,
-                  cursor: featured.contentType === 'article' ? 'pointer' : 'default',
-                  transition: 'box-shadow 0.2s',
-                  boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gap: 28,
                 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 30px rgba(0,0,0,0.08)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 2px 12px rgba(0,0,0,0.04)'; }}
               >
-                <div style={{
-                  minHeight: 280,
-                  background: featured.img
-                    ? `url(${featured.img}) center/cover`
-                    : `linear-gradient(135deg, ${C.hibiscus}15, ${C.gold}15)`,
-                  display: featured.img ? 'none' : 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 64,
-                }}>
-                  {!featured.img && ((featured as any).emoji || (featured.contentType === 'recette' ? '🍹' : '📰'))}
-                  {featured.img && <img src={featured.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
-                </div>
-                <div style={{ padding: '32px 28px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                  <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
-                    <span style={{
-                      padding: '4px 12px', borderRadius: 999, fontSize: 11, fontWeight: 700,
-                      background: featured.contentType === 'recette' ? `${C.green}15` : `${C.hibiscus}15`,
-                      color: featured.contentType === 'recette' ? C.green : C.hibiscus,
-                      textTransform: 'uppercase',
-                    }}>
-                      {featured.contentType === 'recette' ? 'Recette' : 'Article'}
-                    </span>
-                    {(featured.tags || []).slice(0, 2).map(tag => (
-                      <span key={tag} style={{
-                        padding: '4px 10px', borderRadius: 999, fontSize: 10, fontWeight: 600,
-                        background: `${CATEGORY_COLORS[tag] || C.muted}15`,
-                        color: CATEGORY_COLORS[tag] || C.muted,
-                      }}>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 800, margin: '0 0 12px', color: C.dark, lineHeight: 1.3 }}>
-                    {featured.title}
-                  </h2>
-                  <p style={{ fontSize: 14, color: C.muted, lineHeight: 1.7, margin: '0 0 16px' }}>
-                    {featured.content.substring(0, 200)}...
-                  </p>
-                  <div style={{ display: 'flex', gap: 12, alignItems: 'center', fontSize: 12, color: C.muted }}>
-                    <span>{featured.date}</span>
-                    {(featured as any).prepTime && <span>⏱️ {(featured as any).prepTime} min</span>}
-                    {(featured as any).servings && <span>👥 {(featured as any).servings} portions</span>}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* GRID */}
-            {others.length > 0 && (
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                gap: 24,
-              }}>
-                {others.map(item => (
-                  <article
-                    key={`${item.contentType}-${item.id}`}
-                    onClick={() => {
-                      if (item.contentType === 'article') {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                        navigate(`/blog/${item.id}`);
-                      }
-                    }}
-                    style={{
-                      background: '#fff',
-                      borderRadius: 16,
-                      overflow: 'hidden',
-                      border: `1px solid ${C.border}`,
-                      cursor: item.contentType === 'article' ? 'pointer' : 'default',
-                      transition: 'transform 0.2s, box-shadow 0.2s',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
-                    }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ''; (e.currentTarget as HTMLElement).style.boxShadow = '0 2px 8px rgba(0,0,0,0.03)'; }}
-                  >
-                    <div style={{
-                      height: 180,
-                      background: item.img
-                        ? `url(${item.img}) center/cover`
-                        : `linear-gradient(135deg, ${C.hibiscus}12, ${C.gold}12)`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: 56,
-                      position: 'relative',
-                    }}>
-                      {!item.img && ((item as any).emoji || (item.contentType === 'recette' ? '🍹' : '📝'))}
-
-                      {/* Type badge overlay */}
-                      <span style={{
-                        position: 'absolute', top: 12, left: 12,
-                        padding: '4px 12px', borderRadius: 999, fontSize: 10, fontWeight: 700,
-                        background: item.contentType === 'recette' ? C.green : C.hibiscus,
-                        color: '#fff', textTransform: 'uppercase', letterSpacing: '0.05em',
-                      }}>
-                        {item.contentType === 'recette' ? 'Recette' : 'Article'}
-                      </span>
-                    </div>
-
-                    <div style={{ padding: '18px 20px' }}>
-                      {/* Tags */}
-                      <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
-                        {(item.tags || []).slice(0, 3).map(tag => (
-                          <span key={tag} style={{
-                            padding: '2px 8px', borderRadius: 999, fontSize: 10, fontWeight: 600,
-                            background: `${CATEGORY_COLORS[tag] || C.muted}12`,
-                            color: CATEGORY_COLORS[tag] || C.muted,
-                          }}>
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-
-                      <h3 style={{
-                        fontFamily: "'Playfair Display', serif",
-                        fontSize: 17, fontWeight: 700, color: C.dark,
-                        margin: '0 0 8px', lineHeight: 1.3,
-                      }}>
-                        {item.title}
-                      </h3>
-
-                      <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.6, margin: '0 0 12px' }}>
-                        {item.content.substring(0, 120)}...
-                      </p>
-
-                      <div style={{ display: 'flex', gap: 10, alignItems: 'center', fontSize: 11, color: C.muted }}>
-                        <span>{item.date}</span>
-                        {(item as any).prepTime && <span>⏱️ {(item as any).prepTime} min</span>}
-                        {(item as any).difficulty && (
-                          <span style={{
-                            padding: '1px 6px', borderRadius: 4, fontSize: 10, fontWeight: 600,
-                            background: (item as any).difficulty === 'Facile' ? '#dcfce7' : (item as any).difficulty === 'Moyen' ? '#fef3c7' : '#fee2e2',
-                            color: (item as any).difficulty === 'Facile' ? '#166534' : (item as any).difficulty === 'Moyen' ? '#92400e' : '#991b1b',
-                          }}>
-                            {(item as any).difficulty}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </article>
+                {pagePosts.map(post => (
+                  <ArticleCard
+                    key={post.id}
+                    post={post}
+                    onClick={() => goToPost(post.id)}
+                  />
                 ))}
               </div>
+
+              {/* Pagination */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 16,
+                  marginTop: 48,
+                }}
+              >
+                <button
+                  disabled={currentPage <= 1}
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: '50%',
+                    border: `1px solid ${CLR.onSurfaceVariant}40`,
+                    background: currentPage <= 1 ? CLR.surfaceContainerLow : CLR.surfaceContainer,
+                    color: currentPage <= 1 ? CLR.onSurfaceVariant + '60' : CLR.onSurface,
+                    cursor: currentPage <= 1 ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 18,
+                    fontFamily: FONT_BODY,
+                  }}
+                  aria-label="Page précédente"
+                >
+                  {'\u2039'}
+                </button>
+
+                <span
+                  style={{
+                    fontFamily: FONT_HEADLINE,
+                    fontSize: 16,
+                    color: CLR.primaryContainer,
+                    fontWeight: 700,
+                    minWidth: 64,
+                    textAlign: 'center',
+                  }}
+                >
+                  {currentPage} {'/'} {totalPages}
+                </span>
+
+                <button
+                  disabled={currentPage >= totalPages}
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: '50%',
+                    border: `1px solid ${CLR.onSurfaceVariant}40`,
+                    background: currentPage >= totalPages ? CLR.surfaceContainerLow : CLR.surfaceContainer,
+                    color: currentPage >= totalPages ? CLR.onSurfaceVariant + '60' : CLR.onSurface,
+                    cursor: currentPage >= totalPages ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 18,
+                    fontFamily: FONT_BODY,
+                  }}
+                  aria-label="Page suivante"
+                >
+                  {'\u203a'}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* ── RIGHT SIDEBAR ────────────────────────────────── */}
+        <div
+          style={{
+            gridColumn: 'span 4',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 24,
+          }}
+        >
+          {/* Categories card */}
+          <div
+            style={{
+              background: CLR.surfaceContainerLow,
+              borderRadius: 12,
+              padding: '40px',
+            }}
+          >
+            <h2
+              style={{
+                fontFamily: FONT_HEADLINE,
+                fontSize: 20,
+                fontWeight: 700,
+                color: CLR.primaryContainer,
+                margin: '0 0 20px',
+              }}
+            >
+              {'Catégories'}
+            </h2>
+
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+              {/* "All" entry */}
+              <li>
+                <button
+                  onClick={() => { setActiveCategory(null); setPage(1); }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    background: 'none',
+                    border: 'none',
+                    padding: '10px 0',
+                    cursor: 'pointer',
+                    fontFamily: FONT_BODY,
+                    fontSize: 14,
+                    color: activeCategory === null ? CLR.secondary : CLR.onSurface,
+                    fontWeight: activeCategory === null ? 700 : 400,
+                  }}
+                >
+                  <span>{'Tous les articles'}</span>
+                  <span
+                    style={{
+                      background: activeCategory === null ? CLR.secondary : CLR.surfaceContainer,
+                      color: activeCategory === null ? '#fff' : CLR.onSurfaceVariant,
+                      borderRadius: 9999,
+                      padding: '2px 10px',
+                      fontSize: 12,
+                      fontWeight: 600,
+                    }}
+                  >
+                    {publishedPosts.length}
+                  </span>
+                </button>
+                <div style={{ height: 1, background: CLR.onSurfaceVariant + '18' }} />
+              </li>
+
+              {categories.map(cat => (
+                <li key={cat.name}>
+                  <button
+                    onClick={() => { setActiveCategory(cat.name); setPage(1); }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      background: 'none',
+                      border: 'none',
+                      padding: '10px 0',
+                      cursor: 'pointer',
+                      fontFamily: FONT_BODY,
+                      fontSize: 14,
+                      color: activeCategory === cat.name ? CLR.secondary : CLR.onSurface,
+                      fontWeight: activeCategory === cat.name ? 700 : 400,
+                    }}
+                  >
+                    <span>{cat.name}</span>
+                    <span
+                      style={{
+                        background: activeCategory === cat.name ? CLR.secondary : CLR.surfaceContainer,
+                        color: activeCategory === cat.name ? '#fff' : CLR.onSurfaceVariant,
+                        borderRadius: 9999,
+                        padding: '2px 10px',
+                        fontSize: 12,
+                        fontWeight: 600,
+                      }}
+                    >
+                      {cat.count}
+                    </span>
+                  </button>
+                  <div style={{ height: 1, background: CLR.onSurfaceVariant + '18' }} />
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Featured recipe card */}
+          {featuredPost && (
+            <div
+              style={{
+                background: CLR.primaryContainer,
+                borderRadius: 12,
+                padding: '32px',
+                color: '#fff',
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: FONT_BODY,
+                  fontSize: 11,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  color: CLR.secondaryContainer,
+                  fontWeight: 700,
+                  margin: '0 0 10px',
+                }}
+              >
+                {'Article vedette'}
+              </p>
+
+              <h3
+                style={{
+                  fontFamily: FONT_HEADLINE,
+                  fontSize: 18,
+                  fontWeight: 700,
+                  color: '#fef9ef',
+                  lineHeight: 1.35,
+                  margin: '0 0 12px',
+                }}
+              >
+                {featuredPost.title}
+              </h3>
+
+              <p
+                style={{
+                  fontFamily: FONT_BODY,
+                  fontSize: 13,
+                  color: 'rgba(254,249,239,0.72)',
+                  lineHeight: 1.6,
+                  margin: '0 0 20px',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                }}
+              >
+                {featuredPost.content}
+              </p>
+
+              <button
+                onClick={() => goToPost(featuredPost.id)}
+                style={{
+                  background: CLR.secondaryContainer,
+                  color: CLR.secondary,
+                  border: 'none',
+                  borderRadius: 9999,
+                  padding: '10px 22px',
+                  fontFamily: FONT_BODY,
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+              >
+                {'Lire l\u2019article'}
+              </button>
+            </div>
+          )}
+
+          {/* Newsletter mini widget */}
+          <div
+            style={{
+              background: CLR.surfaceContainer,
+              borderRadius: 12,
+              padding: '32px',
+            }}
+          >
+            <h3
+              style={{
+                fontFamily: FONT_HEADLINE,
+                fontSize: 18,
+                fontWeight: 700,
+                color: CLR.primaryContainer,
+                margin: '0 0 8px',
+              }}
+            >
+              {'Notre lettre botanique'}
+            </h3>
+
+            <p
+              style={{
+                fontFamily: FONT_BODY,
+                fontSize: 13,
+                color: CLR.onSurfaceVariant,
+                lineHeight: 1.6,
+                margin: '0 0 18px',
+              }}
+            >
+              {'Recevez nos nouveaux articles et recettes directement dans votre boîte mail.'}
+            </p>
+
+            {subscribed ? (
+              <p
+                style={{
+                  fontFamily: FONT_BODY,
+                  fontSize: 14,
+                  color: CLR.secondary,
+                  fontWeight: 600,
+                }}
+              >
+                {'\u2713 Merci pour votre inscription\u00a0!'}
+              </p>
+            ) : (
+              <form onSubmit={handleSubscribe} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <input
+                  type="email"
+                  placeholder={'Votre adresse courriel'}
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  style={{
+                    padding: '10px 14px',
+                    borderRadius: 8,
+                    border: `1px solid ${CLR.onSurfaceVariant}30`,
+                    background: CLR.surface,
+                    fontFamily: FONT_BODY,
+                    fontSize: 13,
+                    color: CLR.onSurface,
+                    outline: 'none',
+                    width: '100%',
+                    boxSizing: 'border-box',
+                  }}
+                />
+                <button
+                  type="submit"
+                  style={{
+                    background: CLR.primaryContainer,
+                    color: '#fef9ef',
+                    border: 'none',
+                    borderRadius: 8,
+                    padding: '11px 0',
+                    fontFamily: FONT_BODY,
+                    fontSize: 13,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    width: '100%',
+                  }}
+                >
+                  {'S\u2019abonner'}
+                </button>
+              </form>
             )}
-          </>
-        )}
-      </section>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
