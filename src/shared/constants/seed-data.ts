@@ -12,7 +12,8 @@ import type { Transaction }   from '@/features/finance/types/finance.types';
 import type { Ingredient } from '@/features/ingredients/types/ingredient.types';
 import type { Recipe } from '@/features/recipes/types/recipe.types';
 
-const SB = 'https://gflkfwalfaeeknauxyig.supabase.co/storage/v1/object/public/images';
+const SB   = 'https://gflkfwalfaeeknauxyig.supabase.co/storage/v1/object/public/images';
+const SUPA = 'https://gflkfwalfaeeknauxyig.supabase.co/storage/v1/object/public';
 
 export const SEED_PRODUCTS: Product[] = [
   {
@@ -90,7 +91,7 @@ export const SEED_PRODUCTS: Product[] = [
   {
     id: 'p7',
     name: 'Sage de la Savane',
-    category: 'Tisanes',
+    category: 'Jus',
     price: 13.00,
     formats: ['355ml'],
     desc: "La moringa \u2014 l\u2019arbre miracle à 92 nutriments \u2014 réveillée par le citron Meyer, le céleri et la pomme verte. Nutrition à l\u2019état pur.",
@@ -102,7 +103,7 @@ export const SEED_PRODUCTS: Product[] = [
   {
     id: 'p8',
     name: 'Feu Gnamakoudji',
-    category: 'Tisanes',
+    category: 'Jus',
     price: 8.00,
     formats: ['60ml', '355ml'],
     desc: "L\u2019eau de gingembre emblématique de Côte d\u2019Ivoire \u2014 gingembre frais bio, cardamome et citron concentrés en un shot intense qui réveille et purifie.",
@@ -135,13 +136,124 @@ export const SEED_PRODUCTS: Product[] = [
     img: `${SB}/products/neige-rouge.jpg`,
     color: '#8b1a1a',
   },
+  /* ── TISANES ── */
+  {
+    id: 't1',
+    name: 'Tisane Hibiscus Rouge',
+    category: 'Tisanes',
+    price: 9.50,
+    formats: ['50g', '100g'],
+    desc: "Un rituel du soir hérité de nos grand-mères. Fleurs d'hibiscus séchées à la main, infusées lentement pour libérer leur couleur rouge cardinal et leurs antioxydants naturels.",
+    available: true,
+    tag: '100% Naturel',
+    img: `${SUPA}/tisanes/tisane-hibiscus.jpg`,
+    color: '#c44536',
+  },
+  {
+    id: 't2',
+    name: 'Tisane Gingembre & Citron',
+    category: 'Tisanes',
+    price: 9.50,
+    formats: ['50g', '100g'],
+    desc: "Le mariage parfait du gingembre piquant et du citron vif — une tisane tonifiante qui réchauffe de l'intérieur et soutient le système immunitaire à chaque tasse.",
+    available: true,
+    tag: 'Boost Immunité',
+    img: `${SUPA}/tisanes/tisane-gingembre.jpg`,
+    color: '#bc6c25',
+  },
+  {
+    id: 't3',
+    name: 'Infusion Menthe Sauvage',
+    category: 'Tisanes',
+    price: 8.50,
+    formats: ['50g', '100g'],
+    desc: "Menthe fraîche séchée naturellement, récoltée au Québec. Une infusion légère, fraîche et apaisante — le rituel parfait après le repas ou avant le sommeil.",
+    available: true,
+    tag: '100% Naturel',
+    img: `${SUPA}/tisanes/tisane-menthe.jpg`,
+    color: '#2a6a4f',
+  },
+  /* ── SIROPS ── */
+  {
+    id: 's1',
+    name: "Sirop d'Hibiscus",
+    category: 'Sirops',
+    price: 14.00,
+    formats: ['250ml', '500ml'],
+    desc: "L'essence pure de la fleur d'hibiscus concentrée en quelques gouttes. Un sirop vivant, intense et acidulé qui transforme votre quotidien en cérémonie.",
+    available: true,
+    tag: 'Sans sucre ajouté',
+    img: `${SUPA}/sirops/sirop-hibiscus.jpg`,
+    color: '#c44536',
+  },
+  {
+    id: 's2',
+    name: 'Sirop de Gingembre',
+    category: 'Sirops',
+    price: 14.00,
+    formats: ['250ml', '500ml'],
+    desc: "Gingembre frais pressé et concentré — piquant, chaleureux, enveloppant. Idéal dans l'eau pétillante, les cocktails ou les marinades pour une touche africaine.",
+    available: true,
+    tag: 'Pressé à froid',
+    img: `${SUPA}/sirops/sirop-gingembre.jpg`,
+    color: '#bc6c25',
+  },
+  {
+    id: 's3',
+    name: "Sirop d'Ananas",
+    category: 'Sirops',
+    price: 12.00,
+    formats: ['250ml', '500ml'],
+    desc: "La douceur tropicale de l'ananas en format concentré. Riche en bromélaïne naturelle, ce sirop apporte une fraîcheur estivale à toutes vos boissons et desserts.",
+    available: true,
+    tag: '100% Naturel',
+    img: `${SUPA}/sirops/sirop-ananas.jpg`,
+    color: '#f4a261',
+  },
+  /* ── POUDRES (vrais produits du site lesjusnaturelsbens.com) ── */
+  {
+    id: 'poudre1',
+    name: 'Poudre de Gingembre',
+    category: 'Poudres',
+    price: 11.00,
+    formats: ['100g', '250g'],
+    desc: "Un concentré d'énergie ancestrale — gingembre sauvage séché et moulu, au goût piquant et légèrement sucré. Aide la digestion, anti-inflammatoire naturel, boost immunitaire.",
+    available: true,
+    tag: 'Bio',
+    img: `${SUPA}/poudres/poudre-gingembre.jpg`,
+    color: '#bc6c25',
+  },
+  {
+    id: 'poudre2',
+    name: "Poudre d'Hibiscus Rouge",
+    category: 'Poudres',
+    price: 12.00,
+    formats: ['100g', '250g'],
+    desc: "Fleurs d'hibiscus séchées et réduites en poudre fine — acidulée, riche en antioxydants et vitamine C. À infuser, à saupoudrer sur vos yaourts ou à ajouter aux smoothies.",
+    available: true,
+    tag: '100% Naturel',
+    img: `${SUPA}/poudres/poudre-hibiscus.jpg`,
+    color: '#c44536',
+  },
+  {
+    id: 'poudre3',
+    name: "Poudre d'Hibiscus & Gingembre",
+    category: 'Poudres',
+    price: 13.00,
+    formats: ['100g', '250g'],
+    desc: "Le mariage parfait de la fraîcheur acidulée de l'hibiscus et de la chaleur piquante du gingembre. Soutien digestif, anti-inflammatoire et boost circulatoire en une seule poudre.",
+    available: true,
+    tag: 'Boost Immunité',
+    img: `${SUPA}/poudres/poudre-curcuma.jpg`,
+    color: '#d4a853',
+  },
 ];
 
 export const SEED_REVIEWS: Review[] = [
-  { id: 'r1', name: 'Fatou Diallo',    text: "Le Soleil du Sahel me ramène chaque matin à Dakar. L'hibiscus est intense, le gingembre parfaitement dosé. Enfin un jus qui raconte une vraie histoire.", rating: 5, approved: true,  date: '2026-01-15' },
-  { id: 'r2', name: 'Marie-Ève Tremblay', text: "La Rivière Verte est devenue mon rituel post-entraînement. Rien de comparable en termes de fraîcheur et de pureté. Je commande chaque semaine.", rating: 5, approved: true,  date: '2026-02-03' },
-  { id: 'r3', name: 'Ibrahim Konaté',  text: "Le Feu Gnamakoudji, c'est exactement comme chez ma mère à Abidjan. Ben's a réussi quelque chose de rare : l'authenticité en bouteille.", rating: 5, approved: true,  date: '2026-02-18' },
-  { id: 'r4', name: 'Sophie Martin',   text: "La Calebasse Dorée au curcuma est incroyable. Douce, complexe, parfumée. C'est mon coup de cœur de la collection.", rating: 5, approved: false, date: '2026-03-05' },
+  { id: 'r1', name: 'Clarice Turner',     text: "J'adore absolument ces jus ! Le jus d'hibiscus est mon préféré — il est rafraîchissant, délicieux et donne une vraie sensation de bien-être.", rating: 5, approved: true,  date: '2025-11-12' },
+  { id: 'r2', name: 'Brian Moten',        text: "Le jus d'ananas de Les Jus Naturels Ben's a le goût du fruit frais. J'adore qu'il soit sans sucre ajouté ni conservateurs.", rating: 5, approved: true,  date: '2025-12-03' },
+  { id: 'r3', name: 'Jeanne Tremblay',    text: "Je bois 1 litre de tisane d'hibiscus à tous les jours. J'adore le goût et sa couleur rouge. Un vrai rituel bien-être quotidien !", rating: 5, approved: true,  date: '2026-01-18' },
+  { id: 'r4', name: 'Ibrahim Konaté',     text: "Le Feu Gnamakoudji, c'est exactement comme chez ma mère à Abidjan. Ben's a réussi quelque chose de rare : l'authenticité en bouteille.", rating: 5, approved: false, date: '2026-02-18' },
 ];
 
 export const SEED_BLOGS: BlogPost[] = [
@@ -248,8 +360,8 @@ export const SEED_SETTINGS: Settings = {
   tiktok:        '',
   website:       'https://lesjusnaturelsbens.com',
   password:      'bens2025',
-  heroTitle:     'Pressés à froid. Nés de deux continents.',
-  heroSubtitle:  'Des jus artisanaux qui portent en eux l\u2019Afrique de l\u2019Ouest et le Québec \u2014 pressés dans notre atelier montréalais, sans compromis sur la nature.',
+  heroTitle:     'Offrez-vous un voyage gustatif unique !',
+  heroSubtitle:  "En une seule gorgée, savourez le plaisir de nos jus naturels tout en bénéficiant de leurs précieux bienfaits pour votre bien-être.",
   currency:      'CAD',
   taxRate:       14.975,
   deliveryNote:  'Livraison disponible dans la grande région de Montréal. Commande minimum 40\u00a0$.',
