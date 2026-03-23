@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '@/app/providers/DataContext';
 import { ROUTES } from '@/shared/constants/routes';
@@ -65,8 +65,10 @@ export default function HomePage() {
   const { products, reviews, locations, subscribers, updateSubscribers } = useData();
   const navigate = useNavigate();
 
-  const [email, setEmail]     = useState('');
-  const [subDone, setSubDone] = useState(false);
+  const [email, setEmail]       = useState('');
+  const [subDone, setSubDone]   = useState(false);
+  const [reviewIdx, setReviewIdx] = useState(0);
+  const reviewIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const handleSub = () => {
     if (!email || !email.includes('@')) return;
@@ -87,9 +89,20 @@ export default function HomePage() {
   );
 
   const approvedReviews = useMemo(
-    () => reviews.filter((r) => r.approved).slice(0, 3),
+    () => reviews.filter((r) => r.approved),
     [reviews],
   );
+
+  /* Auto-scroll carousel every 4s */
+  useEffect(() => {
+    if (approvedReviews.length <= 3) return;
+    reviewIntervalRef.current = setInterval(() => {
+      setReviewIdx((prev) => (prev + 1) % approvedReviews.length);
+    }, 4000);
+    return () => {
+      if (reviewIntervalRef.current) clearInterval(reviewIntervalRef.current);
+    };
+  }, [approvedReviews.length]);
 
   const activeLocations = useMemo(
     () => locations.filter((l) => l.active),
@@ -100,23 +113,23 @@ export default function HomePage() {
   const categories = [
     {
       name:  'Jus',
-      img:   `${SUPA}/jus/hibiscus-gingembre.jpg`,
-      desc:  'Bissap, gingembre, ananas — pressés à froid, sans compromis',
+      img:   `${SUPA}/collection/jus-hibiscus-gingembre.jpg`,
+      desc:  'Hibiscus, gingembre, ananas — pressés à froid, sans compromis sur la nature',
     },
     {
       name:  'Tisanes',
-      img:   `${SUPA}/tisanes/tisane-gingembre.jpg`,
-      desc:  'Plantes séchées à la main, infusées lentement pour libérer leurs bienfaits',
+      img:   `${SUPA}/collection/banniere-fruits-exotiques.png`,
+      desc:  'Plantes séchées à la main, infusées lentement pour libérer tous leurs bienfaits',
     },
     {
       name:  'Sirops',
-      img:   `${SUPA}/sirops/sirop-hibiscus.jpg`,
-      desc:  "L'essence pure du fruit concentrée en quelques gouttes. Vivant et authentique",
+      img:   `${SUPA}/collection/sirop-hibiscus-gingembre.jpg`,
+      desc:  "L'essence pure du fruit concentrée en quelques gouttes. Vivant, authentique",
     },
     {
       name:  'Poudres',
-      img:   `${SUPA}/poudres/poudre-gingembre.jpg`,
-      desc:  "L'arbre de vie africain dans votre assiette. Récoltée à la main, séchée naturellement",
+      img:   `${SUPA}/collection/poudre-gingembre.jpg`,
+      desc:  "Gingembre, hibiscus, baobab — récoltés à la main, séchés naturellement",
     },
   ];
 
@@ -131,137 +144,138 @@ export default function HomePage() {
 
       {/* ═══════════ 1. HERO ═══════════ */}
       <section style={{
-        backgroundImage: `linear-gradient(rgba(3,36,22,0.65), rgba(3,36,22,0.65)), url(${SUPA}/hero/hero-atelier.jpg)`,
+        backgroundImage:    `url(${SUPA}/hero/hero-bens-premium.png)`,
         backgroundSize:     'cover',
         backgroundPosition: 'center',
         minHeight:  '100vh',
         display:    'flex',
         alignItems: 'center',
-        justifyContent: 'center',
         position:   'relative',
         overflow:   'hidden',
       }}>
+        {/* Left-side gradient overlay only */}
         <div style={{
-          position:  'relative', zIndex: 1,
-          maxWidth:  760,
-          width:     '100%',
-          padding:   `${SECTION_PY}px ${SECTION_PX}`,
-          textAlign: 'center',
+          position:   'absolute',
+          inset:      0,
+          background: 'linear-gradient(to right, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.62) 35%, rgba(0,0,0,0.18) 62%, transparent 100%)',
+          zIndex:     0,
+        }} />
+
+        <div style={{
+          position: 'relative',
+          zIndex:   1,
+          maxWidth: MAX_W,
+          width:    '100%',
+          padding:  `${SECTION_PY}px ${SECTION_PX}`,
         }}>
-          {/* Gold pill badge */}
-          <span style={{
-            display:       'inline-flex',
-            alignItems:    'center',
-            gap:           8,
-            background:    'rgba(212,168,83,0.18)',
-            border:        '1px solid rgba(212,168,83,0.4)',
-            color:         GOLD,
-            fontFamily:    FONT_BODY,
-            fontSize:      11,
-            fontWeight:    700,
-            letterSpacing: '0.15em',
-            textTransform: 'uppercase' as const,
-            padding:       '8px 22px',
-            borderRadius:  9999,
-            marginBottom:  32,
-          }}>
-            ✦ Artisanal · Sans sucre · Montréal
-          </span>
+          <div style={{ maxWidth: 580 }}>
+            {/* Gold pill badge */}
+            <span style={{
+              display:       'inline-flex',
+              alignItems:    'center',
+              gap:           8,
+              background:    'rgba(212,168,83,0.18)',
+              border:        '1px solid rgba(212,168,83,0.5)',
+              color:         GOLD,
+              fontFamily:    FONT_BODY,
+              fontSize:      11,
+              fontWeight:    700,
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase' as const,
+              padding:       '8px 22px',
+              borderRadius:  9999,
+              marginBottom:  32,
+            }}>
+              ✦ Artisanal &amp; Biologique • Montréal
+            </span>
 
-          <h1 style={{
-            fontFamily:   FONT_HEADLINE,
-            color:        '#ffffff',
-            fontSize:     'clamp(2.8rem, 5vw, 5rem)',
-            fontWeight:   700,
-            lineHeight:   1.1,
-            marginBottom: 20,
-          }}>
-            Offrez-vous un voyage gustatif unique !
-          </h1>
+            <h1 style={{
+              fontFamily:   FONT_HEADLINE,
+              color:        '#ffffff',
+              fontSize:     'clamp(2.6rem, 4.5vw, 4.5rem)',
+              fontWeight:   700,
+              lineHeight:   1.1,
+              marginBottom: 24,
+            }}>
+              Pressés à froid.<br />Nés de deux continents.
+            </h1>
 
-          <em style={{
-            display:      'block',
-            color:        GOLD,
-            fontFamily:   FONT_HEADLINE,
-            fontSize:     '1.25rem',
-            fontStyle:    'italic',
-            marginBottom: 24,
-          }}>
-            L'Afrique de l'Ouest rencontre le Québec
-          </em>
+            <p style={{
+              color:        'rgba(255,255,255,0.82)',
+              fontSize:     '1.05rem',
+              lineHeight:   1.8,
+              marginBottom: 44,
+            }}>
+              Des jus artisanaux qui portent en eux l'Afrique de l'Ouest et le Québec — pressés dans notre atelier montréalais, sans compromis sur la nature.
+            </p>
 
-          <p style={{
-            color:        'rgba(255,255,255,0.82)',
-            fontSize:     '1.05rem',
-            lineHeight:   1.8,
-            maxWidth:     600,
-            margin:       '0 auto 44px',
-          }}>
-            En une seule gorgée, savourez le plaisir de nos jus naturels tout en bénéficiant de leurs précieux bienfaits pour votre bien-être.
-          </p>
+            {/* CTAs */}
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                onClick={() => navigate(ROUTES.products)}
+                style={{
+                  background:   '#C9A84C',
+                  color:        '#032416',
+                  fontFamily:   FONT_BODY,
+                  fontSize:     '1rem',
+                  fontWeight:   700,
+                  padding:      '15px 36px',
+                  borderRadius: 9999,
+                  border:       'none',
+                  cursor:       'pointer',
+                  transition:   'transform 0.2s, box-shadow 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(201,168,76,0.45)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
+                Découvrir nos jus
+              </button>
 
-          {/* CTAs */}
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              onClick={() => navigate(ROUTES.products)}
-              style={{
-                background:  GOLD,
-                color:       C.primary,
-                fontFamily:  FONT_BODY,
-                fontSize:    '1rem',
-                fontWeight:  700,
-                padding:     '15px 36px',
-                borderRadius: 9999,
-                border:      'none',
-                cursor:      'pointer',
-                transition:  'transform 0.2s, box-shadow 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 8px 24px rgba(212,168,83,0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
-            >
-              Découvrir nos jus
-            </button>
-
-            <button
-              type="button"
-              onClick={() => navigate(ROUTES.about)}
-              style={{
-                background:  'rgba(255,255,255,0.08)',
-                color:       '#ffffff',
-                fontFamily:  FONT_BODY,
-                fontSize:    '1rem',
-                fontWeight:  600,
-                padding:     '15px 36px',
-                borderRadius: 9999,
-                border:      '1.5px solid rgba(255,255,255,0.35)',
-                cursor:      'pointer',
-                transition:  'background 0.2s, border-color 0.2s',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.16)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
-            >
-              Notre histoire
-            </button>
-          </div>
-
-          {/* Animated chevron */}
-          <div style={{
-            marginTop:  56,
-            fontSize:   '1.8rem',
-            color:      GOLD,
-            animation:  'bounce 2s infinite',
-          }}>
-            ▾
+              <button
+                type="button"
+                onClick={() => navigate(ROUTES.about)}
+                style={{
+                  background:   'rgba(255,255,255,0.08)',
+                  color:        '#ffffff',
+                  fontFamily:   FONT_BODY,
+                  fontSize:     '1rem',
+                  fontWeight:   600,
+                  padding:      '15px 36px',
+                  borderRadius: 9999,
+                  border:       '1.5px solid rgba(255,255,255,0.55)',
+                  cursor:       'pointer',
+                  transition:   'background 0.2s',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.18)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
+              >
+                Notre histoire
+              </button>
+            </div>
           </div>
         </div>
-        <style>{`@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }`}</style>
+
+        {/* Animated chevron */}
+        <div style={{
+          position:  'absolute',
+          bottom:    32,
+          left:      '50%',
+          transform: 'translateX(-50%)',
+          fontSize:  '1.8rem',
+          color:     GOLD,
+          animation: 'heroBounce 2s infinite',
+          zIndex:    1,
+        }}>
+          ▾
+        </div>
+        <style>{`@keyframes heroBounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }`}</style>
       </section>
 
       {/* ═══════════ 2. L'UNIVERS BEN'S ═══════════ */}
@@ -289,7 +303,7 @@ export default function HomePage() {
               marginBottom: 20,
               lineHeight:   1.2,
             }}>
-              Des boissons naturelles inspirées des traditions africaines
+              Deux continents. Une bouteille. Aucun compromis.
             </h2>
             <GoldBar />
             <p style={{
@@ -298,7 +312,7 @@ export default function HomePage() {
               lineHeight:   1.85,
               marginBottom: 32,
             }}>
-              Les Jus Naturels Ben's, c'est un voyage au cœur des saveurs vibrantes du Québec et d'ailleurs. Produits à partir de fruits cultivés localement et d'ingrédients importés d'Afrique de l'Ouest avec soin, nos jus sont une explosion de saveurs naturelles, sans sucre ajouté ni conservateurs.
+              Les Jus Naturels Ben's, c'est l'Afrique de l'Ouest qui rencontre le Québec dans chaque gorgée. Bissap de Casamance, gingembre de Guinée, mangue Ataulfo du Mexique — sélectionnés avec soin, pressés à la main dans notre atelier montréalais, sans sucre ajouté ni conservateurs.
             </p>
 
             {/* Value pills */}
@@ -376,7 +390,7 @@ export default function HomePage() {
               color:      C.onSurface,
               margin:     '8px auto 0',
             }}>
-              Quatre univers de saveurs
+              Quatre univers. Une même philosophie.
             </h2>
           </div>
 
@@ -478,7 +492,7 @@ export default function HomePage() {
                 color:      C.onSurface,
                 margin:     '8px auto 16px',
               }}>
-                Élixirs signature
+                Nos créations signature
               </h2>
               <p style={{
                 color:     C.onSurfaceVariant,
@@ -487,7 +501,7 @@ export default function HomePage() {
                 maxWidth:  460,
                 margin:    '0 auto',
               }}>
-                Chaque jus est une histoire. Chaque bouteille, un voyage.
+                Chaque bouteille est une histoire. Chaque gorgée, un voyage entre deux continents.
               </p>
             </div>
 
@@ -606,23 +620,35 @@ export default function HomePage() {
                         <button
                           type="button"
                           onClick={() => navigate(ROUTES.products)}
+                          title="Voir le produit"
                           style={{
-                            background:   C.primary,
-                            color:        '#ffffff',
-                            fontFamily:   FONT_BODY,
-                            fontSize:     '0.82rem',
-                            fontWeight:   700,
-                            padding:      '9px 18px',
-                            borderRadius: 9999,
-                            border:       'none',
-                            cursor:       'pointer',
-                            whiteSpace:   'nowrap',
-                            transition:   'background 0.2s',
+                            width:          40,
+                            height:         40,
+                            borderRadius:   '50%',
+                            background:     C.primary,
+                            color:          '#ffffff',
+                            border:         'none',
+                            cursor:         'pointer',
+                            display:        'flex',
+                            alignItems:     'center',
+                            justifyContent: 'center',
+                            flexShrink:     0,
+                            transition:     'background 0.2s, transform 0.2s, box-shadow 0.2s',
                           }}
-                          onMouseEnter={(e) => { e.currentTarget.style.background = C.primaryContainer; }}
-                          onMouseLeave={(e) => { e.currentTarget.style.background = C.primary; }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background  = '#C9A84C';
+                            e.currentTarget.style.transform   = 'scale(1.1)';
+                            e.currentTarget.style.boxShadow   = '0 4px 14px rgba(201,168,76,0.4)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background  = C.primary;
+                            e.currentTarget.style.transform   = 'scale(1)';
+                            e.currentTarget.style.boxShadow   = 'none';
+                          }}
                         >
-                          Commander →
+                          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7 17h14v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H19c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 23.46 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                          </svg>
                         </button>
                       </div>
                     </div>
@@ -673,7 +699,7 @@ export default function HomePage() {
         }}>
           {/* Left — photo */}
           <div style={{
-            backgroundImage:    `url(${SUPA}/atelier/atelier-preparation.jpg)`,
+            backgroundImage:    `url(${SUPA}/mission/univers-jus-bens.png)`,
             backgroundSize:     'cover',
             backgroundPosition: 'center',
             borderRadius:       '2rem',
@@ -693,23 +719,23 @@ export default function HomePage() {
               marginBottom: 20,
               lineHeight:   1.2,
             }}>
-              Promouvoir une alimentation saine et naturelle
+              La nature, sans détour. L'Afrique, sans frontière.
             </h2>
             <p style={{
-              color:        'rgba(255,255,255,0.75)',
+              color:        'rgba(255,255,255,0.78)',
               fontSize:     '1rem',
               lineHeight:   1.85,
               marginBottom: 20,
             }}>
-              Notre mission est de promouvoir une alimentation saine et naturelle, en partageant notre amour pour les fruits exotiques et en inspirant un mode de vie équilibré.
+              Chez Ben's, chaque bouteille est une promesse : celle de vous offrir ce que la nature a de plus pur — sans sucre ajouté, sans conservateurs, sans compromis. Nos recettes s'enracinent dans les traditions d'Afrique de l'Ouest et s'épanouissent sous le ciel du Québec.
             </p>
             <p style={{
-              color:        'rgba(255,255,255,0.75)',
+              color:        'rgba(255,255,255,0.78)',
               fontSize:     '1rem',
               lineHeight:   1.85,
               marginBottom: 36,
             }}>
-              Des produits uniques et savoureux préparés selon des méthodes artisanales qui préservent la fraîcheur, la saveur et l'intégrité nutritionnelle des ingrédients.
+              Pressés à froid dans notre atelier montréalais, nos jus préservent la totalité des enzymes, vitamines et saveurs du fruit. C'est la différence artisanale — goût, vie, et intention.
             </p>
 
             {/* Stat chips */}
@@ -749,7 +775,7 @@ export default function HomePage() {
               color:      C.onSurface,
               margin:     '8px auto 16px',
             }}>
-              Nos engagements
+              Ce qui nous distingue
             </h2>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <GoldBar />
@@ -872,62 +898,71 @@ export default function HomePage() {
               color:      C.onSurface,
               margin:     '8px auto 0',
             }}>
-              Nos points de vente
+              8 points de vente à Montréal
             </h2>
           </div>
 
-          {/* Location cards */}
+          {/* Location cards — 4-column premium grid */}
           <div style={{
-            display:        'flex',
-            flexWrap:       'wrap',
-            gap:            24,
-            justifyContent: 'center',
-            maxWidth:       800,
-            margin:         '0 auto 48px',
+            display:             'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap:                 20,
+            marginBottom:        48,
           }}>
             {activeLocations.map((loc) => (
-              <div key={loc.id} style={{
-                background:   '#ffffff',
-                borderRadius: '1rem',
-                padding:      '24px 32px',
-                minWidth:     220,
-                boxShadow:    '0 2px 12px rgba(3,36,22,0.07)',
-                border:       '1px solid rgba(3,36,22,0.05)',
-                textAlign:    'center',
-              }}>
-                {/* Gold map pin SVG */}
-                <svg
-                  width="28" height="28"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  style={{ marginBottom: 12 }}
-                >
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill={GOLD} />
-                </svg>
+              <div
+                key={loc.id}
+                style={{
+                  background:   '#ffffff',
+                  borderRadius: '1.25rem',
+                  padding:      '28px 24px',
+                  boxShadow:    '0 2px 14px rgba(3,36,22,0.07)',
+                  border:       '1px solid rgba(3,36,22,0.06)',
+                  textAlign:    'center',
+                  transition:   'transform 0.25s, box-shadow 0.25s',
+                  cursor:       'default',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform  = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow  = '0 16px 40px rgba(3,36,22,0.13)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform  = 'translateY(0)';
+                  e.currentTarget.style.boxShadow  = '0 2px 14px rgba(3,36,22,0.07)';
+                }}
+              >
+                {/* Gold map pin */}
+                <div style={{ marginBottom: 14 }}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill={GOLD} />
+                  </svg>
+                </div>
                 <h3 style={{
                   fontFamily:   FONT_HEADLINE,
-                  fontSize:     '1.1rem',
+                  fontSize:     '1rem',
                   fontWeight:   700,
                   color:        C.primary,
                   marginBottom: 6,
+                  lineHeight:   1.3,
                 }}>
                   {loc.name}
                 </h3>
                 <p style={{
                   color:        C.onSurfaceVariant,
-                  fontSize:     '0.85rem',
+                  fontSize:     '0.82rem',
                   lineHeight:   1.5,
-                  marginBottom: 12,
+                  marginBottom: 14,
                 }}>
                   {loc.address}
                 </p>
                 <span style={{
                   background:   C.secondaryContainer,
                   color:        C.secondary,
-                  fontSize:     '0.78rem',
-                  fontWeight:   600,
+                  fontSize:     '0.75rem',
+                  fontWeight:   700,
                   padding:      '4px 14px',
                   borderRadius: 9999,
+                  letterSpacing: '0.04em',
                 }}>
                   {loc.type}
                 </span>
@@ -977,86 +1012,192 @@ export default function HomePage() {
                 color:      C.onSurface,
                 margin:     '8px auto 0',
               }}>
-                Ce qu'ils en disent
+                Ils l'ont goûté. Ils en parlent.
               </h2>
             </div>
 
-            {/* 3-col grid */}
+            {/* Carousel container */}
+            <div style={{ position: 'relative' }}>
+              {/* Cards — 3 visible, sliding */}
+              <div style={{ overflow: 'hidden' }}>
+                <div style={{
+                  display:    'flex',
+                  gap:        24,
+                  transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                  transform:  `translateX(calc(-${reviewIdx} * (33.333% + 8px)))`,
+                }}>
+                  {/* Duplicate for smooth looping */}
+                  {[...approvedReviews, ...approvedReviews].map((review, idx) => {
+                    const initial = review.name.charAt(0).toUpperCase();
+                    return (
+                      <div
+                        key={`${review.id}-${idx}`}
+                        style={{
+                          flex:         '0 0 calc(33.333% - 16px)',
+                          minWidth:     0,
+                          background:   C.surfaceContainerLow,
+                          borderRadius: '1.25rem',
+                          padding:      '32px',
+                          border:       '1px solid rgba(3,36,22,0.06)',
+                        }}
+                      >
+                        {/* 5 stars */}
+                        <div style={{ marginBottom: 16, letterSpacing: 3 }}>
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <span key={i} style={{
+                              color:    i < review.rating ? GOLD : '#d1cdc3',
+                              fontSize: '1.05rem',
+                            }}>★</span>
+                          ))}
+                        </div>
+
+                        {/* Quote */}
+                        <p style={{
+                          fontStyle:    'italic',
+                          fontSize:     '1rem',
+                          lineHeight:   1.8,
+                          color:        C.onSurface,
+                          marginBottom: 24,
+                          minHeight:    96,
+                        }}>
+                          "{review.text}"
+                        </p>
+
+                        {/* Reviewer */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                          <div style={{
+                            width:          40,
+                            height:         40,
+                            borderRadius:   '50%',
+                            background:     C.primaryContainer,
+                            color:          '#ffffff',
+                            display:        'flex',
+                            alignItems:     'center',
+                            justifyContent: 'center',
+                            fontFamily:     FONT_HEADLINE,
+                            fontWeight:     700,
+                            fontSize:       '0.9rem',
+                            flexShrink:     0,
+                          }}>
+                            {initial}
+                          </div>
+                          <div>
+                            <p style={{
+                              fontFamily: FONT_HEADLINE,
+                              fontWeight: 700,
+                              fontSize:   '0.95rem',
+                              color:      C.primary,
+                              margin:     0,
+                            }}>
+                              {review.name}
+                            </p>
+                            <p style={{
+                              fontSize: '0.8rem',
+                              color:    C.onSurfaceVariant,
+                              margin:   '2px 0 0',
+                            }}>
+                              Montréal, QC
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Nav arrows */}
+              <button
+                type="button"
+                onClick={() => {
+                  if (reviewIntervalRef.current) clearInterval(reviewIntervalRef.current);
+                  setReviewIdx((prev) => (prev - 1 + approvedReviews.length) % approvedReviews.length);
+                }}
+                style={{
+                  position:       'absolute',
+                  left:           -20,
+                  top:            '50%',
+                  transform:      'translateY(-50%)',
+                  width:          44,
+                  height:         44,
+                  borderRadius:   '50%',
+                  background:     '#ffffff',
+                  border:         `1.5px solid rgba(3,36,22,0.15)`,
+                  boxShadow:      '0 4px 14px rgba(3,36,22,0.1)',
+                  cursor:         'pointer',
+                  display:        'flex',
+                  alignItems:     'center',
+                  justifyContent: 'center',
+                  fontSize:       '1.1rem',
+                  color:          C.primary,
+                  zIndex:         2,
+                  transition:     'box-shadow 0.2s, transform 0.2s',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 6px 20px rgba(3,36,22,0.18)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 4px 14px rgba(3,36,22,0.1)'; }}
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (reviewIntervalRef.current) clearInterval(reviewIntervalRef.current);
+                  setReviewIdx((prev) => (prev + 1) % approvedReviews.length);
+                }}
+                style={{
+                  position:       'absolute',
+                  right:          -20,
+                  top:            '50%',
+                  transform:      'translateY(-50%)',
+                  width:          44,
+                  height:         44,
+                  borderRadius:   '50%',
+                  background:     '#ffffff',
+                  border:         `1.5px solid rgba(3,36,22,0.15)`,
+                  boxShadow:      '0 4px 14px rgba(3,36,22,0.1)',
+                  cursor:         'pointer',
+                  display:        'flex',
+                  alignItems:     'center',
+                  justifyContent: 'center',
+                  fontSize:       '1.1rem',
+                  color:          C.primary,
+                  zIndex:         2,
+                  transition:     'box-shadow 0.2s',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 6px 20px rgba(3,36,22,0.18)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 4px 14px rgba(3,36,22,0.1)'; }}
+              >
+                ›
+              </button>
+            </div>
+
+            {/* Dot indicators */}
             <div style={{
-              display:             'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap:                 24,
+              display:        'flex',
+              justifyContent: 'center',
+              gap:            8,
+              marginTop:      32,
             }}>
-              {approvedReviews.map((review) => {
-                const initial = review.name.charAt(0).toUpperCase();
-                return (
-                  <div key={review.id} style={{
-                    background:   C.surfaceContainerLow,
-                    borderRadius: '1.25rem',
-                    padding:      '32px',
-                    border:       '1px solid rgba(3,36,22,0.06)',
-                  }}>
-                    {/* 5 stars */}
-                    <div style={{ marginBottom: 16, letterSpacing: 3 }}>
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <span key={i} style={{
-                          color:    i < review.rating ? GOLD : '#d1cdc3',
-                          fontSize: '1.05rem',
-                        }}>★</span>
-                      ))}
-                    </div>
-
-                    {/* Quote */}
-                    <p style={{
-                      fontStyle:    'italic',
-                      fontSize:     '1rem',
-                      lineHeight:   1.8,
-                      color:        C.onSurface,
-                      marginBottom: 24,
-                    }}>
-                      "{review.text}"
-                    </p>
-
-                    {/* Reviewer */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                      <div style={{
-                        width:          40,
-                        height:         40,
-                        borderRadius:   '50%',
-                        background:     C.primaryContainer,
-                        color:          '#ffffff',
-                        display:        'flex',
-                        alignItems:     'center',
-                        justifyContent: 'center',
-                        fontFamily:     FONT_HEADLINE,
-                        fontWeight:     700,
-                        fontSize:       '0.9rem',
-                        flexShrink:     0,
-                      }}>
-                        {initial}
-                      </div>
-                      <div>
-                        <p style={{
-                          fontFamily: FONT_HEADLINE,
-                          fontWeight: 700,
-                          fontSize:   '0.95rem',
-                          color:      C.primary,
-                          margin:     0,
-                        }}>
-                          {review.name}
-                        </p>
-                        <p style={{
-                          fontSize: '0.8rem',
-                          color:    C.onSurfaceVariant,
-                          margin:   '2px 0 0',
-                        }}>
-                          Montréal, QC
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              {approvedReviews.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => {
+                    if (reviewIntervalRef.current) clearInterval(reviewIntervalRef.current);
+                    setReviewIdx(i);
+                  }}
+                  style={{
+                    width:      i === reviewIdx ? 24 : 8,
+                    height:     8,
+                    borderRadius: 9999,
+                    background: i === reviewIdx ? C.primary : 'rgba(3,36,22,0.2)',
+                    border:     'none',
+                    cursor:     'pointer',
+                    padding:    0,
+                    transition: 'width 0.35s, background 0.35s',
+                  }}
+                />
+              ))}
             </div>
           </div>
         </section>
@@ -1094,17 +1235,17 @@ export default function HomePage() {
               color:        '#ffffff',
               margin:       '8px 0 16px',
             }}>
-              Rejoignez la famille Ben's
+              Entrez dans la famille Ben's
             </h2>
             <p style={{
-              color:        'rgba(255,255,255,0.7)',
+              color:        'rgba(255,255,255,0.72)',
               fontSize:     '1rem',
               lineHeight:   1.75,
               marginBottom: 36,
               maxWidth:     480,
               margin:       '0 auto 36px',
             }}>
-              Profitez de nos offres spéciales et nouveautés régulièrement.
+              Recettes exclusives, nouvelles saveurs, événements au marché — soyez les premiers à le savoir.
             </p>
 
             {subDone ? (

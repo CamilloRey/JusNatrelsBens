@@ -30,11 +30,11 @@ export default function PublicLayout() {
 
   const NAV = [
     { path: ROUTES.home,      label: 'Accueil' },
-    { path: ROUTES.about,     label: 'Notre Histoire' },
-    { path: ROUTES.products,  label: 'Nos Produits' },
+    { path: ROUTES.about,     label: 'Histoire' },
+    { path: ROUTES.products,  label: 'Produits' },
     { path: ROUTES.blog,      label: 'Blogue' },
     { path: ROUTES.events,    label: 'Événements' },
-    { path: ROUTES.locations, label: 'Points de vente' },
+    { path: ROUTES.locations, label: 'Point de ventes' },
     { path: ROUTES.contact,   label: 'Contact' },
   ];
 
@@ -192,22 +192,23 @@ export default function PublicLayout() {
             </div>
           </div>
 
-          {/* Column 2: À propos */}
+          {/* Column 2: Nos Produits */}
           <div className="public-footer-card">
-            <p className="public-footer-title">{t('nav.about', 'À propos')}</p>
-            <Link to={ROUTES.about} className="public-footer-link">{t('nav.about')}</Link>
-            <Link to={ROUTES.blog} className="public-footer-link">{t('nav.blog', 'Blogue & Recettes')}</Link>
-            <Link to={ROUTES.events} className="public-footer-link">{t('nav.events')}</Link>
+            <p className="public-footer-title">Nos Produits</p>
+            <Link to={ROUTES.products} className="public-footer-link">Jus pressés à froid</Link>
+            <Link to={ROUTES.products} className="public-footer-link">Tisanes artisanales</Link>
+            <Link to={ROUTES.products} className="public-footer-link">Sirops naturels</Link>
+            <Link to={ROUTES.products} className="public-footer-link">Poudres & épices</Link>
           </div>
 
           {/* Column 3: Navigation */}
           <div className="public-footer-card">
-            <p className="public-footer-title">{t('footer.nav', 'Navigation')}</p>
-            {NAV.map((item) => (
-              <Link key={item.path} to={item.path} className="public-footer-link">
-                {item.label}
-              </Link>
-            ))}
+            <p className="public-footer-title">Navigation</p>
+            <Link to={ROUTES.home}      className="public-footer-link">Accueil</Link>
+            <Link to={ROUTES.about}     className="public-footer-link">Notre histoire</Link>
+            <Link to={ROUTES.blog}      className="public-footer-link">Blogue & Recettes</Link>
+            <Link to={ROUTES.events}    className="public-footer-link">Événements</Link>
+            <Link to={ROUTES.locations} className="public-footer-link">Points de vente</Link>
           </div>
 
           {/* Column 4: Contact with icons */}
@@ -240,12 +241,13 @@ export default function PublicLayout() {
           </div>
         </div>
 
+        <div style={{ height: 1, background: 'linear-gradient(to right, transparent, #d4a853 30%, #d4a853 70%, transparent)', margin: '0 0 24px', opacity: 0.45 }} />
         <div className="public-footer-bottom">
           <p
             onClick={handleSecretClick}
             className="public-footer-copyright"
           >
-            {"© 2025 Les Jus Naturels Ben's. Artisanal & Organic."}
+            {"© 2025 Les Jus Naturels Ben's · Artisanal & Biologique · Montréal"}
           </p>
 
           {secretClicks > 0 && secretClicks < 5 && (

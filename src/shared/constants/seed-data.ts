@@ -253,7 +253,10 @@ export const SEED_REVIEWS: Review[] = [
   { id: 'r1', name: 'Clarice Turner',     text: "J'adore absolument ces jus ! Le jus d'hibiscus est mon préféré — il est rafraîchissant, délicieux et donne une vraie sensation de bien-être.", rating: 5, approved: true,  date: '2025-11-12' },
   { id: 'r2', name: 'Brian Moten',        text: "Le jus d'ananas de Les Jus Naturels Ben's a le goût du fruit frais. J'adore qu'il soit sans sucre ajouté ni conservateurs.", rating: 5, approved: true,  date: '2025-12-03' },
   { id: 'r3', name: 'Jeanne Tremblay',    text: "Je bois 1 litre de tisane d'hibiscus à tous les jours. J'adore le goût et sa couleur rouge. Un vrai rituel bien-être quotidien !", rating: 5, approved: true,  date: '2026-01-18' },
-  { id: 'r4', name: 'Ibrahim Konaté',     text: "Le Feu Gnamakoudji, c'est exactement comme chez ma mère à Abidjan. Ben's a réussi quelque chose de rare : l'authenticité en bouteille.", rating: 5, approved: false, date: '2026-02-18' },
+  { id: 'r4', name: 'Ibrahim Konaté',     text: "Le Feu Gnamakoudji, c'est exactement comme chez ma mère à Abidjan. Ben's a réussi quelque chose de rare : l'authenticité en bouteille.", rating: 5, approved: true, date: '2026-02-18' },
+  { id: 'r5', name: 'Marie-Claire Osei',  text: "Un coup de coeur absolu pour le Soleil du Sahel. L'hibiscus, le gingembre — c'est équilibré, vivant, électrisant. Je n'achète plus aucun autre jus.", rating: 5, approved: true, date: '2026-02-25' },
+  { id: 'r6', name: 'Antoine Bergeron',   text: "La poudre de gingembre dans mon smoothie du matin a transformé ma routine. Pur, intense, sans additifs. Ben's comprend ce que 'naturel' veut vraiment dire.", rating: 5, approved: true, date: '2026-03-05' },
+  { id: 'r7', name: 'Fatou Diallo',       text: "En tant qu'Africaine vivant à Montréal, ces jus me ramènent instantanément chez moi. La qualité, le soin, l'amour dans chaque bouteille — ça se goûte.", rating: 5, approved: true, date: '2026-03-12' },
 ];
 
 export const SEED_BLOGS: BlogPost[] = [
@@ -293,9 +296,14 @@ export const SEED_BLOGS: BlogPost[] = [
 ];
 
 export const SEED_LOCATIONS: Location[] = [
-  { id: 'l1', name: 'Marché Jean-Talon',       address: '7070 Henri Julien, Montréal', type: 'Marché',   active: true },
-  { id: 'l2', name: 'Épicerie Afro-Antillaise', address: '3456 Boul. Décarie, Montréal', type: 'Épicerie', active: true },
-  { id: 'l3', name: 'Marché Atwater',           address: '138 Atwater, Montréal',       type: 'Marché',   active: true },
+  { id: 'l1', name: 'Marché Jean-Talon',            address: '7070 Henri Julien, Montréal',     type: 'Marché',          active: true },
+  { id: 'l2', name: 'Épicerie Afro-Antillaise',      address: '3456 Boul. Décarie, Montréal',    type: 'Épicerie',        active: true },
+  { id: 'l3', name: 'Marché Atwater',                address: '138 Atwater, Montréal',           type: 'Marché',          active: true },
+  { id: 'l4', name: 'Café Bonsecours',               address: '3690 Rue Ontario E, Montréal',    type: 'Café',            active: true },
+  { id: 'l5', name: "Saveurs d'Afrique",             address: '4215 Rue Saint-Denis, Montréal',  type: 'Épicerie',        active: true },
+  { id: 'l6', name: 'Marché de Maisonneuve',         address: '4445 Rue Ontario E, Montréal',    type: 'Marché',          active: true },
+  { id: 'l7', name: 'Boutique Bio Plateau',          address: '4060 Rue Saint-Denis, Montréal',  type: 'Boutique bio',    active: true },
+  { id: 'l8', name: 'Studio Shakti Bien-Être',       address: '5160 Boul. Décarie, Montréal',    type: 'Studio bien-être', active: true },
 ];
 
 export const SEED_INGREDIENTS: Ingredient[] = [
