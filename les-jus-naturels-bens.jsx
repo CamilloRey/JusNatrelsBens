@@ -68,17 +68,17 @@ const CHAT_RESPONSES = [
 
 /* ───────────────────────── DATA SEED ───────────────────────── */
 const SEED_PRODUCTS = [
-  { id: "p1", name: "Hibiscus Gingembre", category: "Tisanes", price: 8.99, formats: ["250ml", "354ml", "1L"], desc: "Alliance exquise de l'hibiscus et du gingembre piquant.", available: true, tag: "Populaire", img: "🌺", color: "#c44536" },
-  { id: "p2", name: "Hibiscus Fraises", category: "Jus", price: 9.49, formats: ["250ml", "1L"], desc: "Fusion rafraîchissante de fleurs d'hibiscus et fraises fraîches.", available: true, tag: "Nouveau", img: "🍓", color: "#e63946" },
-  { id: "p3", name: "Hibiscus Fraises Sans Sucre", category: "Jus", price: 9.49, formats: ["250ml", "354ml", "1L"], desc: "Toute la saveur sans sucre ajouté.", available: true, tag: "", img: "🍓", color: "#d62839" },
-  { id: "p4", name: "Gingembre Citron Sucré", category: "Jus", price: 7.99, formats: ["250ml", "1L"], desc: "Piquant et acidulé, parfait pour chaque moment.", available: true, tag: "", img: "🍋", color: "#f4a261" },
-  { id: "p5", name: "Gingembre Citron Sans Sucre", category: "Jus", price: 7.99, formats: ["250ml", "1L"], desc: "Bienfaits du gingembre et citron, zéro sucre ajouté.", available: true, tag: "Populaire", img: "🍋", color: "#e9c46a" },
-  { id: "p6", name: "Jus d'Ananas", category: "Jus", price: 8.49, formats: ["250ml", "354ml", "1L"], desc: "Explosion tropicale de saveur d'ananas frais.", available: true, tag: "", img: "🍍", color: "#f4a261" },
-  { id: "p7", name: "Ananas Sucré", category: "Jus", price: 8.49, formats: ["250ml", "1L"], desc: "La douceur tropicale de l'ananas.", available: true, tag: "", img: "🍍", color: "#e9c46a" },
-  { id: "p8", name: "Ananas Passion", category: "Jus", price: 9.99, formats: ["250ml", "354ml", "1L"], desc: "Mélange exotique ananas et fruit de la passion.", available: true, tag: "Nouveau", img: "🥭", color: "#e76f51" },
-  { id: "p9", name: "Jus de Bleuets", category: "Jus", price: 10.99, formats: ["1L"], desc: "Source de fibres, riche en vitamine C et antioxydants.", available: true, tag: "", img: "🫐", color: "#457b9d" },
-  { id: "p10", name: "Jus de Fraises", category: "Jus", price: 8.99, formats: ["250ml", "1L"], desc: "Délicieux jus de fraises fraîches du Québec.", available: true, tag: "", img: "🍓", color: "#e63946" },
-  { id: "p11", name: "Gingembre Bio", category: "Tisanes", price: 9.99, formats: ["1L"], desc: "Source de potassium, propriétés antibactériennes et antivirales.", available: true, tag: "Populaire", img: "🫚", color: "#bc6c25" },
+  { id: "p1", name: "Hibiscus Gingembre", category: "Tisanes", price: 8.99, formats: ["250ml", "354ml", "1L"], desc: "Alliance exquise de l'hibiscus et du gingembre piquant.", available: true, tag: "Populaire", img: "🌺", color: "#1B4332" },
+  { id: "p2", name: "Hibiscus Fraises", category: "Jus", price: 9.49, formats: ["250ml", "1L"], desc: "Fusion rafraîchissante de fleurs d'hibiscus et fraises fraîches.", available: true, tag: "Nouveau", img: "🍓", color: "#1B4332" },
+  { id: "p3", name: "Hibiscus Fraises Sans Sucre", category: "Jus", price: 9.49, formats: ["250ml", "354ml", "1L"], desc: "Toute la saveur sans sucre ajouté.", available: true, tag: "", img: "🍓", color: "#52796F" },
+  { id: "p4", name: "Gingembre Citron Sucré", category: "Jus", price: 7.99, formats: ["250ml", "1L"], desc: "Piquant et acidulé, parfait pour chaque moment.", available: true, tag: "", img: "🍋", color: "#C9A84C" },
+  { id: "p5", name: "Gingembre Citron Sans Sucre", category: "Jus", price: 7.99, formats: ["250ml", "1L"], desc: "Bienfaits du gingembre et citron, zéro sucre ajouté.", available: true, tag: "Populaire", img: "🍋", color: "#C9A84C" },
+  { id: "p6", name: "Jus d'Ananas", category: "Jus", price: 8.49, formats: ["250ml", "354ml", "1L"], desc: "Explosion tropicale de saveur d'ananas frais.", available: true, tag: "", img: "🍍", color: "#C9A84C" },
+  { id: "p7", name: "Ananas Sucré", category: "Jus", price: 8.49, formats: ["250ml", "1L"], desc: "La douceur tropicale de l'ananas.", available: true, tag: "", img: "🍍", color: "#C9A84C" },
+  { id: "p8", name: "Ananas Passion", category: "Jus", price: 9.99, formats: ["250ml", "354ml", "1L"], desc: "Mélange exotique ananas et fruit de la passion.", available: true, tag: "Nouveau", img: "🥭", color: "#C9A84C" },
+  { id: "p9", name: "Jus de Bleuets", category: "Jus", price: 10.99, formats: ["1L"], desc: "Source de fibres, riche en vitamine C et antioxydants.", available: true, tag: "", img: "🫐", color: "#52796F" },
+  { id: "p10", name: "Jus de Fraises", category: "Jus", price: 8.99, formats: ["250ml", "1L"], desc: "Délicieux jus de fraises fraîches du Québec.", available: true, tag: "", img: "🍓", color: "#1B4332" },
+  { id: "p11", name: "Gingembre Bio", category: "Tisanes", price: 9.99, formats: ["1L"], desc: "Source de potassium, propriétés antibactériennes et antivirales.", available: true, tag: "Populaire", img: "🫚", color: "#C9A84C" },
 ];
 
 const SEED_REVIEWS = [
@@ -145,21 +145,19 @@ const SEED_MESSAGES = [
 const fonts = animCSS;
 
 const CSS = {
-  root: { fontFamily: "'DM Sans', sans-serif", margin: 0, padding: 0, minHeight: "100vh", color: "#1a1a1a", background: "#faf6f0" },
+  root: { fontFamily: "'DM Sans', sans-serif", margin: 0, padding: 0, minHeight: "100vh", color: "#1a1a1a", background: "#F9F6F0" },
   heading: { fontFamily: "'Playfair Display', serif" },
 };
 
 const C = {
-  hibiscus: "#8b1a1a",
-  red: "#c44536",
-  gold: "#d4763b",
-  cream: "#faf6f0",
-  dark: "#1a0f0a",
-  text: "#2d1f15",
-  muted: "#8a7968",
-  light: "#f0e6d8",
-  green: "#2a6a4f",
-  border: "#e4d9cc",
+  green: '#1B4332',
+  gold: '#C9A84C',
+  cream: '#F9F6F0',
+  dark: '#1a0f0a',
+  text: '#2d1f15',
+  muted: '#6c757d',
+  light: '#F9F6F0', // Using cream for light sections too
+  border: 'rgba(27, 67, 50, 0.1)', // Subtle green border
 };
 
 /* ───────────────────────── STORAGE HELPERS ───────────────────────── */
@@ -271,7 +269,7 @@ export default function App() {
       <style>{fonts}</style>
       <div style={{ textAlign: "center" }}>
         <div style={{ fontSize: 48, marginBottom: 16 }}>🍹</div>
-        <div style={{ ...CSS.heading, fontSize: 20, color: C.hibiscus }}>Chargement...</div>
+        <div style={{ ...CSS.heading, fontSize: 20, color: C.green }}>Chargement...</div>
       </div>
     </div>
   );
@@ -306,11 +304,11 @@ export default function App() {
           style={{ width: "100%", padding: "14px 16px", borderRadius: 12, border: loginError ? "1px solid rgba(220,38,38,0.5)" : "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.06)", color: "#f0e6d3", fontSize: 15, outline: "none", boxSizing: "border-box", marginBottom: 12 }}
         />
         <button onClick={tryLogin}
-          style={{ width: "100%", padding: "14px", borderRadius: 12, border: "none", background: C.red, color: "#fff", fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
+          style={{ width: "100%", padding: "14px", borderRadius: 12, border: "none", background: C.gold, color: C.dark, fontSize: 15, fontWeight: 600, cursor: "pointer" }}>
           Connexion
         </button>
         <p style={{ color: "#6b5e52", fontSize: 12, marginTop: 16 }}>Accès réservé à l'administratrice</p>
-        <button onClick={() => { setIsAdmin(false); setLoginError(false); setLoginPass(""); }} style={{ background: "none", border: "none", color: C.red, cursor: "pointer", marginTop: 8, fontSize: 13 }}>← Retour au site</button>
+        <button onClick={() => { setIsAdmin(false); setLoginError(false); setLoginPass(""); }} style={{ background: "none", border: "none", color: C.gold, cursor: "pointer", marginTop: 8, fontSize: 13 }}>← Retour au site</button>
       </div>
     </div>
   );
@@ -376,19 +374,23 @@ function PublicSite({ page, setPage, products, reviews, blogs, locations, subscr
     <div>
       <style>{fonts}</style>
       {/* NAV */}
-      <nav style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(250,246,240,0.92)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${C.border}`, padding: "0 24px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
-          <div onClick={() => setPage("home")} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 28 }}>🍹</span>
-            <span style={{ ...CSS.heading, fontSize: 18, fontWeight: 800, color: C.hibiscus }}>Les Jus Naturels Ben's</span>
+      <nav style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(249, 246, 240, 0.85)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${C.border}`, padding: "0 24px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
+          <div onClick={() => setPage("home")} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ fontSize: 32 }}>🍹</span>
+            <span style={{ ...CSS.heading, fontSize: 20, fontWeight: 800, color: C.green }}>Les Jus Naturels Ben's</span>
           </div>
-          <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             {nav.map(n => (
               <button key={n.id} onClick={() => { setPage(n.id); setMobileMenu(false); }}
-                style={{ padding: "8px 14px", border: "none", background: page === n.id ? C.light : "transparent", color: page === n.id ? C.hibiscus : C.muted, borderRadius: 8, cursor: "pointer", fontSize: 13, fontWeight: page === n.id ? 600 : 400, display: window.innerWidth < 768 ? "none" : "block" }}>
+                style={{ padding: "10px 16px", border: "none", background: page === n.id ? `${C.green}15` : "transparent", color: page === n.id ? C.green : C.text, borderRadius: 10, cursor: "pointer", fontSize: 14, fontWeight: page === n.id ? 600 : 500, display: window.innerWidth < 768 ? "none" : "block", transition: "all 0.2s" }}>
                 {n.label}
               </button>
             ))}
+            <button onClick={() => setPage("products")} className="anim-btn"
+              style={{ padding: "12px 24px", background: C.green, color: "#fff", border: "none", borderRadius: 50, fontSize: 14, fontWeight: 600, cursor: "pointer", transition: "all 0.3s", marginLeft: 12, display: window.innerWidth < 768 ? "none" : "block" }}>
+              Commander
+            </button>
             <button onClick={() => setMobileMenu(!mobileMenu)}
               style={{ display: window.innerWidth >= 768 ? "none" : "flex", alignItems: "center", background: "none", border: "none", cursor: "pointer", padding: 8 }}>
               <Icon type={mobileMenu ? "x" : "menu"} color={C.dark} />
@@ -396,13 +398,17 @@ function PublicSite({ page, setPage, products, reviews, blogs, locations, subscr
           </div>
         </div>
         {mobileMenu && (
-          <div style={{ paddingBottom: 16 }}>
+          <div style={{ padding: "8px 0 16px" }}>
             {nav.map(n => (
               <button key={n.id} onClick={() => { setPage(n.id); setMobileMenu(false); }}
-                style={{ display: "block", width: "100%", padding: "12px 16px", border: "none", background: page === n.id ? C.light : "transparent", color: page === n.id ? C.hibiscus : C.text, textAlign: "left", cursor: "pointer", fontSize: 15, borderRadius: 8 }}>
+                style={{ display: "block", width: "100%", padding: "12px 16px", border: "none", background: page === n.id ? `${C.green}15` : "transparent", color: page === n.id ? C.green : C.text, textAlign: "left", cursor: "pointer", fontSize: 15, borderRadius: 8, marginBottom: 4 }}>
                 {n.label}
               </button>
             ))}
+             <button onClick={() => setPage("products")} className="anim-btn"
+              style={{ width: "100%", marginTop: 12, padding: "14px 24px", background: C.green, color: "#fff", border: "none", borderRadius: 10, fontSize: 15, fontWeight: 600, cursor: "pointer", transition: "all 0.3s" }}>
+              Commander
+            </button>
           </div>
         )}
       </nav>
@@ -417,35 +423,40 @@ function PublicSite({ page, setPage, products, reviews, blogs, locations, subscr
       {page === "contact" && <ContactPage subscribers={subscribers} updateSubscribers={updateSubscribers} messages={messages} updateMessages={updateMessages} />}
 
       {/* FOOTER */}
-      <footer style={{ background: C.dark, color: "#a89e91", padding: "48px 24px 24px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", flexWrap: "wrap", gap: 40, justifyContent: "space-between" }}>
-          <div style={{ minWidth: 200 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-              <span style={{ fontSize: 28 }}>🍹</span>
-              <span style={{ ...CSS.heading, fontSize: 18, fontWeight: 700, color: "#f0e6d3" }}>Les Jus Naturels Ben's</span>
+      <footer style={{ background: C.dark, color: "#a89e91", padding: "80px 24px 24px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 40, justifyContent: "space-between" }}>
+          <div style={{ minWidth: 240 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+              <span style={{ fontSize: 32 }}>🍹</span>
+              <span style={{ ...CSS.heading, fontSize: 20, fontWeight: 700, color: C.cream }}>Les Jus Naturels Ben's</span>
             </div>
-            <p style={{ fontSize: 13, lineHeight: 1.7, maxWidth: 280 }}>Des jus naturels et exotiques faits maison pour la santé, la saveur et l'authenticité.</p>
+            <p style={{ fontSize: 14, lineHeight: 1.7, maxWidth: 320 }}>Des jus naturels et exotiques faits maison pour la santé, la saveur et l'authenticité.</p>
           </div>
           <div>
-            <p style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: 2, color: "#6b5e52", marginBottom: 12 }}>Navigation</p>
+            <p style={{ fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: C.gold, fontWeight: 600, marginBottom: 16 }}>Navigation</p>
             {nav.map(n => (
               <button key={n.id} onClick={() => setPage(n.id)}
-                style={{ display: "block", background: "none", border: "none", color: "#a89e91", cursor: "pointer", padding: "4px 0", fontSize: 14 }}>{n.label}</button>
+                style={{ display: "block", background: "none", border: "none", color: "#a89e91", cursor: "pointer", padding: "6px 0", fontSize: 14, transition: "color 0.2s" }}>{n.label}</button>
             ))}
           </div>
           <div>
-            <p style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: 2, color: "#6b5e52", marginBottom: 12 }}>Contact</p>
-            <p style={{ fontSize: 14 }}>info@lesjusnaturelsbens.com</p>
+             <p style={{ fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: C.gold, fontWeight: 600, marginBottom: 16 }}>Contact</p>
+            <a href="mailto:info@lesjusnaturelsbens.com" style={{ fontSize: 14, color: "#a89e91", textDecoration: "none", display: "block", marginBottom: 8 }}>info@lesjusnaturelsbens.com</a>
+            <p style={{ fontSize: 14, color: "#a89e91", margin: 0 }}>Montréal, Québec</p>
+          </div>
+           <div>
+             <p style={{ fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: C.gold, fontWeight: 600, marginBottom: 16 }}>Suivez-nous</p>
+            {/* Social links here */}
           </div>
         </div>
-        <div style={{ maxWidth: 1100, margin: "32px auto 0", paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-          <p onClick={handleSecretClick} style={{ fontSize: 12, cursor: "default", userSelect: "none" }}>
-            © 2025 Les Jus Naturels Ben's. Tous droits réservés.
+        <div style={{ maxWidth: 1200, margin: "64px auto 0", paddingTop: 24, borderTop: "1px solid rgba(255,255,255,0.1)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+          <p onClick={handleSecretClick} style={{ fontSize: 13, cursor: "default", userSelect: "none" }}>
+            © {new Date().getFullYear()} Les Jus Naturels Ben's. Tous droits réservés.
           </p>
           {secretClicks > 0 && secretClicks < 5 && (
             <div style={{ display: "flex", gap: 3 }}>
               {[1,2,3,4,5].map(i => (
-                <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: i <= secretClicks ? C.red : "rgba(255,255,255,0.15)", transition: "background 0.2s" }} />
+                <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: i <= secretClicks ? C.gold : "rgba(255,255,255,0.15)", transition: "background 0.2s" }} />
               ))}
             </div>
           )}
@@ -458,11 +469,11 @@ function PublicSite({ page, setPage, products, reviews, blogs, locations, subscr
       {/* WHATSAPP FLOATING BUTTON */}
       <a href="https://wa.me/15145550123?text=Bonjour%20Ben%27s%20!%20J%27aimerais%20avoir%20des%20informations%20sur%20vos%20jus%20naturels."
         target="_blank" rel="noopener noreferrer"
-        style={{ position: "fixed", bottom: 24, right: 24, zIndex: 999, width: 56, height: 56, borderRadius: "50%", background: "#25D366", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 20px rgba(37,211,102,0.4)", cursor: "pointer", textDecoration: "none", transition: "transform 0.2s", animation: "bounceIn 0.6s ease 1s both" }}
+        style={{ position: "fixed", bottom: 24, right: 24, zIndex: 999, width: 60, height: 60, borderRadius: "50%", background: "#25D366", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 8px 25px rgba(37,211,102,0.4)", cursor: "pointer", textDecoration: "none", transition: "transform 0.3s", animation: "bounceIn 0.6s ease 1s both" }}
         onMouseEnter={e => e.currentTarget.style.transform = "scale(1.1)"}
         onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
       >
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="#fff">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="#fff">
           <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
         </svg>
       </a>
@@ -507,95 +518,97 @@ function HomePage({ setPage, products, reviews, subscribers, updateSubscribers }
         "sameAs": ["https://facebook.com/lesjusnaturelsbens", "https://instagram.com/lesjusnaturelsbens"]
       }) }} />
 
-      {/* HERO — Animated gradient */}
-      <section style={{ background: `linear-gradient(135deg, ${C.hibiscus} 0%, ${C.red} 40%, ${C.gold} 100%)`, backgroundSize: "200% 200%", animation: "gradient 8s ease infinite", padding: "90px 24px 80px", textAlign: "center", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "repeating-linear-gradient(45deg, transparent, transparent 30px, rgba(255,255,255,0.015) 30px, rgba(255,255,255,0.015) 60px)" }} />
-        {/* Floating emojis */}
+      {/* HERO */}
+      <section style={{ background: `linear-gradient(135deg, ${C.green} 0%, #2a6a4f 50%, ${C.gold} 100%)`, backgroundSize: "200% 200%", animation: "gradient 10s ease infinite", padding: "100px 24px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,0.02) 35px, rgba(255,255,255,0.02) 70px)" }} />
         {["🍹","🌺","🍋","🍍","🫚","🍓"].map((e, i) => (
-          <span key={i} style={{ position: "absolute", fontSize: 28, opacity: 0.12, animation: `float ${3 + i * 0.5}s ease-in-out infinite`, animationDelay: `${i * 0.4}s`, top: `${10 + (i * 14) % 70}%`, left: `${5 + (i * 17) % 85}%` }}>{e}</span>
+          <span key={i} style={{ position: "absolute", fontSize: 32, opacity: 0.08, animation: `float ${4 + i * 0.6}s ease-in-out infinite`, animationDelay: `${i * 0.5}s`, top: `${15 + (i * 13) % 70}%`, left: `${10 + (i * 16) % 80}%` }}>{e}</span>
         ))}
-        <div style={{ position: "relative", maxWidth: 700, margin: "0 auto" }}>
-          <p style={{ fontSize: 14, letterSpacing: 4, textTransform: "uppercase", color: "rgba(255,255,255,0.7)", marginBottom: 16, animation: "fadeIn 0.8s ease" }}>Offrez-vous un voyage gustatif unique</p>
-          <h1 style={{ ...CSS.heading, fontSize: "clamp(32px, 5vw, 54px)", fontWeight: 900, color: "#fff", lineHeight: 1.12, margin: "0 0 20px", animation: "fadeUp 0.9s ease" }}>
-            Savourez le plaisir<br />des jus naturels
-          </h1>
-          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.85)", lineHeight: 1.7, maxWidth: 540, margin: "0 auto 36px", animation: "fadeUp 1s ease 0.2s both" }}>
-            Bienvenue dans l'univers des boissons naturelles inspirées des traditions Africaines. Des produits uniques préparés selon les méthodes artisanales.
-          </p>
-          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", animation: "fadeUp 1.1s ease 0.4s both" }}>
-            <button onClick={() => setPage("products")} className="anim-btn"
-              style={{ padding: "16px 40px", background: "#fff", color: C.hibiscus, border: "none", borderRadius: 50, fontSize: 16, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 20px rgba(0,0,0,0.15)", transition: "all 0.3s" }}>
-              Découvrir nos produits
-            </button>
-            <button onClick={() => setPage("about")} className="anim-btn"
-              style={{ padding: "16px 32px", background: "transparent", color: "#fff", border: "2px solid rgba(255,255,255,0.4)", borderRadius: 50, fontSize: 15, fontWeight: 600, cursor: "pointer", transition: "all 0.3s" }}>
-              Notre histoire →
-            </button>
-          </div>
+        <div style={{ position: "relative", maxWidth: 750, margin: "0 auto" }}>
+          <Reveal>
+            <p style={{ fontSize: 15, letterSpacing: 4, textTransform: "uppercase", color: "rgba(249, 246, 240, 0.7)", marginBottom: 16 }}>Un héritage de saveurs authentiques</p>
+            <h1 style={{ ...CSS.heading, fontSize: "clamp(38px, 5.5vw, 64px)", fontWeight: 900, color: C.cream, lineHeight: 1.15, margin: "0 0 24px" }}>
+              Le goût naturel de l'Afrique,
+              <br />embouteillé au Québec
+            </h1>
+            <p style={{ fontSize: 18, color: "rgba(249, 246, 240, 0.85)", lineHeight: 1.8, maxWidth: 600, margin: "0 auto 40px" }}>
+              Découvrez des jus d'exception, préparés artisanalement à partir d'ingrédients frais et de recettes traditionnelles qui traversent les générations.
+            </p>
+          </Reveal>
+          <Reveal delay={0.2}>
+            <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+              <button onClick={() => setPage("products")} className="anim-btn"
+                style={{ padding: "18px 48px", background: C.gold, color: C.dark, border: "none", borderRadius: 50, fontSize: 16, fontWeight: 700, cursor: "pointer", boxShadow: "0 10px 30px rgba(0,0,0,0.2)", transition: "all 0.3s" }}>
+                Explorer les saveurs
+              </button>
+              <button onClick={() => setPage("about")} className="anim-btn"
+                style={{ padding: "18px 36px", background: "transparent", color: C.cream, border: `1px solid ${C.cream}`, borderRadius: 50, fontSize: 16, fontWeight: 500, cursor: "pointer", transition: "all 0.3s" }}>
+                Notre histoire →
+              </button>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* TRUST BADGES — Animated */}
-      <Reveal anim="fadeUp">
-        <section style={{ background: "#fff", padding: "20px 24px", borderBottom: `1px solid ${C.border}` }}>
-          <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", justifyContent: "center", gap: 32, flexWrap: "wrap" }}>
-            {[
-              { icon: "🍁", text: "Fait à Montréal" }, { icon: "🚫", text: "Sans sucre ajouté" },
-              { icon: "🌿", text: "Zéro conservateur" }, { icon: "♻️", text: "Écoresponsable" }, { icon: "🏅", text: "Primé" },
-            ].map((b, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, animation: `fadeIn 0.5s ease ${0.1 * i}s both` }}>
-                <span style={{ fontSize: 18 }}>{b.icon}</span>
-                <span style={{ fontSize: 13, fontWeight: 600, color: C.dark }}>{b.text}</span>
+      {/* TRUST BADGES */}
+      <section style={{ background: C.cream, padding: "40px 24px" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", justifyContent: "center", gap: 48, flexWrap: "wrap" }}>
+          {[
+            { icon: "🍁", text: "Fait à Montréal" }, { icon: "🚫", text: "Sans sucre ajouté" },
+            { icon: "🌿", text: "Zéro conservateur" }, { icon: "♻️", text: "Écoresponsable" }, { icon: "🏅", text: "Primé" },
+          ].map((b, i) => (
+            <Reveal key={i} delay={i * 0.1} anim="fadeUp">
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <span style={{ fontSize: 24 }}>{b.icon}</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: C.dark }}>{b.text}</span>
               </div>
-            ))}
-          </div>
-        </section>
-      </Reveal>
+            </Reveal>
+          ))}
+        </div>
+      </section>
 
       {/* COUNTER SECTION */}
       <div ref={countRef}>
-        <Reveal anim="fadeUp">
-          <section style={{ padding: "40px 24px", background: C.light }}>
-            <div style={{ maxWidth: 700, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, textAlign: "center" }}>
-              {[
-                { val: count.bottles + "+", label: "Bouteilles vendues", icon: "🍹" },
-                { val: count.families + "+", label: "Familles satisfaites", icon: "👨‍👩‍👧‍👦" },
-                { val: count.flavors, label: "Saveurs uniques", icon: "🎨" },
-              ].map((s, i) => (
-                <div key={i}>
-                  <span style={{ fontSize: 24 }}>{s.icon}</span>
-                  <p style={{ ...CSS.heading, fontSize: 34, fontWeight: 900, color: C.hibiscus, margin: "4px 0 2px" }}>{s.val}</p>
-                  <p style={{ fontSize: 13, color: C.muted, margin: 0 }}>{s.label}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        </Reveal>
+        <section style={{ padding: "80px 24px", background: "#ffffff" }}>
+          <div style={{ maxWidth: 800, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, textAlign: "center" }}>
+            {[
+              { val: count.bottles + "+", label: "Bouteilles vendues", icon: "🍹" },
+              { val: count.families + "+", label: "Familles satisfaites", icon: "👨‍👩‍👧‍👦" },
+              { val: count.flavors, label: "Saveurs uniques", icon: "🎨" },
+            ].map((s, i) => (
+              <Reveal key={i} delay={i * 0.1}>
+                <span style={{ fontSize: 32, filter: `hue-rotate(${i * 40}deg)` }}>{s.icon}</span>
+                <p style={{ ...CSS.heading, fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 800, color: C.green, margin: "8px 0 4px" }}>{s.val}</p>
+                <p style={{ fontSize: 14, color: C.muted, margin: 0 }}>{s.label}</p>
+              </Reveal>
+            ))}
+          </div>
+        </section>
       </div>
 
-      {/* FEATURED PRODUCTS — Staggered */}
-      <section style={{ padding: "64px 24px", maxWidth: 1100, margin: "0 auto" }}>
-        <Reveal anim="fadeUp">
-          <div style={{ textAlign: "center", marginBottom: 40 }}>
-            <p style={{ fontSize: 12, letterSpacing: 3, textTransform: "uppercase", color: C.red, marginBottom: 8 }}>Notre sélection</p>
-            <h2 style={{ ...CSS.heading, fontSize: 32, fontWeight: 800, color: C.dark, margin: 0 }}>Nos jus populaires</h2>
+      {/* FEATURED PRODUCTS */}
+      <section style={{ padding: "80px 24px", maxWidth: 1200, margin: "0 auto" }}>
+        <Reveal>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <p style={{ fontSize: 13, letterSpacing: 3, textTransform: "uppercase", color: C.gold, fontWeight: 600, marginBottom: 12 }}>Notre sélection</p>
+            <h2 style={{ ...CSS.heading, fontSize: "clamp(30px, 4vw, 42px)", fontWeight: 800, color: C.dark, margin: 0 }}>Nos produits vedettes</h2>
           </div>
         </Reveal>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 28 }}>
           {products.filter(p => p.available).slice(0, 6).map((p, i) => (
             <Reveal key={p.id} delay={i * 0.1} anim="scaleIn">
               <div onClick={() => setPage("product:" + p.id)} className="anim-card"
-                style={{ background: "#fff", borderRadius: 16, overflow: "hidden", border: `1px solid ${C.border}`, cursor: "pointer", transition: "transform 0.3s, box-shadow 0.3s" }}>
-                <div style={{ height: 160, background: `linear-gradient(135deg, ${p.color}22, ${p.color}44)`, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
-                  <ProductImg src={p.img} size={100} borderRadius={0} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "cover", transition: "transform 0.4s" }} />
+                style={{ background: "#fff", borderRadius: 24, overflow: "hidden", border: `1px solid ${C.border}`, cursor: "pointer", transition: "transform 0.3s, box-shadow 0.3s", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)" }}>
+                <div style={{ height: 200, background: `linear-gradient(135deg, ${p.color}1A, ${p.color}33)`, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+                  <ProductImg src={p.img} size={120} borderRadius={0} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "cover", transition: "transform 0.4s" }} />
                 </div>
-                <div style={{ padding: "16px 18px" }}>
-                  {p.tag && <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: C.red, background: `${C.red}15`, padding: "2px 8px", borderRadius: 4 }}>{p.tag}</span>}
-                  <h3 style={{ ...CSS.heading, fontSize: 17, fontWeight: 700, margin: "8px 0 4px", color: C.dark }}>{p.name}</h3>
-                  <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.5, margin: "0 0 12px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{p.desc}</p>
+                <div style={{ padding: "20px 24px" }}>
+                  {p.tag && <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.2, color: C.gold, background: `${C.gold}20`, padding: "4px 10px", borderRadius: 6 }}>{p.tag}</span>}
+                  <h3 style={{ ...CSS.heading, fontSize: 20, fontWeight: 700, margin: "10px 0 6px", color: C.dark }}>{p.name}</h3>
+                  <p style={{ fontSize: 14, color: C.muted, lineHeight: 1.6, margin: "0 0 16px", height: 44, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{p.desc}</p>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: 18, fontWeight: 700, color: C.hibiscus }}>{p.price.toFixed(2)}$</span>
-                    <span style={{ fontSize: 12, color: C.red, fontWeight: 600 }}>Voir →</span>
+                    <span style={{ fontSize: 22, fontWeight: 700, color: C.green }}>{p.price.toFixed(2)}$</span>
+                    <span style={{ fontSize: 14, color: C.gold, fontWeight: 600 }}>Voir →</span>
                   </div>
                 </div>
               </div>
@@ -603,51 +616,51 @@ function HomePage({ setPage, products, reviews, subscribers, updateSubscribers }
           ))}
         </div>
         <Reveal anim="fadeUp" delay={0.3}>
-          <div style={{ textAlign: "center", marginTop: 32 }}>
+          <div style={{ textAlign: "center", marginTop: 48 }}>
             <button onClick={() => setPage("products")} className="anim-btn"
-              style={{ padding: "14px 36px", background: C.hibiscus, color: "#fff", border: "none", borderRadius: 50, fontSize: 15, fontWeight: 600, cursor: "pointer", transition: "all 0.3s" }}>
+              style={{ padding: "16px 40px", background: C.green, color: "#fff", border: "none", borderRadius: 50, fontSize: 15, fontWeight: 600, cursor: "pointer", transition: "all 0.3s" }}>
               Voir tous nos produits
             </button>
           </div>
         </Reveal>
       </section>
 
-      {/* VALUES — Animated */}
-      <section style={{ background: C.light, padding: "64px 24px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 24 }}>
+      {/* VALUES */}
+      <section style={{ background: "#fff", padding: "80px 24px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 28 }}>
           {[
-            { icon: "🌿", title: "Ingrédients naturels", desc: "Fruits cultivés localement, sans sucre ajouté ni conservateurs." },
-            { icon: "♻️", title: "Écoresponsable", desc: "Résidus réutilisés comme épices et pour produits de beauté." },
-            { icon: "🤝", title: "Producteurs locaux", desc: "Soutien à l'économie locale et aux agriculteurs québécois." },
-            { icon: "✨", title: "Saveurs uniques", desc: "Recettes artisanales inspirées des traditions Africaines." },
+            { icon: "🌿", title: "Ingrédients naturels", desc: "Fruits frais, sans sucre ajouté ni conservateurs. Le vrai goût de la nature." },
+            { icon: "♻️", title: "Écoresponsable", desc: "Nos résidus sont réutilisés comme épices et pour des produits de beauté. Zéro déchet." },
+            { icon: "🤝", title: "Producteurs locaux", desc: "Nous soutenons l'économie locale et les agriculteurs québécois pour une fraîcheur inégalée." },
+            { icon: "✨", title: "Saveurs uniques", desc: "Des recettes artisanales inspirées des riches traditions culinaires d'Afrique." },
           ].map((v, i) => (
             <Reveal key={i} delay={i * 0.12} anim="fadeUp">
-              <div className="anim-card" style={{ background: "#fff", borderRadius: 16, padding: 28, border: `1px solid ${C.border}`, transition: "transform 0.3s, box-shadow 0.3s", cursor: "default" }}>
-                <span style={{ fontSize: 40, display: "block", marginBottom: 14, animation: `wave ${2 + i * 0.3}s ease-in-out infinite`, animationDelay: `${i * 0.2}s` }}>{v.icon}</span>
-                <h3 style={{ ...CSS.heading, fontSize: 18, fontWeight: 700, margin: "0 0 8px", color: C.dark }}>{v.title}</h3>
-                <p style={{ fontSize: 14, color: C.muted, lineHeight: 1.6, margin: 0 }}>{v.desc}</p>
+              <div style={{ background: C.cream, borderRadius: 24, padding: 32, border: `1px solid ${C.border}`, cursor: "default", height: "100%" }}>
+                <span style={{ fontSize: 44, display: "block", marginBottom: 16 }}>{v.icon}</span>
+                <h3 style={{ ...CSS.heading, fontSize: 20, fontWeight: 700, margin: "0 0 10px", color: C.dark }}>{v.title}</h3>
+                <p style={{ fontSize: 15, color: C.muted, lineHeight: 1.7, margin: 0 }}>{v.desc}</p>
               </div>
             </Reveal>
           ))}
         </div>
       </section>
 
-      {/* REVIEWS — Animated */}
+      {/* REVIEWS */}
       {reviews.length > 0 && (
-        <section style={{ padding: "64px 24px", maxWidth: 1100, margin: "0 auto" }}>
-          <Reveal anim="fadeUp">
-            <div style={{ textAlign: "center", marginBottom: 40 }}>
-              <p style={{ fontSize: 12, letterSpacing: 3, textTransform: "uppercase", color: C.red, marginBottom: 8 }}>Témoignages</p>
-              <h2 style={{ ...CSS.heading, fontSize: 32, fontWeight: 800, color: C.dark, margin: 0 }}>Ce que nos clients disent</h2>
+        <section style={{ padding: "80px 24px", maxWidth: 1200, margin: "0 auto" }}>
+          <Reveal>
+            <div style={{ textAlign: "center", marginBottom: 48 }}>
+              <p style={{ fontSize: 13, letterSpacing: 3, textTransform: "uppercase", color: C.gold, fontWeight: 600, marginBottom: 12 }}>Témoignages</p>
+              <h2 style={{ ...CSS.heading, fontSize: "clamp(30px, 4vw, 42px)", fontWeight: 800, color: C.dark, margin: 0 }}>Ce que nos clients disent</h2>
             </div>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
             {reviews.map((r, i) => (
               <Reveal key={r.id} delay={i * 0.15} anim="slideLeft">
-                <div className="anim-card" style={{ background: "#fff", borderRadius: 16, padding: 28, border: `1px solid ${C.border}`, transition: "transform 0.3s, box-shadow 0.3s" }}>
-                  <div style={{ color: "#f59e0b", fontSize: 16, marginBottom: 12 }}>{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</div>
-                  <p style={{ fontSize: 15, color: C.text, lineHeight: 1.7, margin: "0 0 16px", fontStyle: "italic" }}>"{r.text}"</p>
-                  <p style={{ fontSize: 14, fontWeight: 600, color: C.dark, margin: 0 }}>{r.name}</p>
+                <div className="anim-card" style={{ background: "#fff", borderRadius: 24, padding: 32, border: `1px solid ${C.border}`, transition: "transform 0.3s, box-shadow 0.3s", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)", height: "100%" }}>
+                  <div style={{ color: "#f59e0b", fontSize: 18, marginBottom: 16 }}>{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</div>
+                  <p style={{ fontSize: 16, color: C.text, lineHeight: 1.8, margin: "0 0 20px", fontStyle: "italic" }}>"{r.text}"</p>
+                  <p style={{ fontSize: 15, fontWeight: 700, color: C.dark, margin: 0 }}>{r.name}</p>
                 </div>
               </Reveal>
             ))}
@@ -655,15 +668,17 @@ function HomePage({ setPage, products, reviews, subscribers, updateSubscribers }
         </section>
       )}
 
-      {/* NEWSLETTER — Animated */}
+      {/* NEWSLETTER */}
       <Reveal anim="scaleIn">
-        <section style={{ background: `linear-gradient(135deg, ${C.hibiscus}, ${C.red})`, backgroundSize: "200% 200%", animation: "gradient 6s ease infinite", padding: "56px 24px", textAlign: "center" }}>
-          <h2 style={{ ...CSS.heading, fontSize: 28, fontWeight: 800, color: "#fff", margin: "0 0 12px" }}>Rejoignez la communauté</h2>
-          <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 15, marginBottom: 24 }}>Profitez de nos offres spéciales et nouveautés.</p>
-          <div style={{ display: "flex", gap: 8, maxWidth: 420, margin: "0 auto", flexWrap: "wrap", justifyContent: "center" }}>
-            <input type="email" placeholder="Votre courriel" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSub()}
-              style={{ flex: 1, minWidth: 200, padding: "14px 18px", borderRadius: 50, border: "none", fontSize: 15, outline: "none" }} />
-            <button onClick={handleSub} className="anim-btn" style={{ padding: "14px 28px", borderRadius: 50, border: "none", background: C.dark, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer", transition: "all 0.3s" }}>S'abonner</button>
+        <section style={{ background: C.green, padding: "80px 24px", textAlign: "center" }}>
+         <div style={{maxWidth: 500, margin: "0 auto"}}>
+            <h2 style={{ ...CSS.heading, fontSize: "clamp(28px, 4vw, 36px)", fontWeight: 800, color: C.cream, margin: "0 0 16px" }}>Rejoignez la communauté Ben's</h2>
+            <p style={{ color: "rgba(249, 246, 240, 0.8)", fontSize: 16, marginBottom: 32, lineHeight: 1.7 }}>Recevez nos offres exclusives, découvrez nos nouveautés en avant-première et plongez dans notre univers.</p>
+            <div style={{ display: "flex", gap: 10, maxWidth: 450, margin: "0 auto", flexWrap: "wrap", justifyContent: "center" }}>
+              <input type="email" placeholder="Votre courriel" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSub()}
+                style={{ flex: 1, minWidth: 220, padding: "16px 20px", borderRadius: 50, border: "none", fontSize: 15, outline: "none" }} />
+              <button onClick={handleSub} className="anim-btn" style={{ padding: "16px 32px", borderRadius: 50, border: "none", background: C.gold, color: C.dark, fontSize: 15, fontWeight: 700, cursor: "pointer", transition: "all 0.3s" }}>S'abonner</button>
+            </div>
           </div>
         </section>
       </Reveal>
