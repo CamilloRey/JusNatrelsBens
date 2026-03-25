@@ -3,6 +3,7 @@ import { DataProvider } from './DataContext';
 import { AuthProvider } from './AuthContext';
 import { SupabaseAuthProvider } from '@/features/auth/context/SupabaseAuthContext';
 import { CartProvider } from '@/features/shop/context/CartContext';
+import { ToastProvider } from '@/features/shop/context/ToastContext';
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
@@ -11,7 +12,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
         <SupabaseAuthProvider>
           <AuthProvider>
             <CartProvider>
-              {children}
+              <ToastProvider>
+                {children}
+              </ToastProvider>
             </CartProvider>
           </AuthProvider>
         </SupabaseAuthProvider>

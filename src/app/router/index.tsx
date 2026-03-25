@@ -23,9 +23,11 @@ import SupabaseResetPasswordPage from '@/features/auth/pages/SupabaseResetPasswo
 
 import DashboardPage          from '@/features/dashboard/pages/DashboardPage';
 import AdminProductsPage      from '@/features/products/pages/AdminProductsPage';
+import AdminProductSettingsPage from '@/features/products/pages/AdminProductSettingsPage';
 import AdminIngredientsPage   from '@/features/ingredients/pages/AdminIngredientsPage';
 import AdminReviewsPage       from '@/features/reviews/pages/AdminReviewsPage';
 import AdminBlogPage          from '@/features/blog/pages/AdminBlogPage';
+import AdminBlogSettingsPage  from '@/features/blog/pages/AdminBlogSettingsPage';
 import AdminRecipesPage       from '@/features/recipes/pages/AdminRecipesPage';
 import AdminLocationsPage     from '@/features/locations/pages/AdminLocationsPage';
 import AdminSubscribersPage   from '@/features/newsletter/pages/AdminSubscribersPage';
@@ -34,6 +36,7 @@ import AdminSettingsPage      from '@/features/auth/pages/AdminSettingsPage';
 import AdminDataPage          from '@/features/dashboard/pages/AdminDataPage';
 import AdminBusinessPage      from '@/features/dashboard/pages/AdminBusinessPage';
 import AdminEventsPage        from '@/features/events/pages/AdminEventsPage';
+import AdminEventSettingsPage from '@/features/events/pages/AdminEventSettingsPage';
 import AdminSquareSettingsPage from '@/features/payments/pages/AdminSquareSettingsPage';
 import AdminSquarePaymentsPage from '@/features/payments/pages/AdminSquarePaymentsPage';
 import AdminStockPage         from '@/features/stock/pages/AdminStockPage';
@@ -83,15 +86,18 @@ export const router = createBrowserRouter([
       { index: true, element: <Navigate to={ROUTES.admin.dashboard} replace /> },
       { path: 'dashboard',  element: <DashboardPage /> },
       { path: 'products',   element: <AdminProductsPage /> },
+      { path: 'product-settings', element: <AdminProductSettingsPage /> },
       { path: 'ingredients', element: <AdminIngredientsPage /> },
       { path: 'recipes',    element: <AdminRecipesPage /> },
       { path: 'reviews',    element: <AdminReviewsPage /> },
       { path: 'blog',       element: <AdminBlogPage /> },
+      { path: 'blog-settings', element: <AdminBlogSettingsPage /> },
       { path: 'locations',  element: <AdminLocationsPage /> },
       { path: 'subscribers',element: <AdminSubscribersPage /> },
       { path: 'messages',   element: <AdminMessagesPage /> },
       { path: 'settings',   element: <AdminSettingsPage /> },
       { path: 'events',     element: <AdminEventsPage /> },
+      { path: 'event-settings', element: <AdminEventSettingsPage /> },
       { path: 'stock',      element: <AdminStockPage /> },
       { path: 'finance',    element: <AdminFinancePage /> },
       { path: 'business',   element: <AdminBusinessPage /> },

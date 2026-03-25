@@ -1,12 +1,16 @@
 import type { Product }    from '@/features/products/types/product.types';
+import { DEFAULT_PRODUCT_SETTINGS } from '@/features/products/types/product.types';
 import type { Review }     from '@/features/reviews/types/review.types';
 import type { BlogPost }   from '@/features/blog/types/blog.types';
+import { DEFAULT_BLOG_SETTINGS } from '@/features/blog/types/blog.types';
 import type { Location }   from '@/features/locations/types/location.types';
+import { DEFAULT_LOCATION_SETTINGS } from '@/features/locations/types/location.types';
 import type { Subscriber } from '@/features/newsletter/types/subscriber.types';
 import type { Message }    from '@/features/contact/types/message.types';
 import type { Activity }   from '@/features/dashboard/types/dashboard.types';
 import type { Settings }   from '@/features/auth/types/auth.types';
 import type { Event }         from '@/features/events/types/event.types';
+import { DEFAULT_EVENT_SETTINGS } from '@/features/events/types/event.types';
 import type { StockMovement } from '@/features/stock/types/stock.types';
 import type { Transaction }   from '@/features/finance/types/finance.types';
 import type { Ingredient } from '@/features/ingredients/types/ingredient.types';
@@ -18,11 +22,11 @@ const SUPA = 'https://gflkfwalfaeeknauxyig.supabase.co/storage/v1/object/public'
 export const SEED_PRODUCTS: Product[] = [
   {
     id: 'p1',
-    name: 'Soleil du Sahel',
+    name: 'Jus d\'Hibiscus & Gingembre',
     category: 'Jus',
     price: 9.00,
     formats: ['355ml', '1L'],
-    desc: "L'hibiscus rouge de Casamance rencontre le gingembre piquant et une touche de tamarin \u2014 chaque gorgée évoque les marchés animés du Sénégal.",
+    desc: "Hibiscus rouge de Casamance et gingembre frais bio — riche en antioxydants, anti-inflammatoire naturel, idéal pour la vitalité et l'immunité.",
     available: true,
     tag: 'Pressé à froid',
     img: `${SB}/products/soleil-du-sahel.jpg`,
@@ -30,11 +34,11 @@ export const SEED_PRODUCTS: Product[] = [
   },
   {
     id: 'p2',
-    name: 'Rivière Verte',
+    name: 'Jus Vert Détox',
     category: 'Jus',
     price: 10.00,
     formats: ['355ml', '1L'],
-    desc: "Concombre du Québec, épinard, pomme Cortland et menthe fraîche \u2014 une harmonie alpine légère, vive et profondément vivifiante.",
+    desc: "Concombre du Québec, épinard frais, pomme Cortland et menthe — un élixir de détox légère pour purifier, hydrater et retrouver votre énergie.",
     available: true,
     tag: '100% Naturel',
     img: `${SB}/products/riviere-verte.jpg`,
@@ -42,11 +46,11 @@ export const SEED_PRODUCTS: Product[] = [
   },
   {
     id: 'p3',
-    name: 'Fleur de Baobab',
+    name: 'Jus de Baobab & Mangue',
     category: 'Jus',
     price: 12.00,
     formats: ['355ml'],
-    desc: "La pulpe crèmeuse du baobab sacré mariée à la mangue Ataulfo et au curcuma doré \u2014 exotique, enveloppante et riche en vitamine C.",
+    desc: "Pulpe de baobab sacré, mangue Ataulfo et curcuma doré — exotique et crémeux, riche en vitamine C et en nutriments pour booster l'immunité.",
     available: true,
     tag: 'Boost Immunité',
     img: `${SB}/products/fleur-de-baobab.jpg`,
@@ -54,11 +58,11 @@ export const SEED_PRODUCTS: Product[] = [
   },
   {
     id: 'p4',
-    name: 'Nuit de Kinshasa',
+    name: 'Jus de Betterave & Hibiscus',
     category: 'Jus',
     price: 11.00,
     formats: ['355ml', '1L'],
-    desc: "Betterave pourpre, cassis sauvage et hibiscus \u2014 intense, mystérieux et envoûtant, riché en antioxydants naturels pour la récupération.",
+    desc: "Betterave pourpre, cassis sauvage et hibiscus — intense, riche en antioxydants naturels, parfait pour la récupération et la circulation sanguine.",
     available: true,
     tag: 'Sans sucre ajouté',
     img: `${SB}/products/nuit-de-kinshasa.jpg`,
@@ -66,11 +70,11 @@ export const SEED_PRODUCTS: Product[] = [
   },
   {
     id: 'p5',
-    name: 'Aurore Boréale',
+    name: 'Jus de Carotte & Orange',
     category: 'Jus',
     price: 9.00,
     formats: ['355ml', '1L'],
-    desc: "Carotte bio, orange sanguine et curcuma \u2014 une palette orangée et rose qui rappelle le ciel boréal à l'aube, riche en bêta-carotène.",
+    desc: "Carotte bio, orange sanguine et curcuma frais — riche en bêta-carotène et en vitamine C, un concentré de vitalité pour bien commencer la journée.",
     available: true,
     tag: 'Bio',
     img: `${SB}/products/aurore-boreale.jpg`,
@@ -78,7 +82,7 @@ export const SEED_PRODUCTS: Product[] = [
   },
   {
     id: 'p6',
-    name: 'Tam-Tam Tropical',
+    name: 'Jus d\'Ananas & Coco',
     category: 'Jus',
     price: 10.00,
     formats: ['355ml', '1L'],
@@ -90,7 +94,7 @@ export const SEED_PRODUCTS: Product[] = [
   },
   {
     id: 'p7',
-    name: 'Sage de la Savane',
+    name: 'Jus de Moringa',
     category: 'Jus',
     price: 13.00,
     formats: ['355ml'],
@@ -102,7 +106,7 @@ export const SEED_PRODUCTS: Product[] = [
   },
   {
     id: 'p8',
-    name: 'Feu Gnamakoudji',
+    name: 'Eau de Gingembre (Gnamakoudji)',
     category: 'Jus',
     price: 8.00,
     formats: ['60ml', '355ml'],
@@ -114,7 +118,7 @@ export const SEED_PRODUCTS: Product[] = [
   },
   {
     id: 'p9',
-    name: 'Calebasse Dorée',
+    name: 'Jus de Papaye & Ananas',
     category: 'Jus',
     price: 12.00,
     formats: ['355ml', '1L'],
@@ -126,7 +130,7 @@ export const SEED_PRODUCTS: Product[] = [
   },
   {
     id: 'p10',
-    name: 'Neige Rouge',
+    name: 'Jus de Canneberge & Fraises',
     category: 'Jus',
     price: 11.00,
     formats: ['355ml', '1L'],
@@ -263,7 +267,7 @@ export const SEED_BLOGS: BlogPost[] = [
   {
     id: 'b1',
     title: 'Le Bissap : bien plus qu\u2019une boisson, un trésor culturel d\u2019Afrique de l\u2019Ouest',
-    category: 'Héritage & Culture',
+    category: 'Notre Histoire',
     content: "Connu sous mille noms \u2014 zobo au Nigeria, sobolo au Ghana, karkadé en Égypte \u2014 le bissap est l\u2019un des jus les plus anciens et les plus riches du continent africain. Chez Les Jus Naturels Ben\u2019s, nous le pressons à froid pour préserver chacun de ses antioxydants naturels, sa couleur rouge cardinal et son goût floral incomparable.\n\nChaque fleur d\u2019hibiscus que nous utilisons provient de Casamance, au Sénégal, sélectionnée par des producteurs partenaires avec qui nous travaillons directement depuis la création de l\u2019atelier. C\u2019est cette traçabilité \u2014 du champ à la bouteille \u2014 qui donne au bissap Ben\u2019s son caractère unique.\n\nRiche en vitamine C, en anthocyanines et en polyphenôls, le bissap est reconnu par la recherche scientifique pour ses propriétés cardiovasculaires, son action sur la pression artérielle et sa capacité à neutraliser les radicaux libres. Mais au-delà de la science, c\u2019est un lien vivant avec l\u2019Afrique de l\u2019Ouest \u2014 une boisson de fête, de partage et de bienvenue.",
     published: true,
     date: '2026-01-20',
@@ -274,7 +278,7 @@ export const SEED_BLOGS: BlogPost[] = [
   {
     id: 'b2',
     title: 'Pourquoi la pression à froid change tout : la science derrière chaque bouteille',
-    category: 'Science & Nutrition',
+    category: 'Bienfaits et Astuces',
     content: "La pression à froid n\u2019est pas qu\u2019une tendance \u2014 c\u2019est une révolution dans la façon dont nous extrayons la vie des fruits et légumes. Sans chaleur, sans oxydation, sans compromis : les enzymes, vitamines et minéraux restent intacts du pressoir à vos lèvres.\n\nLa pasteurisation thermique, utilisée par la grande majorité des jus commerciaux, détruit jusqu\u2019à 70% des vitamines thermosensibles (vitamine C, folates, B6) et dénature la totalité des enzymes digestives. Le goût, la couleur et la valeur nutritionnelle en sont profondément affectés.\n\nNotreresse hydraulique à froid travaille à une pression de 6 000 bar sans dépasser 4\u00b0C. Le résultat : un jus vivant, dense en nutriments, avec une durée de conservation naturelle de 3 à 5 jours au réfrigérateur. Pas de conservateur. Pas de concentré. Juste la nature, aussi proche de l\u2019arbre que possible.",
     published: true,
     date: '2026-02-08',
@@ -296,14 +300,29 @@ export const SEED_BLOGS: BlogPost[] = [
 ];
 
 export const SEED_LOCATIONS: Location[] = [
-  { id: 'l1', name: 'Marché Jean-Talon',            address: '7070 Henri Julien, Montréal',     type: 'Marché',          active: true },
-  { id: 'l2', name: 'Épicerie Afro-Antillaise',      address: '3456 Boul. Décarie, Montréal',    type: 'Épicerie',        active: true },
-  { id: 'l3', name: 'Marché Atwater',                address: '138 Atwater, Montréal',           type: 'Marché',          active: true },
-  { id: 'l4', name: 'Café Bonsecours',               address: '3690 Rue Ontario E, Montréal',    type: 'Café',            active: true },
-  { id: 'l5', name: "Saveurs d'Afrique",             address: '4215 Rue Saint-Denis, Montréal',  type: 'Épicerie',        active: true },
-  { id: 'l6', name: 'Marché de Maisonneuve',         address: '4445 Rue Ontario E, Montréal',    type: 'Marché',          active: true },
-  { id: 'l7', name: 'Boutique Bio Plateau',          address: '4060 Rue Saint-Denis, Montréal',  type: 'Boutique bio',    active: true },
-  { id: 'l8', name: 'Studio Shakti Bien-Être',       address: '5160 Boul. Décarie, Montréal',    type: 'Studio bien-être', active: true },
+  /* ─── RIVE SUD ─── */
+  { id: 'l1',  name: 'Boucherie Marieville Inc',           address: '631 Rue Claude de rameau, MarieVille, QC J3M 1J7',          type: 'Partenaire Local', active: true, neighborhood: 'Marieville',    region: 'Rive Sud' },
+  { id: 'l2',  name: 'Boucherie du cap',                    address: '3575 Ch. de Chambly, Longueuil, QC J4L 4L8',                type: 'Partenaire Local', active: true, neighborhood: 'Longueuil',    region: 'Rive Sud' },
+  { id: 'l3',  name: 'Casier bleue',                        address: '1005 QC-112, Saint-Césaire, QC J0L 1T0',                    type: 'Partenaire Local', active: true, neighborhood: 'Saint-Césaire', region: 'Rive Sud' },
+  { id: 'l4',  name: 'Épicerie Africaine de la rive sud',   address: '265 Bd Sainte-Foy, Longueuil, QC J4J 1X1',                 type: 'Épicerie',          active: true, neighborhood: 'Longueuil',    region: 'Rive Sud' },
+  { id: 'l5',  name: 'Épicier du Centre-Ville (Marché Ami)',address: '1312 Rue des Cascades, Saint-Hyacinthe, QC J2S 4H4',        type: 'Marché',            active: true, neighborhood: 'Saint-Hyacinthe', region: 'Rive Sud' },
+  { id: 'l6',  name: 'Ferme Guyon',                         address: '1001 Rue Patrick Farrar, Chambly, QC J3L 4N7',              type: 'Partenaire Local', active: true, neighborhood: 'Chambly',      region: 'Rive Sud' },
+  { id: 'l7',  name: 'Garage Lafinesse',                    address: '3785 Taschereau Blvd, Saint-Hubert, Québec J4T 2G4',        type: 'Partenaire Local', active: true, neighborhood: 'Saint-Hubert', region: 'Rive Sud' },
+  { id: 'l8',  name: 'Kohinoor',                             address: '3805 boulevard Taschereau, Saint-Hubert, Québec J4T 2G4',   type: 'Partenaire Local', active: true, neighborhood: 'Saint-Hubert', region: 'Rive Sud' },
+  { id: 'l9',  name: 'Marché des délices du monde',         address: '1218 Rue du Pont, Marieville, QC J3M 1G2',                  type: 'Marché',            active: true, neighborhood: 'Marieville',    region: 'Rive Sud' },
+  { id: 'l10', name: 'Marché HK',                           address: '899 Boulevard Curé-Poirier O, Longueuil, QC J4K 2C5',        type: 'Marché',            active: true, neighborhood: 'Longueuil',    region: 'Rive Sud' },
+  { id: 'l11', name: 'Pâtisserie Brossard',                 address: '3250 Boul. de Rome, Brossard, QC J4Y 1V9',                  type: 'Partenaire Local', active: true, neighborhood: 'Brossard',     region: 'Rive Sud' },
+  { id: 'l12', name: 'Alexpress',                           address: '4105 Boul. Sir Wilfrid Laurier, Saint-Hubert, QC J3Y 3X3',   type: 'Partenaire Local', active: true, neighborhood: 'Saint-Hubert', region: 'Rive Sud' },
+
+  /* ─── MONTRÉAL & ENVIRONS ─── */
+  { id: 'l13', name: 'Épicerie Africaine & Caribéenne Lovaf', address: '395a Bd Cartier O, Laval, QC H7N 2K8',                     type: 'Épicerie',          active: true, neighborhood: 'Laval',        region: 'Montreal' },
+  { id: 'l14', name: 'Le souk',                               address: '267 Rue Principale, Granby, QC J2G 2W1',                    type: 'Partenaire Local', active: true, neighborhood: 'Granby',       region: 'Montreal' },
+  { id: 'l15', name: 'Marche al-Radji',                       address: '2557 Rue Centre, Montréal, QC H3K 1J9',                    type: 'Marché',            active: true, neighborhood: 'Montréal',    region: 'Montreal' },
+  { id: 'l16', name: 'Marché Ikase',                          address: '2040 Rue La pierre, Lasalle, QC H8N 1B1',                   type: 'Marché',            active: true, neighborhood: 'Lasalle',      region: 'Montreal' },
+  { id: 'l17', name: "Nourriture d'Afrique Montréal",       address: '9465 Rue Charles-de-La Tour, Montréal, QC H4N 1M5',         type: 'Épicerie',          active: true, neighborhood: 'Montréal',    region: 'Montreal' },
+  { id: 'l18', name: 'Orange coco',                           address: '177 Rue Empire, Granby, QC J2G 3B3',                        type: 'Partenaire Local', active: true, neighborhood: 'Granby',       region: 'Montreal' },
+  { id: 'l19', name: 'Resto Flap Flap',                       address: '5808 Rue de Charleroi, Montréal-Nord, QC H1G 3B2',          type: 'Restaurant',        active: true, neighborhood: 'Montréal-Nord', region: 'Montreal' },
+  { id: 'l20', name: 'Marche Fleur du Soleil',                address: '5047 Rue de Charleroi, Montréal-Nord, QC H1G 2Z6',          type: 'Marché',            active: true, neighborhood: 'Montréal-Nord', region: 'Montreal' },
 ];
 
 export const SEED_INGREDIENTS: Ingredient[] = [
@@ -382,6 +401,11 @@ export const SEED_ACTIVITY: Activity[] = [
   { id: 'a4', action: 'Article publié',   detail: 'Le Bissap : trésor culturel',                date: '2026-03-04T16:45:00', type: 'blog'     },
   { id: 'a5', action: 'Point de vente ajouté', detail: 'Marché Atwater ajouté',            date: '2026-03-05T11:20:00', type: 'location' },
 ];
+
+export const SEED_PRODUCT_SETTINGS = DEFAULT_PRODUCT_SETTINGS;
+export const SEED_BLOG_SETTINGS = DEFAULT_BLOG_SETTINGS;
+export const SEED_EVENT_SETTINGS = DEFAULT_EVENT_SETTINGS;
+export const SEED_LOCATION_SETTINGS = DEFAULT_LOCATION_SETTINGS;
 
 export const SEED_EVENTS: Event[] = [
   {

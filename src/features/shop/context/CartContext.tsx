@@ -29,14 +29,30 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        setCart(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to load cart:', e);
+    const loadCart = () => {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setCart(parsed);
+        } catch (e) {
+          console.error('Failed to load cart:', e);
+          // Reset to empty cart on error
+          setCart({
+            items: [],
+            subtotal: 0,
+            taxRate: TAX_RATE,
+            taxes: 0,
+            shippingCost: 0,
+            total: 0,
+          });
+        }
       }
-    }
+    };
+    loadCart();
+    // Also listen for storage changes from other tabs
+    window.addEventListener('storage', loadCart);
+    return () => window.removeEventListener('storage', loadCart);
   }, []);
 
   // Calculate cart totals

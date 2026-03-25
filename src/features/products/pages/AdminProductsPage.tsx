@@ -15,9 +15,10 @@ export default function AdminProductsPage() {
   const handleSave = (formData: ProductFormState) => {
     const data: Omit<Product, 'id'> = {
       ...formData,
-      price:   parseFloat(formData.price) || 0,
-      formats: formData.formats.split(',').map(f => f.trim()).filter(Boolean),
-      color:   '#c44536',
+      price:       parseFloat(formData.price) || 0,
+      formats:     formData.formats.filter(Boolean),
+      color:       formData.color || '#c44536',
+      ingredients: formData.ingredients.filter(Boolean),
     };
     if (editing === 'new') {
       const newProduct = { ...data, id: 'p' + Date.now() };

@@ -6,11 +6,10 @@ import { Icon } from '@/shared/ui/Icon';
 import { uploadImage } from '@/lib/api/http-client';
 import type { BlogPost, BlogFormState } from '../types/blog.types';
 
-const CATEGORIES = ['Sante', 'Recettes', 'Actualites', 'Conseils', 'Traditions', 'Nutrition'];
-const EMPTY_FORM: BlogFormState = { title: '', category: 'Sante', content: '', published: false, img: '', tags: '', contentType: 'article' };
-
 export default function AdminBlogPage() {
-  const { blogs, updateBlogs, logActivity } = useData();
+  const { blogs, updateBlogs, logActivity, blogSettings } = useData();
+  const CATEGORIES = blogSettings.categories;
+  const EMPTY_FORM: BlogFormState = { title: '', category: CATEGORIES[0] || 'Sante', content: '', published: false, img: '', tags: '', contentType: 'article' };
   const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState<BlogFormState>(EMPTY_FORM);
   const [uploading, setUploading] = useState(false);

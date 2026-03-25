@@ -19,17 +19,21 @@ const SECTIONS = [
     title: 'Catalogue',
     items: [
       { route: ROUTES.admin.products, label: 'Produits', icon: 'grid' },
+      { route: '/admin/product-settings', label: 'Config. Produits', icon: 'settings' },
       { route: ROUTES.admin.ingredients, label: 'Ingredients', icon: 'shop' },
       { route: '/admin/recipes', label: 'Recettes', icon: 'grid' },
       { route: ROUTES.admin.blog, label: 'Blogue', icon: 'edit' },
+      { route: ROUTES.admin.blogSettings, label: 'Config. Blogue', icon: 'settings' },
     ],
   },
   {
     title: 'Evenements & Clients',
     items: [
       { route: ROUTES.admin.events, label: 'Evenements', icon: 'calendar' },
+      { route: ROUTES.admin.eventSettings, label: 'Config. Evenements', icon: 'settings' },
       { route: ROUTES.admin.reviews, label: 'Avis clients', icon: 'star' },
       { route: ROUTES.admin.locations, label: 'Points de vente', icon: 'map' },
+      { route: ROUTES.admin.locationSettings, label: 'Config. Points de vente', icon: 'settings' },
     ],
   },
   {

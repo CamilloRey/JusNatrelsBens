@@ -37,3 +37,13 @@ export interface EventFormState {
   attendanceEnabled: boolean;
   maxAttendees: number;
 }
+
+export interface EventSettings {
+  id: string; // "event-settings"
+  types: string[];
+}
+
+export const DEFAULT_EVENT_SETTINGS: EventSettings = {
+  id: 'event-settings',
+  types: ['Marche', 'Festival', 'Degustation', 'Atelier', 'Autre'],
+};

@@ -6,9 +6,6 @@ import { Icon } from '@/shared/ui/Icon';
 import { uploadImage } from '@/lib/api/http-client';
 import type { Event, EventFormState, AttendanceRequest } from '../types/event.types';
 
-const EMPTY: EventFormState = { title: '', description: '', date: '', time: '', location: '', address: '', type: 'Marche', active: true, img: '', attendanceEnabled: false, maxAttendees: 0 };
-const TYPES = ['Marche', 'Festival', 'Degustation', 'Atelier', 'Autre'];
-
 const STATUS_COLORS = {
   pending: { bg: '#fef3c7', fg: '#92400e', label: 'En attente' },
   approved: { bg: '#dcfce7', fg: '#166534', label: 'Approuve' },
@@ -16,7 +13,9 @@ const STATUS_COLORS = {
 };
 
 export default function AdminEventsPage() {
-  const { events, updateEvents, logActivity } = useData();
+  const { events, updateEvents, logActivity, eventSettings } = useData();
+  const TYPES = eventSettings.types;
+  const EMPTY: EventFormState = { title: '', description: '', date: '', time: '', location: '', address: '', type: TYPES[0] || 'Marche', active: true, img: '', attendanceEnabled: false, maxAttendees: 0 };
   const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState<EventFormState>(EMPTY);
   const [uploading, setUploading] = useState(false);

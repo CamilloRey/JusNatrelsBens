@@ -12,19 +12,19 @@ const FONT_BODY     = "'Plus Jakarta Sans', sans-serif";
 const MAX_W         = 1440;
 const SECTION_PY    = 112;
 const SECTION_PX    = 'clamp(24px, 5vw, 80px)';
-const GOLD          = '#d4a853';
+const GOLD          = '#E07A20';
 
 const C = {
-  primary:             '#032416',
-  primaryContainer:    '#1a3a2a',
-  secondary:           '#7b5804',
-  secondaryContainer:  '#fdcd74',
-  surface:             '#fef9ef',
-  surfaceContainerLow: '#f8f3e9',
-  surfaceContainer:    '#f2ede3',
-  onSurface:           '#1d1c16',
-  onSurfaceVariant:    '#424843',
-  onTertiaryContainer: '#f37b32',
+  primary:             '#1B4D38',
+  primaryContainer:    '#2B6A4F',
+  secondary:           '#A85010',
+  secondaryContainer:  '#FFD4A0',
+  surface:             '#F5FBF7',
+  surfaceContainerLow: '#EAF3EC',
+  surfaceContainer:    '#DDE9E0',
+  onSurface:           '#1a2e22',
+  onSurfaceVariant:    '#3d5248',
+  onTertiaryContainer: '#E07A20',
 };
 
 const SUPA = 'https://gflkfwalfaeeknauxyig.supabase.co/storage/v1/object/public';
@@ -58,16 +58,36 @@ function GoldBar() {
   );
 }
 
+/* SVG wave divider — fills from dark/color above to white/surface below */
+function WaveDivider({ topColor, bottomColor }: { topColor: string; bottomColor: string }) {
+  return (
+    <div style={{ display: 'block', lineHeight: 0, background: bottomColor }}>
+      <svg
+        viewBox="0 0 1440 80"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none"
+        style={{ width: '100%', height: 80, display: 'block' }}
+      >
+        <path
+          d="M0,40 C180,80 360,0 540,40 C720,80 900,0 1080,40 C1260,80 1440,20 1440,20 L1440,0 L0,0 Z"
+          fill={topColor}
+        />
+      </svg>
+    </div>
+  );
+}
+
 /* ──────────────────────────────────────────────────────────
    PAGE
 ────────────────────────────────────────────────────────── */
 export default function HomePage() {
-  const { products, reviews, locations, subscribers, updateSubscribers } = useData();
+  const { products, reviews, locations, subscribers, updateSubscribers, locationSettings } = useData();
   const navigate = useNavigate();
 
   const [email, setEmail]       = useState('');
   const [subDone, setSubDone]   = useState(false);
-  const [reviewIdx, setReviewIdx] = useState(0);
+  const [reviewIdx, setReviewIdx]   = useState(0);
+  const [regionFilter, setRegionFilter] = useState('Tous');
   const reviewIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const handleSub = () => {
@@ -93,7 +113,7 @@ export default function HomePage() {
     [reviews],
   );
 
-  /* Auto-scroll carousel every 4s */
+  /* Auto-scroll reviews carousel every 4s */
   useEffect(() => {
     if (approvedReviews.length <= 3) return;
     reviewIntervalRef.current = setInterval(() => {
@@ -109,27 +129,101 @@ export default function HomePage() {
     [locations],
   );
 
+  const filteredLocations = useMemo(
+    () => (regionFilter === 'Tous'
+      ? activeLocations
+      : activeLocations.filter((l) => (l.region ?? 'Montreal') === regionFilter)),
+    [activeLocations, regionFilter],
+  );
+
+  const regionOptions = useMemo(
+    () => ['Tous', ...locationSettings.regions],
+    [locationSettings.regions],
+  );
+
+  const locationsByRegion = useMemo(
+    () => {
+      const grouped = filteredLocations.reduce((acc, loc) => {
+        const region = loc.region || 'Autre';
+        if (!acc[region]) acc[region] = [];
+        acc[region].push(loc);
+        return acc;
+      }, {} as Record<string, typeof filteredLocations>);
+
+      const regionEntries = Object.entries(grouped);
+      const selected: typeof filteredLocations = [];
+      let index = 0;
+
+      while (selected.length < 8) {
+        let added = false;
+        for (const [, items] of regionEntries) {
+          if (items[index]) {
+            selected.push(items[index]);
+            added = true;
+            if (selected.length === 8) break;
+          }
+        }
+        if (!added) break;
+        index += 1;
+      }
+
+      const groupedSelected = selected.reduce((acc, loc) => {
+        const region = loc.region || 'Autre';
+        if (!acc[region]) acc[region] = [];
+        acc[region].push(loc);
+        return acc;
+      }, {} as Record<string, typeof selected>);
+
+      return Object.entries(groupedSelected).map(([region, items]) => ({
+        region,
+        locations: items,
+      }));
+    },
+    [filteredLocations],
+  );
+
+
   /* ── Category cards data ── */
   const categories = [
     {
-      name:  'Jus',
-      img:   `${SUPA}/collection/jus-hibiscus-gingembre.jpg`,
-      desc:  'Hibiscus, gingembre, ananas — pressés à froid, sans compromis sur la nature',
+      name:    'Jus',
+      img:     `${SUPA}/collection/jus-hibiscus-gingembre.jpg`,
+      desc:    'Pressés à froid pour préserver enzymes et vitalité — énergie naturelle, sans sucre ajouté',
+      anchor:  '#jus',
+      bg:      '#D1FAE5',
+      accent:  '#065F46',
+      pill:    '#A7F3D0',
+      emoji:   '🥤',
     },
     {
-      name:  'Tisanes',
-      img:   `${SUPA}/collection/banniere-fruits-exotiques.png`,
-      desc:  'Plantes séchées à la main, infusées lentement pour libérer tous leurs bienfaits',
+      name:    'Tisanes',
+      img:     `${SUPA}/collection/banniere-fruits-exotiques.png`,
+      desc:    'Plantes africaines et québécoises pour apaiser, détoxifier et retrouver votre équilibre',
+      anchor:  '#tisanes',
+      bg:      '#FEF9C3',
+      accent:  '#92400E',
+      pill:    '#FDE68A',
+      emoji:   '🌿',
     },
     {
-      name:  'Sirops',
-      img:   `${SUPA}/collection/sirop-hibiscus-gingembre.jpg`,
-      desc:  "L'essence pure du fruit concentrée en quelques gouttes. Vivant, authentique",
+      name:    'Sirops',
+      img:     `${SUPA}/collection/sirop-hibiscus-gingembre.jpg`,
+      desc:    "Concentrés de bien-être — quelques gouttes suffisent pour transformer votre journée",
+      anchor:  '#sirops',
+      bg:      '#FCE7F3',
+      accent:  '#831843',
+      pill:    '#FBCFE8',
+      emoji:   '🌺',
     },
     {
-      name:  'Poudres',
-      img:   `${SUPA}/collection/poudre-gingembre.jpg`,
-      desc:  "Gingembre, hibiscus, baobab — récoltés à la main, séchés naturellement",
+      name:    'Poudres',
+      img:     `${SUPA}/collection/poudre-gingembre.jpg`,
+      desc:    "Superaliments en poudre — gingembre, hibiscus, baobab — pour nourrir votre corps en profondeur",
+      anchor:  '#poudres',
+      bg:      '#FED7AA',
+      accent:  '#7C2D12',
+      pill:    '#FDBA74',
+      emoji:   '✨',
     },
   ];
 
@@ -137,7 +231,7 @@ export default function HomePage() {
     <div style={{ fontFamily: FONT_BODY, color: C.onSurface, background: C.surface }}>
       <SEO
         title="Accueil"
-        description="Jus pressés à froid artisanaux, inspirés de l'Afrique de l'Ouest et du Québec. Sans sucre ajouté, pressés à la main à Montréal."
+        description="Élixirs de bien-être nés entre l'Afrique et le Québec. Pressés à froid, sans sucre ajouté — pour nourrir votre corps et éveiller vos sens."
         url="https://lesjusnaturelsbens.com/"
       />
       <StructuredData type="Organization" data={organizationSchema} />
@@ -197,7 +291,7 @@ export default function HomePage() {
               lineHeight:   1.1,
               marginBottom: 24,
             }}>
-              Pressés à froid.<br />Nés de deux continents.
+              Nés entre l'Afrique<br />et le Québec.
             </h1>
 
             <p style={{
@@ -206,7 +300,7 @@ export default function HomePage() {
               lineHeight:   1.8,
               marginBottom: 44,
             }}>
-              Des jus artisanaux qui portent en eux l'Afrique de l'Ouest et le Québec — pressés dans notre atelier montréalais, sans compromis sur la nature.
+              Des élixirs de bien-être pressés à froid — pour nourrir votre corps, éveiller vos sens et vous reconnecter à la nature au quotidien.
             </p>
 
             {/* CTAs */}
@@ -278,12 +372,28 @@ export default function HomePage() {
         <style>{`@keyframes heroBounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }`}</style>
       </section>
 
+      {/* Wave hero → section 2 */}
+      <WaveDivider topColor={C.primary} bottomColor={C.surfaceContainerLow} />
+
       {/* ═══════════ 2. L'UNIVERS BEN'S ═══════════ */}
       <section style={{
         background: C.surfaceContainerLow,
         overflow:   'hidden',
+        position:   'relative',
       }}>
+        {/* Subtle dot-grid background */}
         <div style={{
+          position:      'absolute',
+          inset:         0,
+          backgroundImage: `radial-gradient(circle, rgba(43,106,79,0.09) 1px, transparent 1px)`,
+          backgroundSize: '28px 28px',
+          pointerEvents: 'none',
+          zIndex:        0,
+        }} />
+
+        <div style={{
+          position: 'relative',
+          zIndex:   1,
           maxWidth: MAX_W,
           margin:   '0 auto',
           padding:  `${SECTION_PY}px ${SECTION_PX}`,
@@ -294,85 +404,234 @@ export default function HomePage() {
         }}>
           {/* Left — text */}
           <div>
-            <Overline color={C.onTertiaryContainer}>Bienvenue dans l'univers Ben's</Overline>
+            {/* Gold pill badge — premium */}
+            <span style={{
+              display:       'inline-flex',
+              alignItems:    'center',
+              gap:           8,
+              background:    'rgba(212,168,83,0.14)',
+              border:        '1px solid rgba(212,168,83,0.45)',
+              color:         C.secondary,
+              fontFamily:    FONT_BODY,
+              fontSize:      11,
+              fontWeight:    700,
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase' as const,
+              padding:       '7px 20px',
+              borderRadius:  9999,
+              marginBottom:  28,
+            }}>
+              ✦ L'univers Ben's
+            </span>
+
             <h2 style={{
               fontFamily:   FONT_HEADLINE,
-              fontSize:     'clamp(1.9rem, 4vw, 2.75rem)',
+              fontSize:     'clamp(2rem, 4vw, 3rem)',
               fontWeight:   700,
-              color:        C.onSurface,
-              marginBottom: 20,
-              lineHeight:   1.2,
+              color:        C.primary,
+              marginBottom: 8,
+              lineHeight:   1.15,
             }}>
-              Deux continents. Une bouteille. Aucun compromis.
+              L'univers des Jus Ben's
             </h2>
+            <h2 style={{
+              fontFamily:   FONT_HEADLINE,
+              fontSize:     'clamp(1.4rem, 2.5vw, 1.9rem)',
+              fontWeight:   600,
+              fontStyle:    'italic',
+              color:        C.onSurfaceVariant,
+              marginBottom: 28,
+              lineHeight:   1.3,
+            }}>
+              Un voyage au cœur des saveurs vibrantes.
+            </h2>
+
             <GoldBar />
+
+            <p style={{
+              color:        C.onSurfaceVariant,
+              fontSize:     '1.05rem',
+              lineHeight:   1.85,
+              marginBottom: 20,
+              maxWidth:     480,
+            }}>
+              Produits à partir des fruits cultivés localement, les Jus Ben's sont une explosion de saveurs naturelles, sans sucre ajouté ni conservateurs.
+            </p>
             <p style={{
               color:        C.onSurfaceVariant,
               fontSize:     '1rem',
-              lineHeight:   1.85,
+              lineHeight:   1.8,
               marginBottom: 32,
+              maxWidth:     480,
             }}>
-              Les Jus Naturels Ben's, c'est l'Afrique de l'Ouest qui rencontre le Québec dans chaque gorgée. Bissap de Casamance, gingembre de Guinée, mangue Ataulfo du Mexique — sélectionnés avec soin, pressés à la main dans notre atelier montréalais, sans sucre ajouté ni conservateurs.
+              Que vous exploriez des goûts exotiques ou recherchiez des options saines, nos jus sont le choix idéal pour partager avec votre famille.
             </p>
 
-            {/* Value pills */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 36 }}>
-              {['100% Naturel', 'Pressé à froid', 'Écoresponsable', 'Ancrage local'].map((pill) => (
-                <span key={pill} style={{
-                  background:    C.surfaceContainer,
-                  color:         C.primaryContainer,
-                  fontFamily:    FONT_BODY,
-                  fontSize:      '0.82rem',
-                  fontWeight:    600,
-                  padding:       '7px 18px',
-                  borderRadius:  9999,
-                  border:        `1px solid rgba(3,36,22,0.12)`,
+            {/* Stats — petites cartes */}
+            <div style={{ display: 'flex', gap: 12, marginBottom: 36, flexWrap: 'wrap' }}>
+              {[
+                { num: '100%',  label: 'Naturel',        icon: '🍃', bg: '#D1FAE5', accent: '#065F46' },
+                { num: '20+',   label: 'Produits',        icon: '🥭', bg: '#FEF9C3', accent: '#92400E' },
+                { num: '0',     label: 'Sucre ajouté',    icon: '🌺',  bg: '#FCE7F3', accent: '#831843' },
+              ].map((s) => (
+                <div key={s.label} style={{
+                  background:    s.bg,
+                  border:        `1.5px solid ${s.accent}22`,
+                  borderRadius:  16,
+                  padding:       '14px 18px',
+                  display:       'flex',
+                  alignItems:    'center',
+                  gap:           12,
+                  flex:          '1 1 0',
+                  minWidth:      120,
                 }}>
-                  {pill}
-                </span>
+                  <span style={{ fontSize: '1.4rem', lineHeight: 1 }}>{s.icon}</span>
+                  <div>
+                    <p style={{
+                      fontFamily: FONT_HEADLINE,
+                      fontSize:   '1.5rem',
+                      fontWeight: 700,
+                      color:      s.accent,
+                      margin:     0,
+                      lineHeight: 1,
+                    }}>
+                      {s.num}
+                    </p>
+                    <p style={{
+                      fontFamily: FONT_BODY,
+                      fontSize:   '0.72rem',
+                      fontWeight: 600,
+                      color:      s.accent + 'bb',
+                      margin:     '3px 0 0',
+                      letterSpacing: '0.03em',
+                    }}>
+                      {s.label}
+                    </p>
+                  </div>
+                </div>
               ))}
             </div>
 
+            {/* CTA — filled gold */}
             <button
               type="button"
               onClick={() => navigate(ROUTES.about)}
               style={{
-                background:   'transparent',
-                color:        C.primaryContainer,
+                background:   GOLD,
+                color:        C.primary,
                 fontFamily:   FONT_BODY,
-                fontSize:     '1rem',
+                fontSize:     '0.95rem',
                 fontWeight:   700,
-                padding:      '14px 32px',
+                padding:      '15px 36px',
                 borderRadius: 9999,
-                border:       `2px solid ${C.primaryContainer}`,
+                border:       'none',
                 cursor:       'pointer',
-                transition:   'background 0.25s, color 0.25s',
+                transition:   'transform 0.2s, box-shadow 0.2s',
+                letterSpacing: '0.02em',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = C.primaryContainer;
-                e.currentTarget.style.color      = '#ffffff';
+                e.currentTarget.style.transform  = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow  = '0 8px 24px rgba(212,168,83,0.4)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent';
-                e.currentTarget.style.color      = C.primaryContainer;
+                e.currentTarget.style.transform  = 'translateY(0)';
+                e.currentTarget.style.boxShadow  = 'none';
               }}
             >
-              Notre histoire
+              Découvrir notre histoire →
             </button>
           </div>
 
-          {/* Right — photo */}
-          <div style={{
-            backgroundImage:    `url(${SUPA}/atelier/atelier-fruits.jpg)`,
-            backgroundSize:     'cover',
-            backgroundPosition: 'center',
-            borderRadius:       '2rem',
-            aspectRatio:        '4/5',
-            overflow:           'hidden',
-            boxShadow:          '0 24px 64px rgba(3,36,22,0.14)',
-          }} />
+          {/* Right — photo with floating card */}
+          <div style={{ position: 'relative' }}>
+            {/* Decorative background blob */}
+            <div style={{
+              position:     'absolute',
+              top:          -24,
+              right:        -24,
+              width:        '85%',
+              height:       '85%',
+              borderRadius: '40% 20% 40% 20%',
+              background:   `linear-gradient(135deg, rgba(212,168,83,0.18) 0%, rgba(3,36,22,0.08) 100%)`,
+              zIndex:       0,
+            }} />
+
+            {/* Main photo */}
+            <div style={{
+              backgroundImage:    `url(${SUPA}/atelier/atelier-fruits.jpg)`,
+              backgroundSize:     'cover',
+              backgroundPosition: 'center',
+              borderRadius:       '2.5rem 0.75rem 2.5rem 0.75rem',
+              aspectRatio:        '4/5',
+              overflow:           'hidden',
+              boxShadow:          '0 32px 80px rgba(3,36,22,0.18)',
+              position:           'relative',
+              zIndex:             1,
+            }} />
+
+            {/* Floating stat card — bottom left */}
+            <div style={{
+              position:     'absolute',
+              bottom:       28,
+              left:         -28,
+              zIndex:       2,
+              background:   '#ffffff',
+              borderRadius: 20,
+              padding:      '18px 24px',
+              boxShadow:    '0 12px 40px rgba(3,36,22,0.18)',
+              display:      'flex',
+              alignItems:   'center',
+              gap:          14,
+              minWidth:     200,
+            }}>
+              <div style={{
+                width:          48,
+                height:         48,
+                borderRadius:   '50%',
+                background:     'linear-gradient(135deg, #D1FAE5, #A7F3D0)',
+                display:        'flex',
+                alignItems:     'center',
+                justifyContent: 'center',
+                fontSize:       '1.4rem',
+                flexShrink:     0,
+              }}>
+                🌿
+              </div>
+              <div>
+                <p style={{ fontFamily: FONT_HEADLINE, fontWeight: 700, color: C.primary, margin: 0, fontSize: '0.95rem' }}>
+                  Pressé à froid
+                </p>
+                <p style={{ fontFamily: FONT_BODY, fontSize: '0.75rem', color: C.onSurfaceVariant, margin: '2px 0 0' }}>
+                  100% enzymes préservées
+                </p>
+              </div>
+            </div>
+
+            {/* Floating badge — top right */}
+            <div style={{
+              position:     'absolute',
+              top:          20,
+              right:        -20,
+              zIndex:       2,
+              background:   C.primaryContainer,
+              borderRadius: 16,
+              padding:      '12px 18px',
+              boxShadow:    '0 8px 28px rgba(3,36,22,0.22)',
+              textAlign:    'center',
+            }}>
+              <p style={{ fontFamily: FONT_HEADLINE, fontSize: '1.4rem', fontWeight: 700, color: GOLD, margin: 0, lineHeight: 1 }}>
+                ✦
+              </p>
+              <p style={{ fontFamily: FONT_BODY, fontSize: '0.7rem', fontWeight: 700, color: '#ffffff', margin: '4px 0 0', letterSpacing: '0.08em', textTransform: 'uppercase' as const }}>
+                Artisanal
+              </p>
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* Wave section 2 → section 3 */}
+      <WaveDivider topColor={C.surfaceContainerLow} bottomColor="#ffffff" />
 
       {/* ═══════════ 3. 4 CATÉGORIES ═══════════ */}
       <section style={{
@@ -398,73 +657,94 @@ export default function HomePage() {
           <div style={{
             display:             'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
-            gap:                 24,
+            gap:                 20,
           }}>
             {categories.map((cat) => (
               <div
                 key={cat.name}
-                onClick={() => navigate(ROUTES.products)}
+                onClick={() => navigate(ROUTES.products + (cat.anchor ?? ''))}
                 style={{
-                  height:           420,
-                  overflow:         'hidden',
-                  borderRadius:     '1.5rem',
-                  position:         'relative',
-                  cursor:           'pointer',
-                  backgroundImage:  `url(${cat.img})`,
-                  backgroundSize:   'cover',
-                  backgroundPosition: 'center',
-                  transition:       'transform 0.4s ease',
+                  background:    cat.bg,
+                  borderRadius:  '2rem',
+                  overflow:      'hidden',
+                  cursor:        'pointer',
+                  display:       'flex',
+                  flexDirection: 'column',
+                  transition:    'transform 0.35s ease, box-shadow 0.35s ease',
+                  boxShadow:     '0 4px 24px rgba(0,0,0,0.06)',
+                  position:      'relative',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundSize = 'cover';
-                  const img = e.currentTarget;
-                  img.style.transform = 'scale(1.03)';
-                  const inner = img.querySelector('.cat-img-inner') as HTMLElement | null;
-                  if (inner) inner.style.transform = 'scale(1.06)';
+                  e.currentTarget.style.transform  = 'translateY(-8px)';
+                  e.currentTarget.style.boxShadow  = '0 20px 48px rgba(0,0,0,0.14)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                  const inner = e.currentTarget.querySelector('.cat-img-inner') as HTMLElement | null;
-                  if (inner) inner.style.transform = 'scale(1)';
+                  e.currentTarget.style.transform  = 'translateY(0)';
+                  e.currentTarget.style.boxShadow  = '0 4px 24px rgba(0,0,0,0.06)';
                 }}
               >
-                {/* Dark gradient overlay */}
+                {/* Category pill */}
+                <div style={{ padding: '20px 20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{
+                    background:    cat.pill,
+                    color:         cat.accent,
+                    fontSize:      11,
+                    fontWeight:    700,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase' as const,
+                    padding:       '5px 14px',
+                    borderRadius:  9999,
+                    fontFamily:    FONT_BODY,
+                  }}>
+                    {cat.emoji} {cat.name}
+                  </span>
+                </div>
+
+                {/* Image block — featured, prominent */}
                 <div style={{
-                  position:   'absolute',
-                  inset:      0,
-                  background: 'linear-gradient(to top, rgba(3,36,22,0.9) 0%, transparent 55%)',
-                  zIndex:     1,
+                  flex:               1,
+                  backgroundImage:    `url(${cat.img})`,
+                  backgroundSize:     'cover',
+                  backgroundPosition: 'center',
+                  borderRadius:       '1.5rem',
+                  margin:             '16px',
+                  minHeight:          240,
+                  transition:         'transform 0.4s ease',
                 }} />
 
-                {/* Bottom-left text */}
-                <div style={{
-                  position: 'absolute',
-                  bottom:   28,
-                  left:     24,
-                  right:    24,
-                  zIndex:   2,
-                }}>
+                {/* Text + CTA */}
+                <div style={{ padding: '4px 20px 24px' }}>
                   <h3 style={{
                     fontFamily:   FONT_HEADLINE,
-                    fontSize:     '1.5rem',
+                    fontSize:     '1.35rem',
                     fontWeight:   700,
-                    color:        '#ffffff',
+                    color:        cat.accent,
                     marginBottom: 6,
+                    lineHeight:   1.2,
                   }}>
                     {cat.name}
                   </h3>
                   <p style={{
-                    fontSize:     '0.82rem',
-                    color:        'rgba(255,255,255,0.8)',
-                    lineHeight:   1.5,
-                    marginBottom: 10,
+                    fontSize:     '0.8rem',
+                    color:        cat.accent + 'bb',
+                    lineHeight:   1.55,
+                    marginBottom: 16,
+                    fontFamily:   FONT_BODY,
                   }}>
                     {cat.desc}
                   </p>
                   <span style={{
-                    color:      GOLD,
-                    fontSize:   '0.88rem',
-                    fontWeight: 700,
+                    display:       'inline-flex',
+                    alignItems:    'center',
+                    gap:           6,
+                    background:    cat.accent,
+                    color:         '#ffffff',
+                    fontFamily:    FONT_BODY,
+                    fontSize:      12,
+                    fontWeight:    700,
+                    letterSpacing: '0.06em',
+                    padding:       '9px 20px',
+                    borderRadius:  9999,
                   }}>
                     Découvrir →
                   </span>
@@ -474,6 +754,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Wave section 3 → section 4 */}
+      <WaveDivider topColor="#ffffff" bottomColor={C.surfaceContainerLow} />
 
       {/* ═══════════ 4. ÉLIXIRS SIGNATURE ═══════════ */}
       {featuredProducts.length > 0 && (
@@ -513,6 +796,14 @@ export default function HomePage() {
               marginBottom:        32,
             }}>
               {featuredProducts.map((p) => {
+                const catColorMap: Record<string, { bg: string; imgBg: string; accent: string }> = {
+                  'Jus':      { bg: '#ffffff', imgBg: '#D1FAE5', accent: '#065F46' },
+                  'Tisanes':  { bg: '#ffffff', imgBg: '#FEF9C3', accent: '#92400E' },
+                  'Sirops':   { bg: '#ffffff', imgBg: '#FCE7F3', accent: '#831843' },
+                  'Poudres':  { bg: '#ffffff', imgBg: '#FED7AA', accent: '#7C2D12' },
+                };
+                const catTheme = catColorMap[p.category] ?? { bg: '#ffffff', imgBg: C.surfaceContainerLow, accent: C.primary };
+
                 const tagColors: Record<string, { bg: string; text: string }> = {
                   'Pressé à froid': { bg: C.secondaryContainer, text: C.secondary },
                   '100% Naturel':   { bg: 'rgba(26,58,42,0.12)', text: '#1a5e3a' },
@@ -524,18 +815,21 @@ export default function HomePage() {
                 return (
                   <article
                     key={p.id}
+                    onClick={() => navigate(ROUTES.product(p.id))}
                     style={{
-                      background:   '#ffffff',
-                      borderRadius: '1.25rem',
+                      background:   catTheme.bg,
+                      borderRadius: '1.5rem',
                       overflow:     'hidden',
                       boxShadow:    '0 2px 16px rgba(3,36,22,0.07)',
                       transition:   'transform 0.3s, box-shadow 0.3s',
                       display:      'flex',
                       flexDirection: 'column',
+                      border:       '1px solid rgba(3,36,22,0.06)',
+                      cursor:       'pointer',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.transform  = 'translateY(-6px)';
-                      e.currentTarget.style.boxShadow  = '0 20px 48px rgba(3,36,22,0.12)';
+                      e.currentTarget.style.transform  = 'translateY(-8px)';
+                      e.currentTarget.style.boxShadow  = '0 24px 56px rgba(3,36,22,0.14)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform  = 'translateY(0)';
@@ -547,7 +841,9 @@ export default function HomePage() {
                       aspectRatio: '1/1',
                       overflow:    'hidden',
                       position:    'relative',
-                      background:  C.surfaceContainerLow,
+                      background:  catTheme.imgBg,
+                      borderRadius: '1.25rem',
+                      margin: '12px 12px 0',
                     }}>
                       <ProductImg
                         src={p.img}
@@ -595,20 +891,7 @@ export default function HomePage() {
                       }}>
                         {p.category}
                       </p>
-                      <p style={{
-                        color:              C.onSurfaceVariant,
-                        fontSize:           '0.85rem',
-                        lineHeight:         1.6,
-                        marginBottom:       'auto',
-                        paddingBottom:      16,
-                        display:            '-webkit-box',
-                        WebkitLineClamp:    2,
-                        WebkitBoxOrient:    'vertical' as const,
-                        overflow:           'hidden',
-                      }}>
-                        {p.desc}
-                      </p>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 16 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: 12 }}>
                         <span style={{
                           fontFamily: FONT_HEADLINE,
                           fontSize:   '1.1rem',
@@ -619,7 +902,7 @@ export default function HomePage() {
                         </span>
                         <button
                           type="button"
-                          onClick={() => navigate(ROUTES.products)}
+                          onClick={(e) => { e.stopPropagation(); navigate(ROUTES.product(p.id)); }}
                           title="Voir le produit"
                           style={{
                             width:          40,
@@ -628,22 +911,20 @@ export default function HomePage() {
                             background:     C.primary,
                             color:          '#ffffff',
                             border:         'none',
-                            cursor:         'pointer',
                             display:        'flex',
                             alignItems:     'center',
                             justifyContent: 'center',
+                            cursor:         'pointer',
                             flexShrink:     0,
-                            transition:     'background 0.2s, transform 0.2s, box-shadow 0.2s',
+                            transition:     'background 0.2s, transform 0.2s',
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.background  = '#C9A84C';
+                            e.currentTarget.style.background  = GOLD;
                             e.currentTarget.style.transform   = 'scale(1.1)';
-                            e.currentTarget.style.boxShadow   = '0 4px 14px rgba(201,168,76,0.4)';
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.background  = C.primary;
                             e.currentTarget.style.transform   = 'scale(1)';
-                            e.currentTarget.style.boxShadow   = 'none';
                           }}
                         >
                           <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
@@ -683,6 +964,9 @@ export default function HomePage() {
         </section>
       )}
 
+      {/* Wave section 4 → section 5 */}
+      <WaveDivider topColor={C.surfaceContainerLow} bottomColor={C.primaryContainer} />
+
       {/* ═══════════ 5. NOTRE MISSION ═══════════ */}
       <section style={{
         background: C.primaryContainer,
@@ -694,18 +978,18 @@ export default function HomePage() {
           margin:   '0 auto',
           display:  'grid',
           gridTemplateColumns: '1fr 1fr',
-          gap:      80,
+          gap:      72,
           alignItems: 'center',
         }}>
           {/* Left — photo */}
           <div style={{
-            backgroundImage:    `url(${SUPA}/mission/univers-jus-bens.png)`,
+            backgroundImage:    `url(/images-bens/hero-banners/Recompense.png)`,
             backgroundSize:     'cover',
-            backgroundPosition: 'center',
+            backgroundPosition: 'center top',
             borderRadius:       '2rem',
             aspectRatio:        '4/5',
             overflow:           'hidden',
-            boxShadow:          '0 24px 64px rgba(0,0,0,0.25)',
+            boxShadow:          '0 24px 64px rgba(0,0,0,0.28)',
           }} />
 
           {/* Right — text */}
@@ -719,45 +1003,59 @@ export default function HomePage() {
               marginBottom: 20,
               lineHeight:   1.2,
             }}>
-              La nature, sans détour. L'Afrique, sans frontière.
+              Promouvoir une alimentation saine et naturelle.
             </h2>
             <p style={{
-              color:        'rgba(255,255,255,0.78)',
+              color:        'rgba(255,255,255,0.82)',
               fontSize:     '1rem',
               lineHeight:   1.85,
-              marginBottom: 20,
+              marginBottom: 32,
             }}>
-              Chez Ben's, chaque bouteille est une promesse : celle de vous offrir ce que la nature a de plus pur — sans sucre ajouté, sans conservateurs, sans compromis. Nos recettes s'enracinent dans les traditions d'Afrique de l'Ouest et s'épanouissent sous le ciel du Québec.
-            </p>
-            <p style={{
-              color:        'rgba(255,255,255,0.78)',
-              fontSize:     '1rem',
-              lineHeight:   1.85,
-              marginBottom: 36,
-            }}>
-              Pressés à froid dans notre atelier montréalais, nos jus préservent la totalité des enzymes, vitamines et saveurs du fruit. C'est la différence artisanale — goût, vie, et intention.
+              Notre mission est de promouvoir une alimentation saine et naturelle, en partageant notre amour pour les fruits exotiques et en inspirant un mode de vie équilibré.
             </p>
 
-            {/* Stat chips */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-              {['Sans sucre ajouté', 'Sans conservateurs', 'Pressé à froid', '100% Artisanal'].map((chip) => (
-                <span key={chip} style={{
-                  background:   'rgba(255,255,255,0.1)',
-                  color:        'rgba(255,255,255,0.9)',
-                  border:       '1px solid rgba(255,255,255,0.2)',
-                  fontFamily:   FONT_BODY,
-                  fontSize:     '0.82rem',
-                  fontWeight:   600,
-                  padding:      '8px 18px',
-                  borderRadius: 9999,
+            {/* 4 piliers */}
+            <div style={{
+              display:             'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap:                 14,
+            }}>
+              {[
+                { icon: '♻️', label: 'Approche durable', desc: 'Résidus de gingembre et hibiscus réutilisés comme épices et cosmétiques' },
+                { icon: '🤝', label: 'Producteurs locaux', desc: 'Travail avec les producteurs locaux pour garantir la qualité et soutenir l\'économie' },
+                { icon: '🍃', label: 'Produits authentiques', desc: 'Ingrédients naturels soigneusement sélectionnés, sans sucre ajouté ni conservateurs' },
+                { icon: '✨', label: 'Expérience gustative', desc: 'Procédés respectant les propriétés nutritionnelles — chaque gorgée est un voyage' },
+              ].map((pillar) => (
+                <div key={pillar.label} style={{
+                  background:   'rgba(255,255,255,0.08)',
+                  border:       '1px solid rgba(255,255,255,0.15)',
+                  borderRadius: '1rem',
+                  padding:      '14px 16px',
                 }}>
-                  {chip}
-                </span>
+                  <div style={{ fontSize: '1.2rem', marginBottom: 5 }}>{pillar.icon}</div>
+                  <p style={{
+                    fontFamily:   FONT_BODY,
+                    fontSize:     '0.83rem',
+                    fontWeight:   700,
+                    color:        '#ffffff',
+                    margin:       '0 0 3px',
+                  }}>{pillar.label}</p>
+                  <p style={{
+                    fontFamily:   FONT_BODY,
+                    fontSize:     '0.72rem',
+                    color:        'rgba(255,255,255,0.65)',
+                    margin:       0,
+                    lineHeight:   1.5,
+                  }}>{pillar.desc}</p>
+                </div>
               ))}
             </div>
           </div>
         </div>
       </section>
+
+      {/* Wave mission → engagements */}
+      <WaveDivider topColor={C.primaryContainer} bottomColor={C.surface} />
 
       {/* ═══════════ 6. NOS ENGAGEMENTS ═══════════ */}
       <section style={{
@@ -806,7 +1104,7 @@ export default function HomePage() {
                 color:        '#ffffff',
                 marginBottom: 12,
               }}>
-                Héritage Africain
+                Racines Africaines
               </h3>
               <p style={{
                 color:      'rgba(255,255,255,0.72)',
@@ -814,7 +1112,7 @@ export default function HomePage() {
                 lineHeight: 1.7,
                 flex:       1,
               }}>
-                Nos recettes s'inspirent des boissons traditionnelles d'Afrique de l'Ouest : bissap, gnamakoudji, baobab — transmises de génération en génération.
+                Bissap, gingembre, baobab, gnamakoudji — des superfruits africains aux vertus thérapeutiques millénaires, transmis de génération en génération pour votre vitalité.
               </p>
             </div>
 
@@ -837,7 +1135,7 @@ export default function HomePage() {
                 color:        C.primary,
                 marginBottom: 12,
               }}>
-                Savoir-faire Québécois
+                Terroir Québécois
               </h3>
               <p style={{
                 color:      C.onSurfaceVariant,
@@ -845,7 +1143,7 @@ export default function HomePage() {
                 lineHeight: 1.7,
                 flex:       1,
               }}>
-                Nous travaillons avec les producteurs locaux de Montréal et du Québec pour garantir la fraîcheur et soutenir l'économie locale.
+                Pressés à la main dans notre atelier montréalais, avec des fruits frais du Québec — pour la santé de votre corps et le soutien de notre communauté locale.
               </p>
             </div>
 
@@ -875,12 +1173,15 @@ export default function HomePage() {
                 lineHeight: 1.7,
                 flex:       1,
               }}>
-                Aucun sucre ajouté, aucun conservateur, aucune chaleur. Nos résidus sont réutilisés en épices et cosmétiques. La nature, respectée jusqu'au bout.
+                Zéro sucre ajouté, zéro conservateur, zéro chaleur. 100% de la vitalité du fruit préservée. Votre santé mérite ce qu'il y a de meilleur — sans exception.
               </p>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Wave engagements → points de vente */}
+      <WaveDivider topColor={C.surface} bottomColor={C.surfaceContainer} />
 
       {/* ═══════════ 7. POINTS DE VENTE ═══════════ */}
       <section style={{
@@ -898,102 +1199,210 @@ export default function HomePage() {
               color:      C.onSurface,
               margin:     '8px auto 0',
             }}>
-              8 points de vente à Montréal
+              Près de chez vous, partout où la santé compte
             </h2>
           </div>
 
-          {/* Location cards — 4-column premium grid */}
-          <div style={{
-            display:             'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap:                 20,
-            marginBottom:        48,
-          }}>
-            {activeLocations.map((loc) => (
-              <div
-                key={loc.id}
-                style={{
-                  background:   '#ffffff',
-                  borderRadius: '1.25rem',
-                  padding:      '28px 24px',
-                  boxShadow:    '0 2px 14px rgba(3,36,22,0.07)',
-                  border:       '1px solid rgba(3,36,22,0.06)',
-                  textAlign:    'center',
-                  transition:   'transform 0.25s, box-shadow 0.25s',
-                  cursor:       'default',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform  = 'translateY(-4px)';
-                  e.currentTarget.style.boxShadow  = '0 16px 40px rgba(3,36,22,0.13)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform  = 'translateY(0)';
-                  e.currentTarget.style.boxShadow  = '0 2px 14px rgba(3,36,22,0.07)';
-                }}
-              >
-                {/* Gold map pin */}
-                <div style={{ marginBottom: 14 }}>
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill={GOLD} />
-                  </svg>
-                </div>
-                <h3 style={{
-                  fontFamily:   FONT_HEADLINE,
-                  fontSize:     '1rem',
-                  fontWeight:   700,
-                  color:        C.primary,
-                  marginBottom: 6,
-                  lineHeight:   1.3,
-                }}>
-                  {loc.name}
-                </h3>
-                <p style={{
-                  color:        C.onSurfaceVariant,
-                  fontSize:     '0.82rem',
-                  lineHeight:   1.5,
-                  marginBottom: 14,
-                }}>
-                  {loc.address}
-                </p>
-                <span style={{
-                  background:   C.secondaryContainer,
-                  color:        C.secondary,
-                  fontSize:     '0.75rem',
-                  fontWeight:   700,
-                  padding:      '4px 14px',
-                  borderRadius: 9999,
-                  letterSpacing: '0.04em',
-                }}>
-                  {loc.type}
-                </span>
-              </div>
-            ))}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 32 }}>
+            {regionOptions.map((region) => {
+              const active = regionFilter === region;
+              return (
+                <button
+                  key={region}
+                  type="button"
+                  onClick={() => setRegionFilter(region)}
+                  style={{
+                    background:    active ? C.primary : '#ffffff',
+                    color:         active ? '#ffffff' : C.primary,
+                    border:        `1.5px solid ${C.primary}33`,
+                    borderRadius:  9999,
+                    padding:       '8px 16px',
+                    fontFamily:    FONT_BODY,
+                    fontSize:      '0.8rem',
+                    fontWeight:    700,
+                    cursor:        'pointer',
+                    transition:    'transform 0.2s, box-shadow 0.2s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(3,36,22,0.12)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  {region}
+                </button>
+              );
+            })}
           </div>
 
-          {/* CTA link */}
+          {locationsByRegion.length === 0 && (
+            <p style={{ textAlign: 'center', color: C.onSurfaceVariant, marginBottom: 48 }}>
+              Aucun point de vente pour cette région pour le moment.
+            </p>
+          )}
+
+          {locationsByRegion.map(({ region, locations }) => (
+            <div key={region} style={{ marginBottom: 48 }}>
+              {regionFilter !== 'Tous' && (
+                <h3 style={{
+                  fontFamily: FONT_HEADLINE,
+                  fontSize:   '1.2rem',
+                  fontWeight: 700,
+                  color:      C.primary,
+                  margin:     '0 0 20px',
+                }}>
+                  {region}
+                </h3>
+              )}
+              <div style={{
+                display:             'grid',
+                gridTemplateColumns: 'repeat(4, 1fr)',
+                gap:                 16,
+              }}>
+                {locations.map((loc, idx) => {
+                  const locColors = ['#D1FAE5','#FEF9C3','#FCE7F3','#FED7AA','#DBEAFE','#EDE9FE','#FEE2E2','#ECFDF5'];
+                  const locAccent = ['#065F46','#92400E','#831843','#7C2D12','#1D4ED8','#5B21B6','#991B1B','#064E3B'];
+                  const li = idx % locColors.length;
+                  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.name + ' Montréal')}`;
+                  return (
+                    <a
+                      key={loc.id}
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        background:     locColors[li],
+                        borderRadius:   '1.5rem',
+                        padding:        '24px 20px',
+                        border:         `1.5px solid ${locAccent[li]}28`,
+                        textDecoration: 'none',
+                        display:        'flex',
+                        flexDirection:  'column',
+                        gap:            10,
+                        transition:     'transform 0.25s, box-shadow 0.25s',
+                        boxShadow:      '0 2px 12px rgba(3,36,22,0.06)',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-5px)';
+                        e.currentTarget.style.boxShadow = '0 16px 40px rgba(3,36,22,0.13)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 2px 12px rgba(3,36,22,0.06)';
+                      }}
+                    >
+                      <div style={{
+                        width:          40,
+                        height:         40,
+                        borderRadius:   '50%',
+                        background:     locAccent[li],
+                        display:        'flex',
+                        alignItems:     'center',
+                        justifyContent: 'center',
+                        flexShrink:     0,
+                      }}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#ffffff" />
+                        </svg>
+                      </div>
+
+                      <h3 style={{
+                        fontFamily:   FONT_HEADLINE,
+                        fontSize:     '0.95rem',
+                        fontWeight:   700,
+                        color:        locAccent[li],
+                        lineHeight:   1.3,
+                        margin:       0,
+                      }}>
+                        {loc.name}
+                      </h3>
+
+                      <p style={{
+                        fontFamily: FONT_BODY,
+                        color:      locAccent[li] + 'aa',
+                        fontSize:   '0.78rem',
+                        lineHeight: 1.5,
+                        margin:     0,
+                        flex:       1,
+                      }}>
+                        {loc.address}
+                      </p>
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
+                        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                          <span style={{
+                            background:    locAccent[li] + '18',
+                            color:         locAccent[li],
+                            fontSize:      '0.7rem',
+                            fontWeight:    700,
+                            fontFamily:    FONT_BODY,
+                            padding:       '3px 10px',
+                            borderRadius:  9999,
+                            letterSpacing: '0.04em',
+                          }}>
+                            {loc.type || 'Partenaire'}
+                          </span>
+                          {regionFilter === 'Tous' && (
+                            <span style={{
+                              background:    'rgba(255,255,255,0.7)',
+                              color:         locAccent[li],
+                              fontSize:      '0.68rem',
+                              fontWeight:    700,
+                              fontFamily:    FONT_BODY,
+                              padding:       '3px 8px',
+                              borderRadius:  9999,
+                              letterSpacing: '0.04em',
+                            }}>
+                              {loc.region || 'Autre'}
+                            </span>
+                          )}
+                        </div>
+                        <span style={{ color: locAccent[li], fontSize: '0.8rem', fontWeight: 700 }}>→</span>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+
+          {/* CTA */}
           <div style={{ textAlign: 'center' }}>
             <button
               type="button"
               onClick={() => navigate(ROUTES.locations)}
               style={{
-                background:  'none',
-                border:      'none',
-                color:       C.secondary,
-                fontFamily:  FONT_BODY,
-                fontSize:    '0.95rem',
-                fontWeight:  700,
-                cursor:      'pointer',
-                padding:     0,
-                transition:  'color 0.2s',
+                background:    C.primaryContainer,
+                color:         '#ffffff',
+                fontFamily:    FONT_BODY,
+                fontSize:      '0.95rem',
+                fontWeight:    700,
+                border:        'none',
+                borderRadius:  9999,
+                padding:       '14px 36px',
+                cursor:        'pointer',
+                transition:    'transform 0.2s, box-shadow 0.2s',
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = C.primary; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = C.secondary; }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(3,36,22,0.22)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
-              En savoir plus sur nos partenaires →
+              Voir tous nos partenaires →
             </button>
           </div>
         </div>
       </section>
+
+      {/* Wave locations → reviews */}
+      <WaveDivider topColor={C.surfaceContainer} bottomColor="#ffffff" />
 
       {/* ═══════════ 8. COMMUNAUTÉ BEN'S ═══════════ */}
       {approvedReviews.length > 0 && (
@@ -1029,16 +1438,22 @@ export default function HomePage() {
                   {/* Duplicate for smooth looping */}
                   {[...approvedReviews, ...approvedReviews].map((review, idx) => {
                     const initial = review.name.charAt(0).toUpperCase();
+                    const cardAccents = ['#D1FAE5','#FEF9C3','#FCE7F3','#FED7AA','#E0F2FE','#EDE9FE','#FEE2E2'];
+                    const cardBorder  = ['#059669','#D97706','#BE185D','#EA580C','#0284C7','#7C3AED','#DC2626'];
+                    const accentIdx   = idx % cardAccents.length;
                     return (
                       <div
                         key={`${review.id}-${idx}`}
                         style={{
                           flex:         '0 0 calc(33.333% - 16px)',
                           minWidth:     0,
-                          background:   C.surfaceContainerLow,
-                          borderRadius: '1.25rem',
+                          background:   cardAccents[accentIdx],
+                          borderRadius: '1.5rem',
                           padding:      '32px',
-                          border:       '1px solid rgba(3,36,22,0.06)',
+                          border:       `1.5px solid ${cardBorder[accentIdx]}28`,
+                          borderTop:    `4px solid ${cardBorder[accentIdx]}`,
+                          boxShadow:    '0 4px 24px rgba(0,0,0,0.05)',
+                          position:     'relative',
                         }}
                       >
                         {/* 5 stars */}
@@ -1069,7 +1484,7 @@ export default function HomePage() {
                             width:          40,
                             height:         40,
                             borderRadius:   '50%',
-                            background:     C.primaryContainer,
+                            background:     cardBorder[accentIdx],
                             color:          '#ffffff',
                             display:        'flex',
                             alignItems:     'center',
@@ -1202,6 +1617,9 @@ export default function HomePage() {
           </div>
         </section>
       )}
+
+      {/* Wave reviews → newsletter */}
+      <WaveDivider topColor="#ffffff" bottomColor={C.surface} />
 
       {/* ═══════════ 9. NEWSLETTER ═══════════ */}
       <section style={{

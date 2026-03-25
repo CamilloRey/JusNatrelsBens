@@ -1,581 +1,519 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '@/app/providers/DataContext';
+import { useCart } from '@/features/shop/context/CartContext';
+import { useToast } from '@/features/shop/context/ToastContext';
 import { ROUTES } from '@/shared/constants/routes';
 import { SEO } from '@/shared/components/SEO';
 import { ProductImg } from '@/shared/ui/ProductImg';
 
-// ── Design tokens ─────────────────────────────────────────────
 const C = {
-  primary:               '#032416',
-  primaryContainer:      '#1a3a2a',
-  secondary:             '#7b5804',
-  secondaryContainer:    '#fdcd74',
-  secondaryFixed:        '#ffdea6',
-  surface:               '#fef9ef',
-  surfaceContainer:      '#f2ede3',
-  surfaceContainerLow:   '#f8f3e9',
-  surfaceContainerHigh:  '#ece8de',
-  onSurface:             '#1d1c16',
-  onSurfaceVariant:      '#424843',
-  onTertiaryContainer:   '#f37b32',
-  outlineVariant:        '#c1c8c2',
-} as const;
+  primary:             '#1B4D38',
+  primaryContainer:    '#2B6A4F',
+  surface:             '#F5FBF7',
+  surfaceContainerLow: '#EAF3EC',
+  surfaceContainer:    '#DDE9E0',
+  onSurface:           '#1a1a17',
+  onSurfaceVariant:    '#3f4840',
+  gold:                '#C9A84C',
+  accent:              '#E07A20',
+};
 
 const FONT_HEADLINE = "'Noto Serif', serif";
 const FONT_BODY     = "'Plus Jakarta Sans', sans-serif";
-const MAX_W         = 1440;
+const MAX_W         = 1280;
 
-// ── Static filter data ─────────────────────────────────────────
-const COLLECTIONS = ['Botanique', 'Tropical', 'Racines'] as const;
-type Collection   = typeof COLLECTIONS[number];
+const CATS = [
+  { id: 'all',     label: 'Tout voir', icon: '✦' },
+  { id: 'Jus',     label: 'Jus',       icon: '🍹' },
+  { id: 'Tisanes', label: 'Tisanes',    icon: '🌿' },
+  { id: 'Sirops',  label: 'Sirops',     icon: '🍯' },
+  { id: 'Poudres', label: 'Poudres',    icon: '✨' },
+] as const;
 
-const BIENFAITS = ['Énergie', 'Détox', 'Immunité', 'Focus'] as const;
-type Bienfait   = typeof BIENFAITS[number];
+const TAGS = ['Pressé à froid', '100% Naturel', 'Bio', 'Boost Immunité', 'Sans sucre ajouté'];
 
-// ── Helpers ────────────────────────────────────────────────────
-function formatPrice(price: number): string {
-  return price.toFixed(2).replace('.', ',') + ' $';
+const TAG_COLORS: Record<string, { bg: string; text: string }> = {
+  'Pressé à froid':   { bg: '#FEF9C3', text: '#92400E' },
+  '100% Naturel':     { bg: '#D1FAE5', text: '#065F46' },
+  'Bio':              { bg: '#D1FAE5', text: '#065F46' },
+  'Boost Immunité':   { bg: '#FED7AA', text: '#7C2D12' },
+  'Sans sucre ajouté': { bg: '#FCE7F3', text: '#831843' },
+};
+
+function WaveDivider({ topColor, bottomColor }: { topColor: string; bottomColor: string }) {
+  return (
+    <div style={{ display: 'block', lineHeight: 0, background: bottomColor }}>
+      <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ width: '100%', height: 80, display: 'block' }}>
+        <path d="M0,40 C180,80 360,0 540,40 C720,80 900,0 1080,40 C1260,80 1440,20 1440,20 L1440,0 L0,0 Z" fill={topColor} />
+      </svg>
+    </div>
+  );
 }
 
-// ── Component ──────────────────────────────────────────────────
 export default function ProductsPage() {
-  const { products } = useData();
-  const navigate     = useNavigate();
+const { products }    = useData();
+const navigate        = useNavigate();
+const { addItem }     = useCart();
+const { addToast }    = useToast();
+const [activeCat, setActiveCat] = useState<string>('all');
+const [activeTag, setActiveTag] = useState<string>('');
 
-  // Filter state
-  const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
-  const [selectedBenefits,   setSelectedBenefits]   = useState<Bienfait[]>([]);
-  const [search,             setSearch]             = useState('');
-
-  const available = useMemo(
-    () => products.filter((p) => p.available),
-    [products],
-  );
+  const available = useMemo(() => products.filter((p) => p.available), [products]);
 
   const filtered = useMemo(() => {
     let list = available;
-    if (selectedCollection) {
-      list = list.filter((p) =>
-        p.category.toLowerCase().includes(selectedCollection.toLowerCase()),
-      );
-    }
-    if (search.trim()) {
-      const q = search.trim().toLowerCase();
-      list = list.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.desc.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q),
-      );
-    }
+    if (activeCat !== 'all') list = list.filter((p) => p.category === activeCat);
+    if (activeTag)           list = list.filter((p) => p.tag === activeTag);
     return list;
-  }, [available, selectedCollection, search]);
+  }, [available, activeCat, activeTag]);
 
-  function toggleBenefit(b: Bienfait) {
-    setSelectedBenefits((prev) =>
-      prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b],
-    );
-  }
+  const countByCat = useMemo(() => {
+    const counts: Record<string, number> = { all: available.length };
+    for (const cat of CATS.slice(1)) {
+      counts[cat.id] = available.filter((p) => p.category === cat.id).length;
+    }
+    return counts;
+  }, [available]);
 
-  // ── Render ───────────────────────────────────────────────────
   return (
-    <div
-      style={{
-        fontFamily: FONT_BODY,
-        background: C.surface,
-        minHeight:  '100vh',
-        color:      C.onSurface,
-      }}
-    >
+    <div style={{ fontFamily: FONT_BODY, background: C.surface, color: C.onSurface, minHeight: '100vh' }}>
       <SEO
-        title="La Collection Botanique"
-        description={
-          'Découvrez nos élixirs artisanaux — des jus naturels inspirés des traditions africaines, conçus ' +
-          'à Montréal pour votre bien-être quotidien.'
-        }
-        url="https://lesjusnatuelsbens.com/nos-produits"
+        title="Nos Produits"
+        description="Jus pressés à froid, tisanes, sirops et poudres artisanaux — nés entre l'Afrique et le Québec."
+        url="https://lesjusnaturelsbens.com/nos-produits"
       />
 
-      {/* ── HERO ─────────────────────────────────────────────── */}
-      <section
-        style={{
-          background:   C.primaryContainer,
-          padding:      '72px 24px 64px',
-          textAlign:    'center',
-        }}
-      >
-        <div style={{ maxWidth: MAX_W, margin: '0 auto' }}>
-          <span
-            style={{
-              display:        'inline-block',
-              background:     C.onTertiaryContainer,
-              color:          '#fff',
-              fontSize:       '0.75rem',
-              fontWeight:     700,
-              letterSpacing:  '0.1em',
-              textTransform:  'uppercase',
-              borderRadius:   '999px',
-              padding:        '6px 18px',
-              marginBottom:   '20px',
-            }}
-          >
-            {"La Collection Botanique"}
-          </span>
-
-          <h1
-            style={{
-              fontFamily:   FONT_HEADLINE,
-              fontSize:     'clamp(2.5rem, 6vw, 4rem)',
-              fontWeight:   700,
-              color:        C.secondaryFixed,
-              lineHeight:   1.15,
-              margin:       '0 0 20px',
-            }}
-          >
-            <em style={{ fontStyle: 'italic' }}>{"Élixirs"}</em>
-            {" Artisanaux"}
+      {/* ═══════ HERO ═══════ */}
+      <section style={{
+        background: `linear-gradient(135deg, ${C.primary} 0%, ${C.primaryContainer} 100%)`,
+        padding:    '88px 32px 72px',
+        textAlign:  'center',
+        position:   'relative',
+        overflow:   'hidden',
+      }}>
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'radial-gradient(ellipse at 50% -20%, rgba(201,168,76,0.18) 0%, transparent 65%)',
+          pointerEvents: 'none',
+        }} />
+        <div style={{ maxWidth: 640, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <p style={{
+            fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700,
+            letterSpacing: '0.2em', textTransform: 'uppercase' as const,
+            color: C.gold, marginBottom: 20,
+          }}>
+            ✦ Artisanal &amp; Biologique
+          </p>
+          <h1 style={{
+            fontFamily: FONT_HEADLINE,
+            fontSize:   'clamp(2.6rem, 5vw, 4rem)',
+            fontWeight: 700, color: '#ffffff',
+            margin: '0 0 20px', lineHeight: 1.1,
+          }}>
+            Nos Produits
           </h1>
-
-          <p
-            style={{
-              fontFamily: FONT_BODY,
-              fontSize:   '1.1rem',
-              color:      C.secondaryContainer,
-              maxWidth:   560,
-              margin:     '0 auto',
-              lineHeight: 1.7,
-            }}
-          >
-            {"Des saveurs authentiques, extraites d\u2019ingrédients soigneusement sélectionnés " +
-             "pour nourrir le corps et l\u2019âme."}
+          <p style={{
+            color: 'rgba(255,255,255,0.72)', fontSize: '1.05rem',
+            lineHeight: 1.8, margin: 0,
+          }}>
+            20+ produits artisanaux inspirés des traditions africaines. Pressés à froid, sans sucre ajouté — chaque gorgée est une invitation à prendre soin de vous.
           </p>
         </div>
       </section>
 
-      {/* ── MAIN LAYOUT ──────────────────────────────────────── */}
-      <div
-        style={{
-          maxWidth:   MAX_W,
-          margin:     '0 auto',
-          padding:    '48px 24px',
-          display:    'flex',
-          gap:        '3rem',
-          alignItems: 'flex-start',
-        }}
-      >
-        {/* ── SIDEBAR ─────────────────────────────────────────── */}
-        <aside style={{ width: 256, flexShrink: 0 }}>
+      <WaveDivider topColor={C.primaryContainer} bottomColor={C.surface} />
 
-          {/* Search */}
-          <div style={{ marginBottom: '2rem' }}>
-            <input
-              type="text"
-              placeholder={"Rechercher un élixir\u2026"}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{
-                width:        '100%',
-                padding:      '10px 16px',
-                borderRadius: '999px',
-                border:       `1.5px solid ${C.outlineVariant}`,
-                background:   C.surfaceContainerLow,
-                color:        C.onSurface,
-                fontFamily:   FONT_BODY,
-                fontSize:     '0.875rem',
-                outline:      'none',
-                boxSizing:    'border-box',
-              }}
-            />
+      {/* ═══════ SIDEBAR + GRID ═══════ */}
+      <div style={{
+        maxWidth: MAX_W,
+        margin:   '0 auto',
+        padding:  '0 32px 80px',
+        display:  'grid',
+        gridTemplateColumns: '260px 1fr',
+        gap:      48,
+        alignItems: 'start',
+      }}>
+
+        {/* ── SIDEBAR ── */}
+        <aside style={{
+          position:    'sticky',
+          top:         90,
+          background:  '#ffffff',
+          borderRadius: '1.5rem',
+          padding:     '32px 24px',
+          boxShadow:   '0 4px 24px rgba(27,77,56,0.08)',
+          border:      `1px solid rgba(27,77,56,0.07)`,
+        }}>
+          {/* Brand mark */}
+          <div style={{ marginBottom: 28, paddingBottom: 20, borderBottom: `1px solid rgba(27,77,56,0.08)` }}>
+            <p style={{
+              fontFamily: FONT_HEADLINE, fontWeight: 700, fontSize: '1rem',
+              color: C.primary, margin: '0 0 4px',
+            }}>
+              Les Jus Ben's
+            </p>
+            <p style={{ color: C.onSurfaceVariant, fontSize: '0.8rem', margin: 0 }}>
+              {filtered.length} produit{filtered.length > 1 ? 's' : ''}
+            </p>
           </div>
 
-          {/* Collection */}
-          <div style={{ marginBottom: '2rem' }}>
-            <p
-              style={{
-                fontFamily:    FONT_HEADLINE,
-                fontWeight:    700,
-                fontSize:      '1rem',
-                color:         C.primary,
-                marginBottom:  '12px',
-                letterSpacing: '0.03em',
-              }}
-            >
-              {"Collection"}
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {COLLECTIONS.map((col) => {
-                const active = selectedCollection === col;
-                return (
-                  <button
-                    key={col}
-                    type="button"
-                    onClick={() =>
-                      setSelectedCollection(active ? null : col)
-                    }
-                    style={{
-                      display:      'flex',
-                      alignItems:   'center',
-                      gap:          '10px',
-                      background:   'none',
-                      border:       'none',
-                      cursor:       'pointer',
-                      padding:      0,
-                      fontFamily:   FONT_BODY,
-                      fontSize:     '0.9rem',
-                      color:        active ? C.primary : C.onSurfaceVariant,
-                      fontWeight:   active ? 700 : 400,
-                    }}
-                  >
-                    <span
-                      style={{
-                        width:        20,
-                        height:       20,
-                        borderRadius: '50%',
-                        border:       `2px solid ${active ? C.primary : C.outlineVariant}`,
-                        background:   active ? C.primary : 'transparent',
-                        flexShrink:   0,
-                        display:      'flex',
-                        alignItems:   'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      {active && (
-                        <span
-                          style={{
-                            width:        8,
-                            height:       8,
-                            borderRadius: '50%',
-                            background:   '#fff',
-                          }}
-                        />
-                      )}
-                    </span>
-                    {col}
-                  </button>
-                );
-              })}
-            </div>
+          {/* Categories */}
+          <p style={{
+            fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700,
+            letterSpacing: '0.15em', textTransform: 'uppercase' as const,
+            color: C.gold, margin: '0 0 12px',
+          }}>
+            Catégorie
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 28 }}>
+            {CATS.map((cat) => {
+              const active = activeCat === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setActiveCat(cat.id)}
+                  style={{
+                    display:      'flex',
+                    alignItems:   'center',
+                    justifyContent: 'space-between',
+                    gap:          8,
+                    padding:      '10px 14px',
+                    borderRadius: '0.75rem',
+                    border:       'none',
+                    background:   active ? C.primary : 'transparent',
+                    color:        active ? '#ffffff' : C.onSurfaceVariant,
+                    fontFamily:   FONT_BODY,
+                    fontWeight:   active ? 700 : 500,
+                    fontSize:     '0.9rem',
+                    cursor:       'pointer',
+                    textAlign:    'left' as const,
+                    transition:   'background 0.18s',
+                  }}
+                >
+                  <span>{cat.icon} {cat.label}</span>
+                  <span style={{
+                    fontSize:   '0.72rem',
+                    fontWeight: 700,
+                    background: active ? 'rgba(255,255,255,0.18)' : C.surfaceContainerLow,
+                    color:      active ? '#ffffff' : C.onSurfaceVariant,
+                    borderRadius: 9999,
+                    padding:    '2px 8px',
+                  }}>
+                    {countByCat[cat.id] ?? 0}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
-          {/* Bienfaits */}
-          <div style={{ marginBottom: '2rem' }}>
-            <p
-              style={{
-                fontFamily:    FONT_HEADLINE,
-                fontWeight:    700,
-                fontSize:      '1rem',
-                color:         C.primary,
-                marginBottom:  '12px',
-                letterSpacing: '0.03em',
-              }}
-            >
-              {"Bienfaits"}
+          {/* Tag filters */}
+          <div style={{ paddingTop: 20, borderTop: `1px solid rgba(27,77,56,0.08)` }}>
+            <p style={{
+              fontFamily: FONT_BODY, fontSize: 10, fontWeight: 700,
+              letterSpacing: '0.15em', textTransform: 'uppercase' as const,
+              color: C.gold, margin: '0 0 12px',
+            }}>
+              Caractéristiques
             </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {BIENFAITS.map((b) => {
-                const active = selectedBenefits.includes(b);
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {TAGS.map((tag) => {
+                const active  = activeTag === tag;
+                const colors  = TAG_COLORS[tag] ?? { bg: C.surfaceContainerLow, text: C.onSurfaceVariant };
                 return (
                   <button
-                    key={b}
+                    key={tag}
                     type="button"
-                    onClick={() => toggleBenefit(b)}
+                    onClick={() => setActiveTag(active ? '' : tag)}
                     style={{
-                      padding:      '6px 16px',
-                      borderRadius: '999px',
-                      border:       'none',
-                      cursor:       'pointer',
+                      padding:      '8px 14px',
+                      borderRadius: '0.75rem',
+                      border:       active ? `1.5px solid ${colors.text}` : `1.5px solid transparent`,
+                      background:   active ? colors.bg : C.surfaceContainerLow,
+                      color:        colors.text,
                       fontFamily:   FONT_BODY,
-                      fontSize:     '0.8rem',
                       fontWeight:   active ? 700 : 500,
-                      background:   active ? C.primaryContainer : C.surfaceContainerHigh,
-                      color:        active ? '#fff' : C.onSurfaceVariant,
-                      transition:   'background 0.2s, color 0.2s',
+                      fontSize:     '0.82rem',
+                      cursor:       'pointer',
+                      textAlign:    'left' as const,
+                      transition:   'all 0.18s',
                     }}
                   >
-                    {b}
+                    {active ? '✓ ' : ''}{tag}
                   </button>
                 );
               })}
             </div>
-          </div>
 
-          {/* Coffret Artisan promo card */}
-          <div
-            style={{
-              background:   C.primaryContainer,
-              borderRadius: '2rem',
-              padding:      '2rem',
-            }}
-          >
-            <h4
-              style={{
-                fontFamily:   FONT_HEADLINE,
-                fontSize:     '1.15rem',
-                fontWeight:   700,
-                color:        C.secondaryFixed,
-                margin:       '0 0 10px',
-              }}
-            >
-              {"Coffret Artisan"}
-            </h4>
-            <p
-              style={{
-                fontFamily: FONT_BODY,
-                fontSize:   '0.85rem',
-                color:      C.secondaryContainer,
-                lineHeight: 1.6,
-                margin:     '0 0 20px',
-              }}
-            >
-              {"Découvrez notre sélection exclusive d'élixirs artisanaux en coffret cadeau."}
-            </p>
-            <button
-              type="button"
-              style={{
-                background:   C.secondaryContainer,
-                color:        C.primary,
-                border:       'none',
-                borderRadius: '999px',
-                padding:      '10px 22px',
-                fontFamily:   FONT_BODY,
-                fontWeight:   700,
-                fontSize:     '0.875rem',
-                cursor:       'pointer',
-              }}
-            >
-              {"Découvrir"}
-            </button>
+            {/* Reset */}
+            {(activeCat !== 'all' || activeTag) && (
+              <button
+                type="button"
+                onClick={() => { setActiveCat('all'); setActiveTag(''); }}
+                style={{
+                  marginTop:    16,
+                  width:        '100%',
+                  padding:      '9px',
+                  borderRadius: '0.75rem',
+                  border:       `1px solid rgba(27,77,56,0.2)`,
+                  background:   'transparent',
+                  color:        C.primary,
+                  fontFamily:   FONT_BODY,
+                  fontWeight:   600,
+                  fontSize:     '0.82rem',
+                  cursor:       'pointer',
+                }}
+              >
+                Réinitialiser les filtres
+              </button>
+            )}
           </div>
         </aside>
 
-        {/* ── PRODUCT GRID ─────────────────────────────────────── */}
-        <div
-          style={{
-            flex:                1,
-            display:             'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap:                 '2rem',
-          }}
-        >
-          {filtered.length === 0 && (
-            <p
-              style={{
-                gridColumn: '1 / -1',
-                textAlign:  'center',
-                color:      C.onSurfaceVariant,
-                fontFamily: FONT_BODY,
-                padding:    '3rem 0',
-              }}
-            >
-              {"Aucun élixir trouvé pour ces filtres."}
-            </p>
-          )}
+        {/* ── GRID ── */}
+        <main>
+          {/* Results header */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '32px 0 24px' }}>
+            <h2 style={{ fontFamily: FONT_HEADLINE, fontSize: '1.4rem', fontWeight: 700, color: C.primary, margin: 0 }}>
+              {activeCat === 'all' ? 'Toute la collection' : CATS.find(c => c.id === activeCat)?.label}
+              {activeTag && <span style={{ color: C.onSurfaceVariant, fontStyle: 'italic', fontWeight: 400, fontSize: '1.1rem' }}> — {activeTag}</span>}
+            </h2>
+            <span style={{ color: C.onSurfaceVariant, fontSize: '0.85rem' }}>
+              {filtered.length} résultat{filtered.length > 1 ? 's' : ''}
+            </span>
+          </div>
 
-          {filtered.map((p) => {
-            const isBestseller = p.tag?.toLowerCase().includes('best');
-            const isLimited    = p.tag?.toLowerCase().includes('limit');
-
-            return (
-              <article
-                key={p.id}
-                style={{
-                  display:        'flex',
-                  flexDirection:  'column',
-                  background:     C.surfaceContainerLow,
-                  borderRadius:   '2rem',
-                  overflow:       'hidden',
-                }}
-              >
-                {/* Image container */}
-                <div
-                  style={{
-                    position:     'relative',
-                    aspectRatio:  '4 / 5',
-                    overflow:     'hidden',
-                    background:   C.surfaceContainerHigh,
-                    cursor:       'pointer',
-                  }}
-                  onClick={() => navigate(ROUTES.product(p.id))}
-                >
-                  <div
+          {filtered.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '80px 0', color: C.onSurfaceVariant }}>
+              <div style={{
+                width: 80, height: 80, borderRadius: '50%',
+                background: `linear-gradient(135deg, ${C.surfaceContainerLow}, ${C.surfaceContainer})`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '2rem', margin: '0 auto 20px',
+              }}>
+                🌿
+              </div>
+              <p style={{ fontFamily: FONT_HEADLINE, fontSize: '1.3rem', color: C.primary, marginBottom: 8 }}>Aucun produit trouvé</p>
+              <p style={{ fontSize: '0.95rem' }}>Essayez d'autres filtres pour découvrir nos créations</p>
+            </div>
+          ) : (
+            <div style={{
+              display:             'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+              gap:                 24,
+            }}>
+              {filtered.map((p) => {
+                const badge = TAG_COLORS[p.tag] ?? { bg: C.surfaceContainerLow, text: C.onSurfaceVariant };
+                const catColors: Record<string, { bg: string; accent: string }> = {
+                  'Jus':      { bg: '#D1FAE5', accent: '#065F46' },
+                  'Tisanes':  { bg: '#FEF9C3', accent: '#92400E' },
+                  'Sirops':   { bg: '#FCE7F3', accent: '#831843' },
+                  'Poudres':  { bg: '#FED7AA', accent: '#7C2D12' },
+                };
+                const catTheme = catColors[p.category] ?? { bg: C.surfaceContainerLow, accent: C.primary };
+                return (
+                  <article
+                    key={p.id}
+                    onClick={() => navigate(ROUTES.product(p.id))}
                     style={{
-                      width:      '100%',
-                      height:     '100%',
-                      transition: 'transform 0.35s ease',
+                      background:   '#ffffff',
+                      borderRadius: '1.5rem',
+                      overflow:     'hidden',
+                      cursor:       'pointer',
+                      display:      'flex',
+                      flexDirection: 'column',
+                      border:       `1px solid rgba(27,77,56,0.06)`,
+                      transition:   'transform 0.3s, box-shadow 0.3s',
+                      boxShadow:    '0 2px 16px rgba(27,77,56,0.05)',
                     }}
                     onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLDivElement).style.transform = 'scale(1.05)';
+                      e.currentTarget.style.transform = 'translateY(-6px)';
+                      e.currentTarget.style.boxShadow = '0 20px 48px rgba(27,77,56,0.14)';
                     }}
                     onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLDivElement).style.transform = 'scale(1)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 2px 16px rgba(27,77,56,0.05)';
                     }}
                   >
-                    <ProductImg
-                      src={p.img}
-                      alt={p.name}
-                      size={320}
-                      style={{
-                        width:        '100%',
-                        height:       '100%',
-                        objectFit:    'cover',
-                        borderRadius: 0,
-                      }}
-                    />
-                  </div>
+                    {/* Image with colored background */}
+                    <div style={{
+                      aspectRatio: '1/1',
+                      overflow: 'hidden',
+                      position: 'relative',
+                      background: `linear-gradient(135deg, ${catTheme.bg}80, ${catTheme.bg})`,
+                      borderRadius: '1.25rem',
+                      margin: 12,
+                    }}>
+                      <ProductImg
+                        src={p.img}
+                        alt={p.name}
+                        size={400}
+                        borderRadius={0}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }}
+                      />
+                      {/* Tag badge */}
+                      {p.tag && (
+                        <span style={{
+                          position:      'absolute', top: 14, left: 14,
+                          background:    badge.bg, color: badge.text,
+                          fontSize:      10, fontWeight: 700,
+                          textTransform: 'uppercase' as const, letterSpacing: '0.08em',
+                          padding:       '6px 14px', borderRadius: 9999,
+                          boxShadow:     '0 2px 8px rgba(0,0,0,0.1)',
+                        }}>
+                          {p.tag}
+                        </span>
+                      )}
+                      {/* Quick view button on hover */}
+                      <div style={{
+                        position: 'absolute', bottom: 14, right: 14,
+                        opacity: 0, transition: 'opacity 0.25s',
+                      }} className="quick-view">
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); navigate(ROUTES.product(p.id)); }}
+                          style={{
+                            padding: '10px 18px',
+                            borderRadius: 9999,
+                            background: 'rgba(255,255,255,0.95)',
+                            backdropFilter: 'blur(8px)',
+                            color: C.primary,
+                            border: 'none',
+                            fontFamily: FONT_BODY,
+                            fontSize: '0.8rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+                          }}
+                        >
+                          Voir détails →
+                        </button>
+                      </div>
+                    </div>
 
-                  {/* Badge */}
-                  {(isBestseller || isLimited || p.tag) && (
-                    <span
-                      style={{
-                        position:     'absolute',
-                        top:          16,
-                        left:         16,
-                        background:   isBestseller
-                          ? `${C.primary}e6`
-                          : `${C.secondaryContainer}e6`,
-                        color:        isBestseller ? '#fff' : C.primary,
-                        fontSize:     '0.7rem',
-                        fontWeight:   700,
-                        letterSpacing:'0.08em',
-                        textTransform:'uppercase',
-                        borderRadius: '999px',
-                        padding:      '5px 14px',
-                        fontFamily:   FONT_BODY,
-                      }}
-                    >
-                      {isBestseller
-                        ? 'Bestseller'
-                        : isLimited
-                          ? 'Limited Release'
-                          : p.tag}
-                    </span>
-                  )}
-                </div>
-
-                {/* Info */}
-                <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                  {/* Name + category */}
-                  <div style={{ marginBottom: '0.5rem' }}>
-                    <h2
-                      style={{
-                        fontFamily: FONT_HEADLINE,
-                        fontSize:   '1.5rem',
-                        fontWeight: 700,
-                        color:      C.primary,
-                        margin:     '0 0 6px',
-                        lineHeight: 1.2,
-                        cursor:     'pointer',
-                      }}
-                      onClick={() => navigate(ROUTES.product(p.id))}
-                    >
-                      {p.name}
-                    </h2>
-                    <span
-                      style={{
-                        fontSize:      '0.7rem',
-                        fontWeight:    700,
-                        letterSpacing: '0.1em',
-                        textTransform: 'uppercase',
-                        color:         C.onTertiaryContainer,
-                        fontFamily:    FONT_BODY,
-                      }}
-                    >
-                      {p.category}
-                    </span>
-                  </div>
-
-                  {/* Price */}
-                  <p
-                    style={{
-                      fontFamily: FONT_HEADLINE,
-                      fontSize:   '1.25rem',
-                      fontWeight: 700,
-                      color:      C.primary,
-                      margin:     '0 0 10px',
-                    }}
-                  >
-                    {formatPrice(p.price)}
-                  </p>
-
-                  {/* Description */}
-                  <p
-                    style={{
-                      fontFamily: FONT_BODY,
-                      fontSize:   '0.875rem',
-                      color:      C.onSurfaceVariant,
-                      lineHeight: 1.65,
-                      margin:     '0 0 1.5rem',
-                      flex:       1,
-                    }}
-                  >
-                    {p.desc}
-                  </p>
-
-                  {/* CTA buttons */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <button
-                      type="button"
-                      onClick={() => navigate(ROUTES.product(p.id))}
-                      style={{
-                        display:        'flex',
-                        alignItems:     'center',
-                        justifyContent: 'center',
-                        gap:            '8px',
-                        background:     C.primaryContainer,
-                        color:          '#fff',
-                        border:         'none',
-                        borderRadius:   '999px',
-                        width:          '100%',
-                        padding:        '1rem 1.5rem',
-                        fontFamily:     FONT_BODY,
-                        fontWeight:     700,
-                        fontSize:       '0.9rem',
-                        cursor:         'pointer',
-                        transition:     'opacity 0.2s',
-                      }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.opacity = '0.88';
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.opacity = '1';
-                      }}
-                    >
-                      {"Ajouter au Panier"}
-                      <span style={{ fontSize: '1.1rem' }}>{"→"}</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      style={{
-                        background:   'transparent',
-                        color:        C.primary,
-                        border:       `2px solid ${C.outlineVariant}4d`,
-                        borderRadius: '999px',
-                        padding:      '0.75rem 1.5rem',
-                        fontFamily:   FONT_BODY,
-                        fontWeight:   600,
-                        fontSize:     '0.8rem',
-                        cursor:       'pointer',
-                        transition:   'border-color 0.2s',
-                        width:        '100%',
-                      }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.borderColor = C.outlineVariant;
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.borderColor = `${C.outlineVariant}4d`;
-                      }}
-                    >
-                      {"S\u2019abonner \u0026 Économiser 15\u00a0%"}
-                    </button>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
+                    {/* Info */}
+                    <div style={{ padding: '8px 20px 22px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                      {/* Category pill */}
+                      <span style={{
+                        display: 'inline-block', width: 'fit-content',
+                        fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase' as const,
+                        letterSpacing: '0.12em', color: catTheme.accent,
+                        background: `${catTheme.accent}12`,
+                        padding: '4px 10px', borderRadius: 9999,
+                        marginBottom: 10,
+                      }}>
+                        {p.category}
+                      </span>
+                      <h3 style={{
+                        fontFamily: FONT_HEADLINE, fontSize: '1.1rem', fontWeight: 700,
+                        color: C.primary, margin: '0 0 8px', lineHeight: 1.3,
+                      }}>
+                        {p.name}
+                      </h3>
+                      {/* Characteristics badges */}
+                      {p.characteristics && p.characteristics.length > 0 && (
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
+                          {p.characteristics.slice(0, 2).map((ch) => (
+                            <span key={ch} style={{
+                              fontSize: '0.68rem', color: C.onSurfaceVariant,
+                              background: C.surfaceContainerLow,
+                              padding: '3px 8px', borderRadius: 6,
+                            }}>
+                              {ch}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: 8 }}>
+                        <span style={{ fontFamily: FONT_HEADLINE, fontSize: '1.2rem', fontWeight: 700, color: C.gold }}>
+                          {p.price.toFixed(2).replace('.', ',')} <span style={{ fontSize: '0.9rem' }}>$</span>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            addItem({
+                              id:        `${p.id}-1`,
+                              productId: p.id,
+                              name:      p.name,
+                              price:     Math.round(p.price * 100),
+                              quantity:  1,
+                              format:    p.formats[0] || '1L',
+                              img:       p.img,
+                            });
+                            addToast(`${p.name} ajouté au panier`);
+                          }}
+                          style={{
+                            width: 42, height: 42, borderRadius: '50%',
+                            background: `linear-gradient(135deg, ${C.primary}, ${C.primaryContainer})`,
+                            color: '#ffffff',
+                            border: 'none', cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            transition: 'transform 0.2s, box-shadow 0.2s', flexShrink: 0,
+                            boxShadow: '0 4px 12px rgba(27,77,56,0.2)',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'scale(1.1)';
+                            e.currentTarget.style.boxShadow = '0 6px 20px rgba(27,77,56,0.3)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'scale(1)';
+                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(27,77,56,0.2)';
+                          }}
+                        >
+                          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7 17h14v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H19c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 23.46 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </main>
       </div>
+
+      <WaveDivider topColor={C.surface} bottomColor={C.primary} />
+
+      {/* ═══════ CTA ═══════ */}
+      <section style={{ background: C.primary, padding: '72px 32px', textAlign: 'center' }}>
+        <div style={{ maxWidth: 580, margin: '0 auto' }}>
+          <p style={{ color: C.gold, fontFamily: FONT_BODY, fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase' as const, marginBottom: 16 }}>
+            ✦ Commande personnalisée
+          </p>
+          <h2 style={{ fontFamily: FONT_HEADLINE, color: '#ffffff', fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', fontWeight: 700, marginBottom: 16 }}>
+            Vous ne trouvez pas ce que vous cherchez ?
+          </h2>
+          <p style={{ color: 'rgba(255,255,255,0.68)', fontSize: '1rem', lineHeight: 1.8, marginBottom: 36 }}>
+            Contactez-nous pour une commande sur mesure — mélanges personnalisés, coffrets cadeaux ou grandes quantités.
+          </p>
+          <button
+            type="button"
+            onClick={() => navigate(ROUTES.contact)}
+            style={{
+              background: C.gold, color: C.primary, fontFamily: FONT_BODY,
+              fontWeight: 700, fontSize: '1rem', padding: '16px 44px',
+              borderRadius: 9999, border: 'none', cursor: 'pointer',
+              transition: 'transform 0.2s, box-shadow 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = `0 10px 32px rgba(201,168,76,0.4)`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
+            Nous contacter
+          </button>
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.primary} bottomColor="#032416" />
     </div>
   );
 }

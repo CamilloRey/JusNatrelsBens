@@ -22,6 +22,8 @@ create table if not exists products (
   tag         text                   default '',
   img         text                   default '🍹',   -- emoji OU URL Supabase Storage
   color       text                   default '#c44536',
+  characteristics text[]             default '{}',
+  ingredients     text[]             default '{}',
   created_at  timestamptz            default now()
 );
 
@@ -53,6 +55,9 @@ create table if not exists blogs (
   title       text    not null,
   category    text    not null default 'Santé',
   content     text    not null,
+  img         text    default '',
+  tags        text[]  default '{}',
+  content_type text   default 'article',
   published   boolean default false,
   date        date    not null,
   created_at  timestamptz default now()
@@ -69,7 +74,12 @@ create table if not exists locations (
   name        text    not null,
   address     text    not null,
   type        text    not null default 'Épicerie',
+  region      text    default 'Montreal',
   active      boolean default true,
+  phone       text,
+  hours       text,
+  neighborhood text,
+  coords      double precision[] default '{}',
   created_at  timestamptz default now()
 );
 
@@ -157,3 +167,44 @@ create table if not exists ingredients (
 );
 
 alter table ingredients disable row level security;
+
+-- ════════════════════════════════════════════════════════════════
+--  TABLES : settings dynamiques
+-- ════════════════════════════════════════════════════════════════
+create table if not exists product_settings (
+  id              text primary key,
+  categories      text[] not null default '{}',
+  formats         text[] not null default '{}',
+  tags            text[] not null default '{}',
+  characteristics jsonb  not null default '[]',
+  colors          text[] not null default '{}',
+  created_at      timestamptz default now()
+);
+
+alter table product_settings disable row level security;
+
+create table if not exists blog_settings (
+  id            text primary key,
+  categories    text[] not null default '{}',
+  content_types text[] not null default '{}',
+  created_at    timestamptz default now()
+);
+
+alter table blog_settings disable row level security;
+
+create table if not exists event_settings (
+  id         text primary key,
+  types      text[] not null default '{}',
+  created_at timestamptz default now()
+);
+
+alter table event_settings disable row level security;
+
+create table if not exists location_settings (
+  id         text primary key,
+  types      text[] not null default '{}',
+  regions    text[] not null default '{}',
+  created_at timestamptz default now()
+);
+
+alter table location_settings disable row level security;

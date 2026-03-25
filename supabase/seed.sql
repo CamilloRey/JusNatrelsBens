@@ -34,10 +34,27 @@ insert into blogs (id, title, category, content, published, date) values
 on conflict (id) do nothing;
 
 -- ─── POINTS DE VENTE ───
-insert into locations (id, name, address, type, active) values
-  ('l1', 'Marché Jean-Talon',       '7070 Henri Julien, Montréal',    'Marché',   true),
-  ('l2', 'Épicerie Afro-Antillaise','3456 Boul. Décarie, Montréal',   'Épicerie', true),
-  ('l3', 'Marché Atwater',          '138 Atwater, Montréal',          'Marché',   true)
+insert into locations (id, name, address, type, region, active, neighborhood) values
+  ('l1',  'Boucherie Marieville Inc',            '631 Rue Claude de rameau, MarieVille, QC J3M 1J7',         'Partenaire Local', 'Rive Sud', true, 'Marieville'),
+  ('l2',  'Boucherie du cap',                     '3575 Ch. de Chambly, Longueuil, QC J4L 4L8',               'Partenaire Local', 'Rive Sud', true, 'Longueuil'),
+  ('l3',  'Casier bleue',                         '1005 QC-112, Saint-Césaire, QC J0L 1T0',                   'Partenaire Local', 'Rive Sud', true, 'Saint-Césaire'),
+  ('l4',  'Épicerie Africaine de la rive sud',    '265 Bd Sainte-Foy, Longueuil, QC J4J 1X1',                 'Épicerie',         'Rive Sud', true, 'Longueuil'),
+  ('l5',  'Épicier du Centre-Ville (Marché Ami)', '1312 Rue des Cascades, Saint-Hyacinthe, QC J2S 4H4',       'Marché',           'Rive Sud', true, 'Saint-Hyacinthe'),
+  ('l6',  'Ferme Guyon',                          '1001 Rue Patrick Farrar, Chambly, QC J3L 4N7',             'Partenaire Local', 'Rive Sud', true, 'Chambly'),
+  ('l7',  'Garage Lafinesse',                     '3785 Taschereau Blvd, Saint-Hubert, Québec J4T 2G4',       'Partenaire Local', 'Rive Sud', true, 'Saint-Hubert'),
+  ('l8',  'Kohinoor',                             '3805 boulevard Taschereau, Saint-Hubert, Québec J4T 2G4',  'Partenaire Local', 'Rive Sud', true, 'Saint-Hubert'),
+  ('l9',  'Marché des délices du monde',          '1218 Rue du Pont, Marieville, QC J3M 1G2',                 'Marché',           'Rive Sud', true, 'Marieville'),
+  ('l10', 'Marché HK',                            '899 Boulevard Curé-Poirier O, Longueuil, QC J4K 2C5',       'Marché',           'Rive Sud', true, 'Longueuil'),
+  ('l11', 'Pâtisserie Brossard',                  '3250 Boul. de Rome, Brossard, QC J4Y 1V9',                 'Partenaire Local', 'Rive Sud', true, 'Brossard'),
+  ('l12', 'Alexpress',                            '4105 Boul. Sir Wilfrid Laurier, Saint-Hubert, QC J3Y 3X3',  'Partenaire Local', 'Rive Sud', true, 'Saint-Hubert'),
+  ('l13', 'Épicerie Africaine & Caribéenne Lovaf','395a Bd Cartier O, Laval, QC H7N 2K8',                     'Épicerie',         'Montreal', true, 'Laval'),
+  ('l14', 'Le souk',                              '267 Rue Principale, Granby, QC J2G 2W1',                    'Partenaire Local', 'Montreal', true, 'Granby'),
+  ('l15', 'Marche al-Radji',                      '2557 Rue Centre, Montréal, QC H3K 1J9',                    'Marché',           'Montreal', true, 'Montréal'),
+  ('l16', 'Marché Ikase',                         '2040 Rue La pierre, Lasalle, QC H8N 1B1',                   'Marché',           'Montreal', true, 'Lasalle'),
+  ('l17', 'Nourriture d''Afrique Montréal',       '9465 Rue Charles-de-La Tour, Montréal, QC H4N 1M5',         'Épicerie',         'Montreal', true, 'Montréal'),
+  ('l18', 'Orange coco',                          '177 Rue Empire, Granby, QC J2G 3B3',                        'Partenaire Local', 'Montreal', true, 'Granby'),
+  ('l19', 'Resto Flap Flap',                      '5808 Rue de Charleroi, Montréal-Nord, QC H1G 3B2',          'Restaurant',       'Montreal', true, 'Montréal-Nord'),
+  ('l20', 'Marche Fleur du Soleil',               '5047 Rue de Charleroi, Montréal-Nord, QC H1G 2Z6',          'Marché',           'Montreal', true, 'Montréal-Nord')
 on conflict (id) do nothing;
 
 -- ─── ABONNÉS ───
@@ -85,6 +102,33 @@ insert into settings (id, data) values (1, '{
   "deliveryNote": "Livraison disponible dans la grande région de Montréal."
 }'::jsonb)
 on conflict (id) do update set data = excluded.data;
+
+-- ─── PARAMÈTRES PRODUITS / BLOG / ÉVÉNEMENTS / LOCATIONS ───
+insert into product_settings (id, categories, formats, tags, characteristics, colors) values (
+  'product-settings',
+  ARRAY['Jus','Tisanes','Sirops','Poudres','Épices','Cosmétiques'],
+  ARRAY['250ml','354ml','500ml','750ml','1L','2L'],
+  ARRAY['Pressé à froid','100% Naturel','Bio','Boost Immunité','Sans sucre ajouté','Nouveau','Populaire','En promotion'],
+  '[{"icon":"🌿","label":"Sans conservateurs"},{"icon":"🍃","label":"Sans sucre ajouté"},{"icon":"✓","label":"100% Naturel"},{"icon":"🌱","label":"Bio"},{"icon":"🇨🇦","label":"Produit du Québec"},{"icon":"🧊","label":"Pressé à froid"},{"icon":"🌾","label":"Sans gluten"},{"icon":"🐾","label":"Végan"},{"icon":"⚡","label":"Boost Énergie"},{"icon":"🫀","label":"Boost Immunité"}]'::jsonb,
+  ARRAY['#c44536','#e07a20','#2b6a4f','#1b4d38','#7c3aed','#0284c7','#be185d','#d97706','#059669','#64748b']
+) on conflict (id) do update set categories = excluded.categories, formats = excluded.formats, tags = excluded.tags, characteristics = excluded.characteristics, colors = excluded.colors;
+
+insert into blog_settings (id, categories, content_types) values (
+  'blog-settings',
+  ARRAY['Sante','Recettes','Actualites','Conseils','Traditions','Nutrition'],
+  ARRAY['article','recette']
+) on conflict (id) do update set categories = excluded.categories, content_types = excluded.content_types;
+
+insert into event_settings (id, types) values (
+  'event-settings',
+  ARRAY['Marche','Festival','Degustation','Atelier','Autre']
+) on conflict (id) do update set types = excluded.types;
+
+insert into location_settings (id, types, regions) values (
+  'location-settings',
+  ARRAY['Atelier Signature','Partenaire Local','Marché','Épicerie','Café','Boutique bio','Studio bien-être','Restaurant','En ligne','Autre'],
+  ARRAY['Montreal','Rive Sud','Rive Nord']
+) on conflict (id) do update set types = excluded.types, regions = excluded.regions;
 
 -- Ingredients seed
 insert into ingredients (id, name, image, benefits, note, active) values

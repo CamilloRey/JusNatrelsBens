@@ -19,3 +19,15 @@ export interface BlogFormState {
   tags:      string;
   contentType: 'article' | 'recette';
 }
+
+export interface BlogSettings {
+  id: string; // "blog-settings"
+  categories: string[];
+  contentTypes: Array<'article' | 'recette'>;
+}
+
+export const DEFAULT_BLOG_SETTINGS: BlogSettings = {
+  id: 'blog-settings',
+  categories: ['Sante', 'Recettes', 'Actualites', 'Conseils', 'Traditions', 'Nutrition'],
+  contentTypes: ['article', 'recette'],
+};

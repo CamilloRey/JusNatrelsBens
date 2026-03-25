@@ -18,7 +18,11 @@ type TableName =
   | 'events'
   | 'stock'
   | 'finance'
-  | 'recipes';
+  | 'recipes'
+  | 'product_settings'
+  | 'blog_settings'
+  | 'event_settings'
+  | 'location_settings';
 
 /** Charger tous les enregistrements d'une table, triés par created_at. */
 export async function fetchAll<T>(table: TableName, fallback: T[]): Promise<T[]> {
